@@ -10,6 +10,9 @@ BOOT({
 	},
 	NODE_CONFIG : {
 		isNotUsingCPUClustering : true,
-		dbName : 'GCLife-test'
+		dbName : 'GCLife-test',
+		GCLife : {
+			secureKey : 'test'
+		}
 	}
 });

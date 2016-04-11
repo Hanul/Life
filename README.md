@@ -1,6 +1,8 @@
 # gclife.net
 겜창인생 사이트 솤슼콬듴
 
+![ScreenShot](https://raw.githubusercontent.com/Hanul/gclife.net/master/good.gif)
+
 ## 라이센스
 [MIT](LICENSE)
 

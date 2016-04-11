@@ -1,0 +1,29 @@
+.clear {
+	clear: both;
+}
+
+#wrapper {
+}
+
+#top {
+	padding: 10px;
+}
+
+#top h1 {
+	float: left;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+#top .url {
+	float: left;
+	margin-left: 10px;
+	margin-top: 10px;
+	color: #666;
+	text-decoration: none;
+}
+
+#top p {
+	float: right;
+	color: #666;
+}

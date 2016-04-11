@@ -1,0 +1,1 @@
+GCLife('ROLE').ADMIN = 'Admin';

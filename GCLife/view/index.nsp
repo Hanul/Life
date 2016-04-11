@@ -1,0 +1,3 @@
+<% include('layout/top.nsp'); %>
+
+<% include('layout/bottom.nsp'); %>

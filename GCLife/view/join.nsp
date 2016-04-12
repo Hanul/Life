@@ -1,7 +1,34 @@
+<%
+	var key = self.subURI.substring(self.subURI.lastIndexOf('/'));	
+	
+	var data = {};
+	
+	if (key !== '') {
+		
+	}
+	
+	else if (self.method === 'POST') {
+		data = self.params;
+		
+		if (data.email !== undefined) {
+			
+			key = RANDOM_STR(20);
+			
+			// 메일을 보냅니다.
+			GCLife.sendMail({
+				senderName : '겜창인생',
+				senderAddress : NODE_CONFIG.GCLife.email,
+				receiverAddress : 'hanul@hanul.me',
+				title : '겜창인생 가입 경로를 전달합니다.',
+				content : '겜창인생에 가입해주셔서 감사합니다. 아래 링크를 통해 가입을 진행해 주시기 바랍니다.\n\nhttp://gclife.net/join/' + key
+			});
+		}
+	}
+%>
 <% include('layout/top.nsp'); %>
 비밀번호 찾기 등에 사용될 이메일을 먼저 입력해주세요. 이메일로 정보 입력 경로가 전송됩니다 :)
-<form>
-	<input name="email" placeholder="이메일">
+<form method="POST">
+	<input name="email" value="{{data.email}}" placeholder="이메일">
 	<input type="submit">
 </form>
 <% include('layout/bottom.nsp'); %>

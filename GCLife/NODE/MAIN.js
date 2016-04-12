@@ -6,9 +6,20 @@ GCLife.MAIN = METHOD({
 		var
 		// nsp core
 		nspCore = NSP({
-			rootPath : './GCLife/view'
+			rootPath : './GCLife/view',
+			restURI : ['join']
 		});
 		
 		addRequestListener(nspCore.requestListener);
+		
+		UMAIL.CONNECT_TO_MAIL_SERVER({
+			host : 'smtp.gmail.com',
+			port : 465,
+			isSecure : true,
+			username : NODE_CONFIG.GCLife.email,
+			password : NODE_CONFIG.GCLife.emailPassword
+		}, function(sendMail) {
+			GCLife.sendMail = sendMail;
+		});
 	}
 });

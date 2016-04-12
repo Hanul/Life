@@ -9,7 +9,6 @@ OVERRIDE(GCLife.UserModel, function(origin) {
 
 		init : function(inner, self, params) {
 			
-			
 		}
 	});
 });

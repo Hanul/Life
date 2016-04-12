@@ -1,7 +1,0 @@
-<% include('layout/top.nsp'); %>
-비밀번호 찾기 등에 사용될 이메일을 먼저 입력해주세요. 이메일로 정보 입력 경로가 전송됩니다 :)
-<form>
-	<input name="email" placeholder="이메일">
-	<input type="submit">
-</form>
-<% include('layout/bottom.nsp'); %>

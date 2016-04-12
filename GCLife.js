@@ -12,7 +12,9 @@ BOOT({
 		isNotUsingCPUClustering : true,
 		dbName : 'GCLife-test',
 		GCLife : {
-			secureKey : 'test'
+			secureKey : 'test',
+			email : 'gclife.net@gmail.com',
+			emailPassword : 'test'
 		}
 	}
 });

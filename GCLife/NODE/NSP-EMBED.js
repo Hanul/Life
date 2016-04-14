@@ -216,6 +216,11 @@ __resumeFuncStr = function resume() {
 					}
 					resume();
 				}
+				
+				else {
+					print(__buffer.toString());
+					resume();
+				}
 			}
 		});
 	}

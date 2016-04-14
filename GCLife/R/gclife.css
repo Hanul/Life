@@ -2,28 +2,69 @@
 	clear: both;
 }
 
+body {
+	color: #333;
+	font-size: 14px;
+}
+
+a {
+	color: #1f8dd6;
+}
+
 #wrapper {
 }
 
 #top {
-	padding: 10px;
+	padding: 20px;
 }
 
 #top h1 {
 	float: left;
 	font-size: 20px;
 	font-weight: bold;
+	margin: 0;
+}
+
+#top h1 a {
+	color: #000;
+	text-decoration: none;
 }
 
 #top .url {
 	float: left;
 	margin-left: 10px;
 	margin-top: 10px;
-	color: #666;
-	text-decoration: none;
 }
 
 #top p {
+	margin: 0;
 	float: right;
 	color: #666;
+}
+
+nav {
+	padding: 10px 20px;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+	background: #fafafa;
+}
+
+.content {
+	padding: 20px;
+}
+
+form pre {
+	white-space: pre-wrap;       /* CSS 3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	height: 170px;
+	overflow-y: scroll;
+}
+
+footer {
+	padding: 20px;
+	border-top: 1px solid #eee;
+	background: #fafafa;
 }

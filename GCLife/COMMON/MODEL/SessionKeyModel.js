@@ -16,11 +16,6 @@ GCLife.SessionKeyModel = OBJECT({
 			userId : {
 				notEmpty : true,
 				id : true
-			},
-			
-			sessionKey : {
-				notEmpty : true,
-				array : true
 			}
 		};
 
@@ -28,11 +23,7 @@ GCLife.SessionKeyModel = OBJECT({
 			name : 'SessionKey',
 			methodConfig : {
 				create : false,
-				update : {
-					valid : VALID(validDataSet),
-					authKey : 'userId',
-					role : GCLife.ROLE.USER
-				},
+				update : false,
 				remove : false
 			}
 		};

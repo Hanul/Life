@@ -1,3 +1,25 @@
+<%
+	var sessionKey = cookie('session-key');
+	if (sessionKey !== undefined) {
+		GCLife.SessionKeyModel.get(sessionKey, {
+			notExists : function() {
+				resume();
+			},
+			success : function(sessionKeyData) {
+				GCLife.UserModel.get(sessionKeyData.userId, {
+					notExists : function() {
+						resume();
+					},
+					success : function(userData) {
+						self.signedUserData = userData;
+						resume();
+					}
+				});
+			}
+		});
+		pause();
+	}
+%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -20,7 +42,19 @@
 			<nav class="pure-menu pure-menu-horizontal">
 				<a href="/" class="pure-menu-heading pure-menu-link">메인</a>
 				<ul class="pure-menu-list">
-					<li class="pure-menu-item"><a href="join" class="pure-menu-link">가입하기</a></li>
+					<? self.signedUserData === undefined >
+						<li class="pure-menu-item"><a href="join" class="pure-menu-link">가입하기</a></li>
+						<li class="pure-menu-item"><a href="login" class="pure-menu-link">로그인</a></li>
+					</?>
+					<? else >
+						<li class="pure-menu-item"><a href="logout" class="pure-menu-link">로그아웃</a></li>
+						<? CHECK_IS_IN({
+							array : self.signedUserData.roles,
+							value : GCLife.ROLE.ADMIN
+						}) === true >
+							<li class="pure-menu-item"><a href="admin" class="pure-menu-link">관리자</a></li>
+						</?>
+					</?>
 				</ul>
 			</nav>
 			<div class="content">

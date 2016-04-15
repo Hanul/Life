@@ -59,6 +59,9 @@ __parseFuncStr = function __parse(__requestInfo, __sourcePath, __source, __respo
 	// cookie info
 	__cookieInfo = __requestInfo.cookies,
 	
+	// new cookie info
+	__newCookieInfo = {},
+	
 	// ohters
 	__i, __ch, __line = 1, __column = 1, __lastLine = 1, __lastColumn = 1;
 	
@@ -106,7 +109,7 @@ __parseFuncStr = function __parse(__requestInfo, __sourcePath, __source, __respo
 		
 		else {
 			
-			__cookieInfo[name] = {
+			__newCookieInfo[name] = __cookieInfo[name] = {
 				value : value,
 				expireSeconds : expireSeconds,
 				path : path,
@@ -393,7 +396,6 @@ __resumeFuncStr = function resume() {
 			else if (__ch === '?' && __source[__i - 1] === '<') {
 				
 				if (
-				__isIgnored !== true &&
 				(__repeatInfo === undefined || __repeatInfo.key !== undefined) &&
 				__startCodeIndex === -1 &&
 				__startPstrIndex === -1 &&
@@ -401,20 +403,24 @@ __resumeFuncStr = function resume() {
 				__startCondIndex === -1 &&
 				__startEachIndex === -1) {
 					
-					if (__i > 2 && __source[__i - 3] === '\\' && __source[__i - 2] === '\\') {
-						print(__source.substring(__lastIndex, __i - 2));
-						__startCondIndex = __i + 1;
-					} else if (__i > 1 && __source[__i - 2] === '\\') {
-						// Node.js용 코드 아님, 무시
-						print(__source.substring(__lastIndex, __i - 2));
-						print(__source.substring(__i - 1, __i + 1));
+					if (__isIgnored !== true) {
+						if (__i > 2 && __source[__i - 3] === '\\' && __source[__i - 2] === '\\') {
+							print(__source.substring(__lastIndex, __i - 2));
+							__startCondIndex = __i + 1;
+						} else if (__i > 1 && __source[__i - 2] === '\\') {
+							// Node.js용 코드 아님, 무시
+							print(__source.substring(__lastIndex, __i - 2));
+							print(__source.substring(__i - 1, __i + 1));
+						} else {
+							print(__source.substring(__lastIndex, __i - 1));
+							__startCondIndex = __i + 1;
+						}
+						__lastIndex = __i + 1;
+						__lastLine = __line;
+						__lastColumn = __column - 1;
 					} else {
-						print(__source.substring(__lastIndex, __i - 1));
-						__startCondIndex = __i + 1;
+						__isIgnoreStack.push(true);
 					}
-					__lastIndex = __i + 1;
-					__lastLine = __line;
-					__lastColumn = __column - 1;
 				}
 			}
 			
@@ -770,6 +776,7 @@ __resumeFuncStr = function resume() {
 		__response({
 			statusCode : 302,
 			headers : {
+				'Set-Cookie' : CREATE_COOKIE_STR_ARRAY(__newCookieInfo),
 				'Location' : __redirectURL
 			}
 		});
@@ -778,7 +785,7 @@ __resumeFuncStr = function resume() {
 	else {
 		__response({
 			headers : {
-				'Set-Cookie' : CREATE_COOKIE_STR_ARRAY(__cookieInfo)
+				'Set-Cookie' : CREATE_COOKIE_STR_ARRAY(__newCookieInfo)
 			},
 			content : __html,
 			contentType : 'text/html'

@@ -2,6 +2,17 @@
 	clear: both;
 }
 
+.error {
+	color: #D8000C;
+	background-color: #FFBABA;
+	border: 1px solid;
+	padding: 10px;
+	border-radius: 5px;
+}
+.error li {
+	margin-left: 25px;
+}
+
 body {
 	color: #333;
 	font-size: 14px;
@@ -42,6 +53,12 @@ a {
 	color: #666;
 }
 
+@media screen and (max-width: 500px) {
+	#top p {
+		display: none;
+	}
+}
+
 nav {
 	padding: 10px 20px;
 	border-top: 1px solid #eee;
@@ -53,14 +70,45 @@ nav {
 	padding: 20px;
 }
 
-form pre {
+.account-create-form {
+	width: 400px;
+	margin: auto;
+	margin-top: 20px;
+}
+
+@media screen and (max-width: 500px) {
+	.account-create-form {
+		width: 280px;
+	}
+}
+
+.account-create-form label {
+	margin-top: 10px;
+}
+
+.account-create-form .email {
+	margin-top: 10px;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+
+.account-create-form pre {
+	margin-top: 20px;
 	white-space: pre-wrap;       /* CSS 3 */
 	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
 	white-space: -pre-wrap;      /* Opera 4-6 */
 	white-space: -o-pre-wrap;    /* Opera 7 */
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
-	height: 170px;
+	height: 110px;
 	overflow-y: scroll;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 10px;
+	font-size: 12px;
+}
+
+.account-create-form input[type=submit] {
+	margin-top: 10px;
 }
 
 footer {

@@ -1,7 +1,14 @@
 <% include('layout/top.nsp'); %>
 <img src="/R/welcome.gif">
-<p>
-	게임을 창작하는 아름다운 人生에 오신것을 환영합니다. ☜〓♡.♡〓☞
-</p>
+<? self.signedUserData === undefined >
+	<p>
+		게임을 창작하는 아름다운 人生에 오신것을 환영합니다. ☜〓♡.♡〓☞
+	</p>
+</?>
+<? else >
+	<p>
+		{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? ☜〓♡.♡〓☞
+	</p>
+</?>
 <img src="/R/bottom.gif">
 <% include('layout/bottom.nsp'); %>

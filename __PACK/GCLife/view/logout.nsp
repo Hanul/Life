@@ -1,0 +1,9 @@
+<%
+	var sessionKey = cookie('session-key');
+	if (sessionKey !== undefined) {
+		GCLife.SessionKeyModel.remove(sessionKey);
+	}
+	
+	cookie('session-key', '', 0);
+	redirect('/');
+%>

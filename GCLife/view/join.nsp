@@ -16,29 +16,42 @@
 					senderAddress : NODE_CONFIG.GCLife.email,
 					receiverAddress : data.email,
 					title : '겜창인생 가입 경로를 전달합니다.',
-					content : '겜창인생에 가입해주셔서 감사합니다. 아래 링크를 통해 가입을 진행해 주시기 바랍니다.\n\nhttp://gclife.net/account/create/' + joinKeyData.id
+					content : '겜창인생에 가입해주셔서 감사합니다. 아래 링크를 통해 가입을 진행해 주시기 바랍니다.\n\nhttps://gclife.net/account/create/' + joinKeyData.id
 				});
+				
+				resume();
 			});
+			
+			pause();
 		}
 	}
 %>
 <% include('layout/top.nsp'); %>
 
-<p>
-	계정을 생성하기 전에 비밀번호 찾기 등에 사용될 이메일을 먼저 입력해주세요~! 이메일로 계정 생성 경로가 전송됩니다 :)
-</p>
-
-<? self.method === 'POST' && VALID.email(data.email) !== true >
-	<ul class="error">
-		<li>이메일 양식을 맞추어 주시기 바랍니다.</li>
-	</ul>
+<? self.method === 'POST' && VALID.email(data.email) === true >
+	<p>
+		이메일로 계정 생성 경로가 전송되었습니다! 메일을 확인해보세요!
+	</p>
+	<a href="http://{{data.email.substring(data.email.indexOf('@') + 1)}}">http://{{data.email.substring(data.email.indexOf('@') + 1)}}</a>
 </?>
 
-<form class="pure-form" method="POST">
-	<fieldset>
-		<input type="email" name="email" value="{{data.email}}" placeholder="이메일">
-		<input class="pure-button pure-button-primary" type="submit" value="이메일 인증">
-	</fieldset>
-</form>
+<? else >
+	<p>
+		계정을 생성하기 전에 비밀번호 찾기 등에 사용될 이메일을 먼저 입력해주세요~! 이메일로 계정 생성 경로가 전송됩니다 :)
+	</p>
+	
+	<? self.method === 'POST' >
+		<ul class="error">
+			<li>이메일 양식을 맞추어 주시기 바랍니다.</li>
+		</ul>
+	</?>
+	
+	<form class="pure-form" method="POST">
+		<fieldset>
+			<input type="email" name="email" value="{{data.email}}" placeholder="이메일">
+			<input class="pure-button pure-button-primary" type="submit" value="이메일 인증">
+		</fieldset>
+	</form>
+</?>
 
 <% include('layout/bottom.nsp'); %>

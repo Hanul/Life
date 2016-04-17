@@ -77,6 +77,15 @@ OVERRIDE(GCLife.UserModel, function(origin) {
 
 					// 보안상 삭제
 					delete savedData.password;
+					
+					GCLife.JoinKeyModel.find({
+						filter : {
+							email : savedData.email
+						},
+						isFindAll : true
+					}, EACH(function(joinKeyData) {
+						GCLife.JoinKeyModel.remove(joinKeyData.id);
+					}));
 				}
 			});
 			

@@ -47,4 +47,6 @@
 	</fieldset>
 </form>
 
+<a href="/join">아직 아이디가 없으세요?</a>
+
 <% include('layout/bottom.nsp'); %>

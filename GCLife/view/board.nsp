@@ -1,0 +1,7 @@
+<% include('layout/top.nsp'); %>
+
+<p>
+	게 쉬 판
+</p>
+
+<% include('layout/bottom.nsp'); %>

@@ -7,7 +7,7 @@ GCLife.MAIN = METHOD({
 		// nsp core
 		nspCore = NSP({
 			rootPath : './GCLife/view',
-			restURI : ['account/create']
+			restURI : ['account/create', 'board']
 		});
 		
 		addRequestListener(nspCore.requestListener);

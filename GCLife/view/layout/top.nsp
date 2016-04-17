@@ -19,6 +19,13 @@
 		});
 		pause();
 	}
+	
+	self.checkIsAdmin = function() {
+		return self.signedUserData !== undefined && CHECK_IS_IN({
+			array : self.signedUserData.roles,
+			value : GCLife.ROLE.ADMIN
+		}) === true;
+	};
 %>
 <!DOCTYPE html>
 <html>
@@ -33,7 +40,7 @@
 		<div id="wrapper">
 			<header id="top">
 				<h1><a href="/">★겜.창.인.생★</a></h1>
-				<a class="url" href="http://gclife.net">http://gclife.net</a>
+				<a class="url" href="https://gclife.net">https://gclife.net</a>
 				<p>
 					게임을 창작하는 아름다운 人生..
 				</p>
@@ -42,17 +49,31 @@
 			<nav class="pure-menu pure-menu-horizontal">
 				<a href="/" class="pure-menu-heading pure-menu-link">메인</a>
 				<ul class="pure-menu-list">
+					<%
+						GCLife.BoardModel.find({
+							sort : {
+								index : 1
+							}
+						}, function(_boardDataSet) {
+							self.boardDataSet = _boardDataSet;
+							resume();
+						});
+						pause();
+					%>
+					<~ self.boardDataSet -> boardData >
+						<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}}</a></li>
+					</~>
 					<? self.signedUserData === undefined >
-						<li class="pure-menu-item"><a href="join" class="pure-menu-link">가입하기</a></li>
-						<li class="pure-menu-item"><a href="login" class="pure-menu-link">로그인</a></li>
+						<li class="pure-menu-item"><a href="/join" class="pure-menu-link">가입하기</a></li>
+						<li class="pure-menu-item"><a href="/login" class="pure-menu-link">로그인</a></li>
 					</?>
 					<? else >
-						<li class="pure-menu-item"><a href="logout" class="pure-menu-link">로그아웃</a></li>
+						<li class="pure-menu-item"><a href="/logout" class="pure-menu-link">로그아웃</a></li>
 						<? CHECK_IS_IN({
 							array : self.signedUserData.roles,
 							value : GCLife.ROLE.ADMIN
 						}) === true >
-							<li class="pure-menu-item"><a href="admin" class="pure-menu-link">관리자</a></li>
+							<li class="pure-menu-item"><a href="/admin" class="pure-menu-link">관리자</a></li>
 						</?>
 					</?>
 				</ul>

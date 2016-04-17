@@ -26,6 +26,10 @@ GCLife.BoardModel = OBJECT({
 				}
 			},
 			
+			index : {
+				real : true
+			},
+			
 			lastArticleTime : {
 				date : true
 			},

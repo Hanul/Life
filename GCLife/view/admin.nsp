@@ -1,13 +1,11 @@
 <% include('layout/top.nsp'); %>
-<? self.signedUserData !== undefined && CHECK_IS_IN({
-	array : self.signedUserData.roles,
-	value : GCLife.ROLE.ADMIN
-}) === true >
+
+<? self.checkIsAdmin() === true >
 	<p>
 		관리자시군요, 우후훗!
 	</p>
 	<ul>
-		<li><a>게시판 및 카테고리 추가</a></li>
+		<li><a href="/admin/board">게시판 및 카테고리 관리</a></li>
 	</ul>
 </?>
 <? else >
@@ -15,4 +13,5 @@
 		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
 	</p>
 </?>
+
 <% include('layout/bottom.nsp'); %>

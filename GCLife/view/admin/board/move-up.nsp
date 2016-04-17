@@ -1,0 +1,14 @@
+<% include('../../layout/top.nsp'); %>
+
+<? self.checkIsAdmin() === true >
+	<%
+		GCLife.BoardModel.moveUp(self.params.id, function() {
+			redirect('/admin/board');
+			resume();
+		});
+		
+		pause();
+	%>
+</?>
+
+<% include('../../layout/bottom.nsp'); %>

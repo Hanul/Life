@@ -7,7 +7,7 @@
 </?>
 <? else >
 	<p>
-		{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? ☜〓♡.♡〓☞
+		{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? ☜〓♡.♡〓☞ <a href="">인사하러 가기</a>
 	</p>
 </?>
 <img src="/R/bottom.gif">

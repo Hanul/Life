@@ -126,6 +126,7 @@ nav {
 
 .article .content {
 	border: 1px solid #ccc;
+	margin-bottom: 20px;
 }
 
 #comment-list {

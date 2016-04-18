@@ -1,7 +1,7 @@
-OVERRIDE(GCLife.CommentModel, function(origin) {
+OVERRIDE(GCLife.ArticleModel, function(origin) {
 	'use strict';
 
-	GCLife.CommentModel = OBJECT({
+	GCLife.ArticleModel = OBJECT({
 
 		preset : function() {
 			return origin;
@@ -16,6 +16,12 @@ OVERRIDE(GCLife.CommentModel, function(origin) {
 					var
 					// cookies
 					cookies;
+					
+					if (data.content === undefined) {
+						data.html = undefined;
+					} else {
+						data.html = MD.MarkUp(data.content);
+					}
 					
 					if (clientInfo === undefined) {
 						next();
@@ -40,11 +46,11 @@ OVERRIDE(GCLife.CommentModel, function(origin) {
 				
 				after : function(savedData) {
 					
-					GCLife.ArticleModel.updateNoHistory({
-						id : savedData.articleId,
-						lastCommentTime : new Date(),
+					GCLife.BoardModel.updateNoHistory({
+						id : savedData.boardId,
+						lastArticleTime : new Date(),
 						$inc : {
-							commentCount : 1
+							articleCount : 1
 						}
 					});
 				}
@@ -57,6 +63,12 @@ OVERRIDE(GCLife.CommentModel, function(origin) {
 					var
 					// cookies
 					cookies;
+					
+					if (data.content === TO_DELETE) {
+						data.html = TO_DELETE;
+					} else if (data.content !== undefined) {
+						data.html = MD.MarkUp(data.content);
+					}
 					
 					if (clientInfo === undefined) {
 						next();
@@ -71,7 +83,7 @@ OVERRIDE(GCLife.CommentModel, function(origin) {
 								
 								self.get(data.id, function(savedData) {
 									
-									if (savedData.writerId === sessionKeyData.userId) {
+									if (data.writerId === sessionKeyData.userId) {
 										next();
 									}
 								});
@@ -117,10 +129,10 @@ OVERRIDE(GCLife.CommentModel, function(origin) {
 				
 				after : function(savedData) {
 					
-					GCLife.ArticleModel.updateNoHistory({
-						id : savedData.articleId,
+					GCLife.BoardModel.updateNoHistory({
+						id : savedData.boardId,
 						$inc : {
-							commentCount : -1
+							articleCount : -1
 						}
 					});
 				}

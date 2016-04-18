@@ -40,6 +40,8 @@ GCLife.ArticleModel = OBJECT({
 				}
 			},
 			
+			html : true,
+			
 			viewCount : {
 				notEmpty : true,
 				integer : true

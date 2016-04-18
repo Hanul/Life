@@ -16,7 +16,7 @@
 					resume();
 				},
 				success : function(savedData) {
-					redirect('/board/' + savedData.boardId);
+					redirect('/article/' + savedData.id);
 					resume();
 				}
 			});
@@ -82,6 +82,9 @@
 	        </div>
 	        
 	        <div class="pure-controls">
+	        	<p>
+	        		<a href="/markdown-sample" target="_blank">겜창인생은 Markdown 문법을 사용합니다.</a>
+	        	</p>
 	            <button type="submit" class="pure-button pure-button-primary">◎ 글 작성 완.료. ◎</button>
 	        </div>
 	    </fieldset>

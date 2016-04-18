@@ -3,6 +3,8 @@
 
 ![ScreenShot](https://raw.githubusercontent.com/Hanul/gclife.net/master/well-being.gif)
 
+[UPPERCASE](http://UPPERCASE.IO)와 [NSP](http://nsp.js.org)를 기반으로 제작.
+
 ## 라이센스
 [MIT](LICENSE)
 

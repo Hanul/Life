@@ -41,12 +41,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 		<title>☆о³°`″´·, ♡ 겜창인생 ♡ ,·´″`°³о☆</title>
 		<link rel="stylesheet" href="/R/pure-min.css">
+		<link rel="stylesheet" href="/MD/R/github-markdown.css">
 		<link rel="stylesheet" href="/R/gclife.css">
 	</head>
 	<body>
 		<div id="wrapper">
 			<header id="top">
-				<h1><a href="/">★겜.창.인.생★</a></h1>
+				<h1><a href="/">★겜.창.인.생★ v0.1</a></h1>
 				<a class="url" href="https://gclife.net">https://gclife.net</a>
 				<p>
 					게임을 창작하는 아름다운 人生..
@@ -68,7 +69,7 @@
 						pause();
 					%>
 					<~ self.boardDataSet -> boardData >
-						<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}}</a></li>
+						<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>
 					</~>
 					<? self.signedUserData === undefined >
 						<li class="pure-menu-item"><a href="/join" class="pure-menu-link">가입하기</a></li>

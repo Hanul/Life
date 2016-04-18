@@ -84,7 +84,7 @@
 	<tbody>
 		<~ articleDataSet -> articleData >
 			<tr>
-				<td>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}<a href="/article/{{articleData.id}}">{{articleData.title}}</a></td>
+				<td>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}<a href="/article/{{articleData.id}}">{{articleData.title}}</a> ({{articleData.commentCount}})</td>
 				<td>{{articleData.writerData.nickname}}</td>
 				<td class="center"><%
 					var cal = CALENDAR(articleData.createTime);

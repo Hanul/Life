@@ -1,2 +1,2 @@
-<% include('layout/bottom-script.nsp'); %>
-<% include('layout/bottom-html.nsp'); %>
+<% include('bottom-script.nsp'); %>
+<% include('bottom-html.nsp'); %>

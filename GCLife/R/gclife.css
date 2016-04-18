@@ -2,6 +2,14 @@
 	clear: both;
 }
 
+.center {
+	text-align: center;
+}
+
+.right {
+	float: right;
+}
+
 .error {
 	color: #D8000C;
 	background-color: #FFBABA;
@@ -109,6 +117,38 @@ nav {
 
 .account-create-form input[type=submit] {
 	margin-top: 10px;
+}
+
+.board {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.article .content {
+	border: 1px solid #ccc;
+}
+
+#comment-list {
+	margin-top: 20px;
+}
+
+.comment {
+	background: #eee;
+	border-top: 1px solid #ccc;
+	padding: 10px;
+}
+
+.comment .nickname {
+	font-weight: bold;
+}
+
+.comment .time {
+	color: #999;
+}
+
+.comment p {
+	margin: 0;
+	margin-top: 5px;
 }
 
 footer {

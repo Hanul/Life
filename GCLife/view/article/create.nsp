@@ -1,0 +1,96 @@
+<% include('../layout/top.nsp'); %>
+
+<? self.checkIsSigned() === true >
+
+	<%
+		var data = self.params;
+		var validErrors;
+		
+		if (self.method === 'POST') {
+			
+			data.writerId = self.signedUserData.id;
+			
+			GCLife.ArticleModel.create(data, {
+				notValid : function(_validErrors) {
+					validErrors = _validErrors;
+					resume();
+				},
+				success : function(savedData) {
+					redirect('/board/' + savedData.boardId);
+					resume();
+				}
+			});
+			
+			pause();
+		}
+	%>
+	
+	<? validErrors !== undefined >
+		<ul class="error">
+			<~ validErrors -> name : validError >
+				<? name === 'title' >
+					<? validError.type === 'notEmpty' >
+						<li>제목을 입력해주세요.</li>
+					</?>
+					<? validError.type === 'size' >
+						<li>제목은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
+					</?>
+				</?>
+				<? name === 'content' >
+					<? validError.type === 'size' >
+						<li>내용은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
+					</?>
+				</?>
+			</~>
+		</ul>
+	</?>
+
+	<form class="pure-form pure-form-aligned" method="POST">
+	    <fieldset>
+	        <div class="pure-control-group">
+	            <label>카테고리</label>
+	            <select name="categoryId">
+	            	<%
+	            		var categoryDataSet;
+	            		
+	            		GCLife.CategoryModel.find({
+	            			filter : {
+	            				boardId : data.boardId
+	            			}
+	            		}, function(_categoryDataSet) {
+	            			categoryDataSet = _categoryDataSet;
+	            			resume();
+	            		});
+	            		
+	            		pause();
+	            	%>
+	            	<option value="">카테고리 선택</option>
+                    <~ categoryDataSet -> categoryData >
+                    	<option value="{{categoryData.id}}">{{categoryData.category}}</option>
+                    </~>
+                </select>
+	        </div>
+	        
+	        <div class="pure-control-group">
+	            <label>제목</label>
+	            <input name="title" placeholder="제목">
+	        </div>
+	
+	        <div class="pure-control-group">
+	            <label>내용</label>
+	            <textarea name="content" placeholder="내용" cols="50" rows="10"></textarea>
+	        </div>
+	        
+	        <div class="pure-controls">
+	            <button type="submit" class="pure-button pure-button-primary">◎ 글 작성 완.료. ◎</button>
+	        </div>
+	    </fieldset>
+	</form>
+</?>
+<? else >
+	<%
+		redirect('/login');
+	%>
+</?>
+
+<% include('../layout/bottom.nsp'); %>

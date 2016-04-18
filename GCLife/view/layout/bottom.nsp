@@ -1,8 +1,2 @@
-			</div>
-			<footer>
-				버그나 건의사항은 자유게시판을 이용해주시고, 저에게 컨택(수줍;)하고 싶으신 분은 <a href="mailto:hanul@hanul.me">hanul@hanul.me</a>로 메일을 쏴 주시기 바랍니다.
-			</footer>
-		</div>
-		<script src="/__SCRIPT"></script>
-	</body>
-</html>
+<% include('layout/bottom-script.nsp'); %>
+<% include('layout/bottom-html.nsp'); %>

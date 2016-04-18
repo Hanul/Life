@@ -28,25 +28,25 @@ GCLife.CommentModel = OBJECT({
 				size : {
 					max : 1000
 				}
+			},
+			
+			likeCount : {
+				notEmpty : true,
+				integer : true
 			}
 		};
 
 		return {
 			name : 'Comment',
+			initData : {
+				likeCount : 0
+			},
 			methodConfig : {
 				create : {
-					valid : VALID(validDataSet),
-					authKey : 'writerId',
-					role : GCLife.ROLE.USER
+					valid : VALID(validDataSet)
 				},
 				update : {
-					valid : VALID(validDataSet),
-					authKey : 'writerId',
-					role : GCLife.ROLE.USER
-				},
-				remove : {
-					authKey : 'writerId',
-					role : GCLife.ROLE.USER
+					valid : VALID(validDataSet)
 				}
 			}
 		};

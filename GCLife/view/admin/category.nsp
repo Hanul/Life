@@ -54,7 +54,7 @@
 					<td>{{categoryData.category}}</td>
 					<td>{{categoryData.articleCount}}</td>
 					<td>{{categoryData.lastArticleTime}}</td>
-					<td>수정 및 삭제 캬캬</td>
+					<td><a href="/admin/category/update?id={{categoryData.id}}">수정</a> <a href="/admin/category/remove?id={{categoryData.id}}">삭제</a></td>
 				</tr>
 			</~>
 		</tbody>

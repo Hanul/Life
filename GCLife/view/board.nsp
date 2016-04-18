@@ -1,7 +1,107 @@
 <% include('layout/top.nsp'); %>
 
+<%
+	var id = self.subURI.substring(self.subURI.lastIndexOf('/'));
+	var data;
+	
+	var page = self.params.page;
+	var perPageArticleCount = 20;
+	var totalArticleCount;
+	var articleDataSet;
+	
+	GCLife.BoardModel.get(id, function(savedData) {
+		data = savedData;
+		
+		NEXT([
+		function(next) {
+			GCLife.ArticleModel.count({
+				filter : {
+					boardId : savedData.id
+				}
+			}, function(count) {
+				totalArticleCount = count;
+				next();
+			});
+		},
+		
+		function() {
+			return function() {
+				
+				GCLife.ArticleModel.find({
+					filter : {
+						boardId : savedData.id
+					},
+					start : (page - 1) * perPageArticleCount,
+					count : perPageArticleCount
+				}, function(_articleDataSet) {
+					articleDataSet = _articleDataSet;
+					
+					PARALLEL(articleDataSet, [
+				    function(articleData, done) {
+				    	
+				        GCLife.UserModel.get(articleData.writerId, function(userData) {
+				        	articleData.writerData = userData;
+				        	
+				        	if (articleData.categoryId === undefined) {
+				        		done();
+				        	} else {
+				        		GCLife.CategoryModel.get(articleData.categoryId, {
+				        			notExists : done,
+				        			success : function(categoryData) {
+				        				articleData.categoryData = categoryData;
+				        				done();
+				        			}
+				        		});
+				        	}
+				        });
+				    },
+				    resume])
+				});
+			};
+		}]);
+	});
+	
+	pause();
+%>
+
+<h3>{{data.name}}</h3>
+
 <p>
-	게 쉬 판
+	{{data.description}}
 </p>
+
+<table class="pure-table pure-table-horizontal pure-table-striped board">
+	<thead>
+		<tr>
+			<th>제목</th>
+			<th width="16%">작성자</th>
+			<th class="center" width="12%">작성일</th>
+			<th class="center" width="8%">조회수</th>
+			<th class="center" width="8%">따봉수</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<~ articleDataSet -> articleData >
+			<tr>
+				<td>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}<a href="/article/{{articleData.id}}">{{articleData.title}}</a></td>
+				<td>{{articleData.writerData.nickname}}</td>
+				<td class="center"><%
+					var cal = CALENDAR(articleData.createTime);
+					print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
+				%></td>
+				<td class="center">{{articleData.viewCount}}</td>
+				<td class="center">{{articleData.likeCount}}</td>
+			</tr>
+		</~>
+	</tbody>
+</table>
+
+<~ Math.ceil(totalArticleCount / perPageArticleCount) -> i >
+	<a href="/board/{{data.id}}?page={{i + 1}}">{{i + 1}}</a>
+</~>
+
+<a class="pure-button pure-button-primary right" href="/article/create?boardId={{data.id}}">◎ 글 작성 ◎</a>
+<div class="clear"></div>
 
 <% include('layout/bottom.nsp'); %>

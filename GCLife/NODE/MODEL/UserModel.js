@@ -89,6 +89,18 @@ OVERRIDE(GCLife.UserModel, function(origin) {
 				}
 			});
 			
+			inner.on('get', function(savedData) {
+				
+				// 보안상 삭제
+				delete savedData.password;
+			});
+			
+			inner.on('find', EACH(function(savedData) {
+				
+				// 보안상 삭제
+				delete savedData.password;
+			}));
+			
 			self.login = login = function(params, callbacks) {
 				//REQUIRED: params
 				//REQUIRED: params.username

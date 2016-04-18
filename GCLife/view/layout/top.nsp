@@ -20,6 +20,13 @@
 		pause();
 	}
 	
+	self.checkIsSigned = function() {
+		return self.signedUserData !== undefined && CHECK_IS_IN({
+			array : self.signedUserData.roles,
+			value : GCLife.ROLE.USER
+		}) === true;
+	};
+	
 	self.checkIsAdmin = function() {
 		return self.signedUserData !== undefined && CHECK_IS_IN({
 			array : self.signedUserData.roles,

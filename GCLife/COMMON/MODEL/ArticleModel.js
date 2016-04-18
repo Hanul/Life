@@ -13,6 +13,15 @@ GCLife.ArticleModel = OBJECT({
 		// valid data set
 		validDataSet = {
 
+			boardId : {
+				notEmpty : true,
+				id : true
+			},
+
+			categoryId : {
+				id : true
+			},
+
 			writerId : {
 				notEmpty : true,
 				id : true
@@ -26,7 +35,6 @@ GCLife.ArticleModel = OBJECT({
 			},
 			
 			content : {
-				notEmpty : true,
 				size : {
 					max : 3000
 				}
@@ -48,6 +56,11 @@ GCLife.ArticleModel = OBJECT({
 			
 			lastCommentTime : {
 				date : true
+			},
+			
+			likeCount : {
+				notEmpty : true,
+				integer : true
 			}
 		};
 
@@ -55,7 +68,8 @@ GCLife.ArticleModel = OBJECT({
 			name : 'Article',
 			initData : {
 				viewCount : 0,
-				commentCount : 0
+				commentCount : 0,
+				likeCount : 0
 			},
 			methodConfig : {
 				create : {

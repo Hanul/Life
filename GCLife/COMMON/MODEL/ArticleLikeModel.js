@@ -27,7 +27,9 @@ GCLife.ArticleLikeModel = OBJECT({
 		return {
 			name : 'ArticleLike',
 			methodConfig : {
-				create : false,
+				create : {
+					valid : VALID(validDataSet)
+				},
 				update : false,
 				remove : false
 			}

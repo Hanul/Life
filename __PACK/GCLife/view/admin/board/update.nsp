@@ -65,8 +65,8 @@
 	        </div>
 	        
 	        <div class="pure-controls">
-	            <a class="pure-button">게시판 삭제</a>
-	            <button type="submit" class="pure-button pure-button-primary">게시판 정보 수정</button>
+	            <button type="submit" class="pure-button pure-button-primary">게시판 정보 수정 완료</button>
+	            <a class="pure-button" href="/admin/board/remove?id={{data.id}}">게시판 삭제</a>
 	        </div>
 	    </fieldset>
 	</form>

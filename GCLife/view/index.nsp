@@ -7,8 +7,93 @@
 </?>
 <? else >
 	<p>
-		{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? ☜〓♡.♡〓☞ <a href="">인사하러 가기</a>
+		{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? ☜〓♡.♡〓☞ <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
 	</p>
 </?>
 <img src="/R/bottom.gif">
+
+<h3>최신글</h3>
+<%
+	var articleDataSet;
+	
+	GCLife.ArticleModel.find({
+		count : 5
+	}, function(_articleDataSet) {
+		articleDataSet = _articleDataSet;
+		
+		PARALLEL(articleDataSet, [
+	    function(articleData, done) {
+	    	
+	    	PARALLEL([
+		    function(done) {
+		    	GCLife.UserModel.get(articleData.writerId, function(userData) {
+	        		articleData.writerData = userData;
+	        		done();
+	      		});
+		    },
+		    function(done) {
+		    	if (articleData.categoryId === undefined) {
+	        		done();
+	        	} else {
+	        		GCLife.CategoryModel.get(articleData.categoryId, {
+	        			notExists : done,
+	        			success : function(categoryData) {
+	        				articleData.categoryData = categoryData;
+	        				done();
+	        			}
+	        		});
+	        	}
+		    },
+		    function(done) {
+		    	GCLife.BoardModel.get(articleData.boardId, {
+        			notExists : done,
+        			success : function(boardData) {
+        				articleData.boardData = boardData;
+        				done();
+        			}
+        		});
+		    },
+		    done]);
+	    },
+	    resume]);
+	});
+	
+	pause();
+%>
+<table class="pure-table pure-table-horizontal pure-table-striped board">
+	<thead class="pc">
+		<tr>
+			<th width="14%">게시판</th>
+			<th>제목</th>
+			<th width="16%">작성자</th>
+			<th class="center" width="12%">작성일</th>
+			<th class="center" width="8%">조회수</th>
+			<th class="center" width="8%">따봉수</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<~ articleDataSet -> articleData >
+			<tr>
+				<td class="pc">{{articleData.boardData === undefined ? '' : '<a href="/board/' + articleData.boardData.id + '">' + articleData.boardData.name + '</a>'}}</td>
+				<td>
+					{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}<a href="/article/{{articleData.id}}">{{articleData.title}}</a> ({{articleData.commentCount}})
+					<div class="mobile more">
+						{{articleData.writerData.nickname}} | <%
+							var cal = CALENDAR(articleData.createTime);
+							print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
+						%> | 조회 {{articleData.viewCount}} | 따봉 {{articleData.likeCount}}
+					</div>
+				</td>
+				<td class="pc">{{articleData.writerData.nickname}}</td>
+				<td class="pc center"><%
+					var cal = CALENDAR(articleData.createTime);
+					print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
+				%></td>
+				<td class="pc center">{{articleData.viewCount}}</td>
+				<td class="pc center">{{articleData.likeCount}}</td>
+			</tr>
+		</~>
+	</tbody>
+</table>
 <% include('layout/bottom.nsp'); %>

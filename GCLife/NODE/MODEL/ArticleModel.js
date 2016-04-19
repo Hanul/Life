@@ -20,7 +20,7 @@ OVERRIDE(GCLife.ArticleModel, function(origin) {
 					if (data.content === undefined) {
 						data.html = undefined;
 					} else {
-						data.html = MD.MarkUp(data.content);
+						data.html = Markdown.MarkUp(data.content);
 					}
 					
 					if (clientInfo === undefined) {
@@ -67,7 +67,7 @@ OVERRIDE(GCLife.ArticleModel, function(origin) {
 					if (data.content === TO_DELETE) {
 						data.html = TO_DELETE;
 					} else if (data.content !== undefined) {
-						data.html = MD.MarkUp(data.content);
+						data.html = Markdown.MarkUp(data.content);
 					}
 					
 					if (clientInfo === undefined) {
@@ -97,7 +97,7 @@ OVERRIDE(GCLife.ArticleModel, function(origin) {
 			
 			inner.on('remove', {
 			
-				before : function(data, next, ret, clientInfo) {
+				before : function(id, next, ret, clientInfo) {
 					
 					var
 					// cookies
@@ -114,7 +114,7 @@ OVERRIDE(GCLife.ArticleModel, function(origin) {
 							
 							GCLife.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
 								
-								self.get(data.id, function(savedData) {
+								self.get(id, function(savedData) {
 									
 									if (savedData.writerId === sessionKeyData.userId) {
 										next();

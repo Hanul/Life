@@ -1,0 +1,187 @@
+<? validErrors !== undefined >
+	<ul class="error">
+		<~ validErrors -> name : validError >
+			<? name === 'title' >
+				<? validError.type === 'notEmpty' >
+					<li>제목을 입력해주세요.</li>
+				</?>
+				<? validError.type === 'size' >
+					<li>제목은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
+				</?>
+			</?>
+			<? name === 'content' >
+				<? validError.type === 'size' >
+					<li>내용은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
+				</?>
+			</?>
+		</~>
+	</ul>
+</?>
+
+<form class="pure-form pure-form-aligned" method="POST">
+    <fieldset>
+        <div class="pure-control-group">
+            <label>카테고리</label>
+            <select name="categoryId" value="{{data.categoryId}}">
+            	<%
+            		var categoryDataSet;
+            		
+            		GCLife.CategoryModel.find({
+            			filter : {
+            				boardId : data.boardId
+            			}
+            		}, function(_categoryDataSet) {
+            			categoryDataSet = _categoryDataSet;
+            			resume();
+            		});
+            		
+            		pause();
+            	%>
+            	<option value="">카테고리 선택</option>
+                <~ categoryDataSet -> categoryData >
+                	<option value="{{categoryData.id}}"{{categoryData.id === data.categoryId ? ' selected' : ''}}>{{categoryData.category}}</option>
+                </~>
+            </select>
+        </div>
+        
+        <div class="pure-control-group">
+            <label>제목</label>
+            <input name="title" value="{{data.title}}" placeholder="제목">
+        </div>
+
+        <div class="pure-control-group">
+            <label>내용</label>
+            <textarea name="content" placeholder="내용" cols="50" rows="10">{{data.content}}</textarea>
+        </div>
+        
+        <div class="pure-controls">
+            <button id="article-form-submit" type="submit" class="pure-button pure-button-primary">◎ 글 작성 완.료. ◎</button>
+        	<p>
+        		<a href="/markdown-sample" target="_blank">겜창인생은 Markdown 문법을 사용합니다.</a>
+        	</p>
+        </div>
+    </fieldset>
+</form>
+
+<% include('../layout/bottom-script.nsp'); %>
+
+<script>
+	READY(function() {
+		
+		var uploadForm;
+		var input;
+		var width = 380;
+		
+		DOM({
+			el : document.getElementById('article-form-submit')
+		}).after(uploadForm = UUI.FULL_UPLOAD_FORM({
+			style : {
+				width : width,
+				border : '1px solid #999',
+				marginTop : 20,
+				marginBottom : 20
+			},
+			box : GCLife,
+			isMultiple : true
+		}, {
+			overSizeFile : function(maxUploadFileMB) {
+				alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+			},
+			success : function(fileDataSet, form) {
+				
+				EACH(fileDataSet, function(fileData) {
+					
+					var
+					// input
+					input;
+					
+					if (
+					fileData.type === 'image/png' ||
+					fileData.type === 'image/jpeg' ||
+					fileData.type === 'image/gif') {
+					
+						uploadForm.after(DIV({
+							style : {
+								width : width,
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '[![ScreenShot](' + GCLife.RF('THUMB/' + fileData.id) + ')](' + GCLife.RF(fileData.id) + ')'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'audio/aac' ||
+					fileData.type === 'audio/mp4' ||
+					fileData.type === 'audio/mpeg' ||
+					fileData.type === 'audio/oga' ||
+					fileData.type === 'audio/wav' ||
+					fileData.type === 'audio/webm') {
+					
+						uploadForm.after(DIV({
+							style : {
+								width : width,
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '<audio src="' + GCLife.RF(fileData.id) + '" />'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'video/mp4' ||
+					fileData.type === 'video/ogg' ||
+					fileData.type === 'video/webm') {
+					
+						uploadForm.after(DIV({
+							style : {
+								width : width,
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '<video controls src="' + GCLife.RF(fileData.id) + '"></video>'
+							})]
+						}));
+					}
+					
+					else {
+						
+						uploadForm.after(DIV({
+							style : {
+								width : width,
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '[파일 다운로드](' + GCLife.RF(fileData.id) + ')'
+							})]
+						}));
+					}
+					
+					input.select();
+				});
+			}
+		}));
+	});
+</script>

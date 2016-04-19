@@ -32,18 +32,18 @@ Markdown 문법을 소개합니다. 문법에 대한 예시와 설명은 칼킨�
 <me@privacy.net>
 
 ## 인라인 이미지
-로고: ![대체텍스트](/MD/R/logo.png "이미지제목")
+로고: ![대체텍스트](/Markdown/R/logo.png "이미지제목")
 
 - 대체텍스트는 시각장애인용 브라우저를 이용할 때 그 이미지가 어떤 것을 가리키는지를 설명하는 용도로 사용된다.
-- /MD/R/logo.png 부분에 이미지주소를 넣어주면 된다.
+- /Markdown/R/logo.png 부분에 이미지주소를 넣어주면 된다.
 
 ## 참조 이미지
 로고: ![대체텍스트][1]
 
-[1]: /MD/R/logo.png "이미지제목"
+[1]: /Markdown/R/logo.png "이미지제목"
 
 ## 링크된 이미지
-링크된 로고: [![대체텍스트](/MD/R/logo.png)](https://github.com/hanul/MDBOX "링크제목")
+링크된 로고: [![대체텍스트](/Markdown/R/logo.png)](https://github.com/hanul/MarkdownBOX "링크제목")
 
 ## 수평선
 ---
@@ -128,7 +128,7 @@ HTML에서와 같이 마크다운(Markdown)에서도, 에디터상에서 엔터�
 `#`을 앞, 뒤에 모두 붙여도 되고, 앞에만 붙여도 된다.
 
 ## 인라인 HTML
-<img src="/MD/R/logo.png">
+<img src="/Markdown/R/logo.png">
 
 마크다운 문서를 작성할 때 마크다운으로 표현할 수 없는 것은 HTML을 이용해서 표현할 수 있다.
 

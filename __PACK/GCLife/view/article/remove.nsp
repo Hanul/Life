@@ -18,17 +18,9 @@
 				
 				else if (self.method === 'POST') {
 					
-					data.writerId = self.signedUserData.id;
-					
-					GCLife.ArticleModel.update(data, {
-						notValid : function(_validErrors) {
-							validErrors = _validErrors;
-							resume();
-						},
-						success : function(savedData) {
-							redirect('/article/' + savedData.id);
-							resume();
-						}
+					GCLife.ArticleModel.remove(data.id, function(originData) {
+						redirect('/board/' + originData.boardId);
+						resume();
 					});
 					
 					pause();
@@ -43,11 +35,19 @@
 		
 		pause();
 	%>
+	
 	<? isNotWriter === true >
 		당신이 작성한 글이 아니 아니 아니오!
 	</?>
 	<? else >
-		<% include('form.nsp'); %>
+		
+		<p>
+			정말 [{{data.title}}]을 삭제하시겠습니까?
+		</p>
+		
+		<form class="pure-form pure-form-aligned" method="POST">
+		    <button type="submit" class="pure-button">게시글 REAL 삭제</button>
+		</form>
 	</?>
 </?>
 <? else >
@@ -56,4 +56,4 @@
 	%>
 </?>
 
-<% include('../layout/bottom-html.nsp'); %>
+<% include('../layout/bottom.nsp'); %>

@@ -2,6 +2,29 @@
 	clear: both;
 }
 
+.left {
+	float: left;
+}
+
+.center {
+	text-align: center;
+}
+
+.right {
+	float: right;
+}
+
+@media screen and (max-width: 601px) {
+	.pc {
+		display: none !important;
+	}
+}
+@media screen and (min-width: 600px) {
+	.mobile {
+		display: none !important;
+	}
+}
+
 .error {
 	color: #D8000C;
 	background-color: #FFBABA;
@@ -53,7 +76,7 @@ a {
 	color: #666;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 501px) {
 	#top p {
 		display: none;
 	}
@@ -109,6 +132,62 @@ nav {
 
 .account-create-form input[type=submit] {
 	margin-top: 10px;
+}
+
+.board {
+	margin-top: 20px;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.board .more {
+	margin-top: 10px;
+	margin-bottom: 3px;
+	font-size: 12px;
+	color: #999;
+}
+
+.article h3 {
+	float: left;
+}
+
+.article .other {
+	float: right;
+	color: #999;
+}
+
+.article .other p {
+	float: left;
+	margin-left: 15px;
+}
+
+.article .content {
+	border: 1px solid #ccc;
+	margin-bottom: 20px;
+	font-size: 14px;
+}
+
+#comment-list {
+	margin-top: 20px;
+}
+
+.comment {
+	background: #eee;
+	border-top: 1px solid #ccc;
+	padding: 10px;
+}
+
+.comment .nickname {
+	font-weight: bold;
+}
+
+.comment .time {
+	color: #999;
+}
+
+.comment p {
+	margin: 0;
+	margin-top: 5px;
 }
 
 footer {

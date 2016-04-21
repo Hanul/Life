@@ -39,71 +39,52 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-		<title>☆о³°`″´·, ♡ 겜창인생 ♡ ,·´″`°³о☆</title>
+		<link rel="shortcut icon" href="/R/favicon.ico" />
+		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />
+		<title>{{self.title === undefined ? '' : self.title + ' - '}}겜창인생</title>
 		<link rel="stylesheet" href="/R/pure-min.css">
-		<link rel="stylesheet" href="/MD/R/github-markdown.css">
+		<link rel="stylesheet" href="/Markdown/R/github-markdown.css">
 		<link rel="stylesheet" href="/R/gclife.css">
 	</head>
 	<body>
-		<div id="wrapper">
-			<header id="top">
-				<h1><a href="/"><img src="/R/logo.png" width="200" valign="middle">v0.2</a></h1>
-				<p>
-					게임을 창작하는 아름다운 人生..
-				</p>
-				<div class="clear"></div>
-			</header>
-			<nav class="pure-menu pure-menu-horizontal">
-                <%
-                	var totalArticleCount = 0;
-                	
-					GCLife.BoardModel.find({
-						sort : {
-							index : 1
-						}
-					}, function(_boardDataSet) {
-						self.boardDataSet = _boardDataSet;
-						
-						EACH(_boardDataSet, function(boardData) {
-							totalArticleCount += boardData.articleCount;
-						});
-						
-						resume();
+		<nav id="menu" class="pure-menu pure-menu-horizontal scroll-x">
+            <%
+            	var totalArticleCount = 0;
+            	
+				GCLife.BoardModel.find({
+					sort : {
+						index : 1
+					}
+				}, function(_boardDataSet) {
+					self.boardDataSet = _boardDataSet;
+					
+					EACH(_boardDataSet, function(boardData) {
+						totalArticleCount += boardData.articleCount;
 					});
-					pause();
-				%>
-				<ul class="mobile pure-menu-list">
-			        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-			            <a href="#" id="menuLink1" class="pure-menu-link">메뉴</a>
-			            <ul class="pure-menu-children">
-			                <li class="pure-menu-item"><a href="/board" class="pure-menu-link">전체보기 ({{totalArticleCount}})</a></li>
-							<~ self.boardDataSet -> boardData >
-								<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>
-							</~>
-			            </ul>
-			        </li>
-			    </ul>
-				<ul class="pc pure-menu-list">
-			        <li class="pure-menu-item"><a href="/board" class="pure-menu-link">전체보기 ({{totalArticleCount}})</a></li>
-					<~ self.boardDataSet -> boardData >
-						<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>
-					</~>
-				</ul>
-				<ul class="right pure-menu-list">
-					<? self.signedUserData === undefined >
-						<li class="pure-menu-item"><a href="/login" class="pure-menu-link">로그인</a></li>
-						<li class="pure-menu-item"><a href="/join" class="pure-menu-link">가입하기</a></li>
+					
+					resume();
+				});
+				pause();
+			%>
+			<a href="/" class="pure-menu-link pure-menu-heading">겜창인생 ({{totalArticleCount}})</a>
+			<ul class="pure-menu-list">
+		        <~ self.boardDataSet -> boardData >
+					<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>
+				</~>
+				<? self.signedUserData === undefined >
+					<li class="pure-menu-item"><a href="/login" class="pure-menu-link">로그인</a></li>
+					<li class="pure-menu-item"><a href="/join" class="pure-menu-link">가입하기</a></li>
+				</?>
+				<? else >
+					<? CHECK_IS_IN({
+						array : self.signedUserData.roles,
+						value : GCLife.ROLE.ADMIN
+					}) === true >
+						<li class="pure-menu-item"><a href="/admin" class="pure-menu-link">관리자</a></li>
 					</?>
-					<? else >
-						<li class="pure-menu-item"><a href="/logout" class="pure-menu-link">로그아웃</a></li>
-						<? CHECK_IS_IN({
-							array : self.signedUserData.roles,
-							value : GCLife.ROLE.ADMIN
-						}) === true >
-							<li class="pure-menu-item"><a href="/admin" class="pure-menu-link">관리자</a></li>
-						</?>
-					</?>
-				</ul>
+					<li class="pure-menu-item"><a href="/logout" class="pure-menu-link">로그아웃</a></li>
+				</?>
 				<div class="clear"></div>
-			</nav>
-			<div class="content">
+			</ul>
+		</nav>
+		<div class="wrapper">

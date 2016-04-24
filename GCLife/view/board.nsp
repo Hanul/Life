@@ -144,7 +144,12 @@
 						%> | 조회 {{articleData.viewCount}} | 따봉 {{articleData.likeCount}}
 					</div>
 				</td>
-				<td class="pc">{{articleData.writerData.nickname}}</td>
+				<td class="pc"><? articleData.writerData.iconFileId === undefined >
+				<img class="icon" src="/R/icon-default.png">
+				</?>
+				<? else >
+				<img class="icon" src="/__RF/GCLife/ICON/{{articleData.writerData.iconFileId}}">
+				</?> {{articleData.writerData.nickname}}</td>
 				<td class="pc center"><%
 					var cal = CALENDAR(articleData.createTime);
 					print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));

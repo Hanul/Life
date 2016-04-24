@@ -76,7 +76,14 @@
 	<h3>{{data.categoryData === undefined ? '' : '[' + data.categoryData.category + '] '}}{{data.title}}</h3>
 	
 	<div class="other">
-		<p class="left">작성자: {{data.writerData.nickname}}</p>
+		<p class="left">
+			작성자: <? data.writerData.iconFileId === undefined >
+			<img class="icon" src="/R/icon-default.png">
+			</?>
+			<? else >
+			<img class="icon" src="/__RF/GCLife/ICON/{{data.writerData.iconFileId}}">
+			</?> {{data.writerData.nickname}}
+		</p>
 		<p class="time">작성일: <%
 			var cal = CALENDAR(data.createTime);
 			print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
@@ -105,7 +112,12 @@
 <div id="comment-list">
 	<~ commentDataSet -> commentData >
 		<div id="comment-{{commentData.id}}" class="comment">
-			<span class="nickname">{{commentData.writerData.nickname}}</span>
+			<span class="nickname"><? commentData.writerData.iconFileId === undefined >
+			<img class="icon" src="/R/icon-default.png">
+			</?>
+			<? else >
+			<img class="icon" src="/__RF/GCLife/ICON/{{commentData.writerData.iconFileId}}">
+			</?> {{commentData.writerData.nickname}}</span>
 			<span class="time"><%
 				var cal = CALENDAR(commentData.createTime);
 				print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
@@ -208,10 +220,13 @@
 					commentList.append(DIV({
 						id : 'comment-' + commentData.id,
 						cls : 'comment',
-						c : [SPAN({
+						c : [IMG({
+							cls : 'icon',
+							src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/GCLife/ICON/' + writerData.iconFileId
+						}), ' ', SPAN({
 							cls : 'nickname',
 							c : writerData.nickname
-						}), SPAN({
+						}), ' ', SPAN({
 							cls : 'time',
 							c : RUN(function() {
 								var cal = CALENDAR(commentData.createTime);

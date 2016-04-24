@@ -1,0 +1,119 @@
+<% include('../layout/top.nsp'); %>
+
+<? self.checkIsSigned() === true >
+
+	<%
+		var data = self.params;
+		var validErrors;
+		
+		if (self.method === 'POST') {
+			
+			pause();
+		}
+	%>
+	
+	<h3>아이콘 변경</h3>
+	<div id="change-icon">
+	</div>
+	
+	정보 수정 기능 개발중입니다.
+	
+	<!--<form class="pure-form pure-form-stacked" method="POST">
+		
+		<fieldset>
+			<legend>내 정보를 수정합니다.</legend>
+			<label>이메일</label>
+			<p class="email">{{self.signedUserData.email}}</p>
+			
+			<a class="pure-button">이메일 변경</a>
+			
+			<label for="username">로그인 아이디</label>
+			<input name="username" value="{{self.signedUserData.username}}" placeholder="로그인 아이디">
+			
+			<label>닉네임</label>
+			<input name="nickname" value="{{self.signedUserData.nickname}}" placeholder="닉네임">
+			
+			<label>비밀번호</label>
+			<input type="password" name="password" placeholder="비밀번호">
+			
+			<input class="pure-button pure-button-primary" type="submit" value="내 정보 수정">
+		</fieldset>
+	</form>-->
+</?>
+<? else >
+	<%
+		redirect('/login');
+	%>
+</?>
+
+<% include('../layout/bottom-script.nsp'); %>
+<? self.signedUserData !== undefined >
+	<script>
+		READY(function() {
+			
+			var changeIcon = DOM({
+				el : document.getElementById('change-icon')
+			});
+			
+			var iconPreviewStyle = {
+				border : '1px solid #999'
+			};
+			
+			<? self.signedUserData.iconFileId === undefined >
+			var iconPreview = IMG({
+				style : iconPreviewStyle,
+				src : GCLife.R('icon-default.png')
+			});
+			</?>
+			<? else >
+			var iconPreview = IMG({
+				style : iconPreviewStyle,
+				src : GCLife.RF('ICON/{{self.signedUserData.iconFileId}}')
+			});
+			</?>
+			
+			changeIcon.prepend(iconPreview);
+			
+			changeIcon.append(UUI.FULL_UPLOAD_FORM({
+				style : {
+					border : '1px solid #999',
+					marginTop : 10,
+					marginBottom : 20
+				},
+				box : GCLife
+			}, {
+				overSizeFile : function(maxUploadFileMB) {
+					alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+				},
+				success : function(fileData, form) {
+					
+					if (
+					fileData.type === 'image/png' ||
+					fileData.type === 'image/jpeg' ||
+					fileData.type === 'image/gif') {
+					
+						GCLife.UserModel.update({
+							id : '{{self.signedUserData.id}}',
+							iconFileId : fileData.id
+						}, function(savedData) {
+							
+							iconPreview.remove();
+							
+							iconPreview = IMG({
+								style : iconPreviewStyle,
+								src : GCLife.RF('ICON/' + savedData.iconFileId)
+							});
+							
+							changeIcon.prepend(iconPreview);
+						});
+					}
+					
+					else {
+						alert('이미지 파일만 업로드 가능합니다.');
+					}
+				}
+			}));
+		});
+	</script>
+</?>
+<% include('../layout/bottom-html.nsp'); %>

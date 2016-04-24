@@ -77,6 +77,10 @@ GCLife.UserModel = OBJECT({
 			
 			roles : {
 				array : true
+			},
+			
+			iconFileId : {
+				id : true
 			}
 		};
 
@@ -90,9 +94,7 @@ GCLife.UserModel = OBJECT({
 					valid : VALID(validDataSet)
 				},
 				update : {
-					valid : VALID(validDataSet),
-					authKey : 'id',
-					role : GCLife.ROLE.USER
+					valid : VALID(validDataSet)
 				},
 				remove : false
 			},

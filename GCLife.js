@@ -9,8 +9,7 @@ BOOT({
 		defaultBoxName : 'GCLife',
 		title : '겜창인생',
 		description : '게임을 창작하는 아름다운 인생..',
-		webServerPort : 8410,
-		maxThumbHeight : 400
+		webServerPort : 8410
 	},
 	NODE_CONFIG : {
 		maxUploadFileMB : 200,

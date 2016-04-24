@@ -1,5 +1,3 @@
-<% include('layout/top.nsp'); %>
-
 <%
 	var id = self.subURI.substring(self.subURI.lastIndexOf('/'));
 	var data;
@@ -16,6 +14,7 @@
 		} else {
 			GCLife.BoardModel.get(id, function(savedData) {
 				data = savedData;
+				self.title = data.name;
 				next();
 			});
 		}
@@ -87,13 +86,34 @@
 	
 	pause();
 %>
-
-<? data !== undefined >
-	<h3>{{data.name}}</h3>
-	<p>
-		{{data.description}}
-	</p>
-</?>
+<% include('layout/top.nsp'); %>
+<div id="board-decoration">
+	<? data === undefined >
+		<div id="main">
+			<h1>
+				<img class="logo" src="/R/logo-{{RANDOM(3) + 1}}.png"><span class="version">v0.3</span>
+			</h1>
+			<? self.signedUserData === undefined >
+				<p>
+					게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
+				</p>
+			</?>
+			<? else >
+				<p>
+					{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
+				</p>
+			</?>
+		</div>
+		
+		<h3>전체 글보기</h3>
+	</?>
+	<? else >
+		<h3>{{data.name}}</h3>
+		<p>
+			{{data.description}}
+		</p>
+	</?>
+</div>
 
 <table class="pure-table pure-table-horizontal pure-table-striped board">
 	<thead class="pc">
@@ -124,7 +144,12 @@
 						%> | 조회 {{articleData.viewCount}} | 따봉 {{articleData.likeCount}}
 					</div>
 				</td>
-				<td class="pc">{{articleData.writerData.nickname}}</td>
+				<td class="pc"><? articleData.writerData.iconFileId === undefined >
+				<img class="icon" src="/R/icon-default.png">
+				</?>
+				<? else >
+				<img class="icon" src="/__RF/GCLife/ICON/{{articleData.writerData.iconFileId}}">
+				</?> {{articleData.writerData.nickname}}</td>
 				<td class="pc center"><%
 					var cal = CALENDAR(articleData.createTime);
 					print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
@@ -136,13 +161,9 @@
 	</tbody>
 </table>
 
-<~ Math.ceil(totalArticleCount / perPageArticleCount) -> i >
-	<a href="/board{{data === undefined ? '' : '/' + data.id}}?page={{i + 1}}">{{i + 1}}</a>
-</~>
+<div class="pagination"><~ Math.ceil(totalArticleCount / perPageArticleCount) -> i ><a href="/board{{data === undefined ? '' : '/' + data.id}}?page={{i + 1}}"{{(i === 0 && page === undefined) || page === String(i + 1) ? ' class="now"' : ''}}>{{i + 1}}</a></~></div>
 
-<? data !== undefined >
-	<a class="pure-button pure-button-primary right" href="/article/create?boardId={{data.id}}">◎ 글 작성 ◎</a>
-	<div class="clear"></div>
-</?>
+<a class="pure-button pure-button-primary right" href="/article/create{{data === undefined ? '' : '?boardId=' + data.id}}">글 작성</a>
+<div class="clear"></div>
 
 <% include('layout/bottom.nsp'); %>

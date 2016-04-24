@@ -26,17 +26,18 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<p>
-	오늘도 겜창인생에 방문해주신 당신을 환영합니다!
-</p>
-
-<? self.method === 'POST' && isNotValid === true >
-	<ul class="error">
-		<li>아이디와 비밀번호를 확인해주시기 바랍니다.</li>
-	</ul>
-</?>
-
 <form class="pure-form" method="POST">
+
+	<p>
+		오늘도 겜창인생에 방문해주신 당신을 환영합니다!
+	</p>
+	
+	<? self.method === 'POST' && isNotValid === true >
+		<ul class="error">
+			<li>아이디와 비밀번호를 확인해주시기 바랍니다.</li>
+		</ul>
+	</?>
+	
 	<fieldset>
 		<input type="text" name="username" value="{{data.username}}" placeholder="아이디">
 		<input type="password" name="password" value="{{data.password}}" placeholder="비밀번호">
@@ -45,8 +46,9 @@
             <input id="isToRememberMe" name="isToRememberMe" value="true" type="checkbox"> 로그인 유지
         </label>
 	</fieldset>
+	
+	<a href="/join">아직 아이디가 없으세요?</a>
+	
 </form>
-
-<a href="/join">아직 아이디가 없으세요?</a>
 
 <% include('layout/bottom.nsp'); %>

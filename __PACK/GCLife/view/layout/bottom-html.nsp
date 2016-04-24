@@ -1,10 +1,8 @@
-			</div>
-			<footer>
-				버그나 건의사항은 자유게시판을 이용해주시고, 저에게 컨택(수줍;)하고 싶으신 분은 <a href="mailto:hanul@hanul.me">hanul@hanul.me</a>로 메일을 쏴 주시기 바랍니다.<br>
-				<br>
-				그나저나 겜창인생은 <a href="http://UPPERCASE.IO">UPPERCASE</a>와 <a href="http://nsp.js.org">NSP</a>를 기반으로 제작되었습니다. <a href="https://github.com/Hanul/gclife.net">솤슼콬듴</a>
-			</footer>
 		</div>
+		<footer>
+			버그나 건의사항은 자유게시판에 써 주시거나 <a href="mailto:hanul@hanul.me">hanul@hanul.me</a>로 메일을 보내주시기 바랍니다.<br>
+			겜창인생은 <a href="http://UPPERCASE.IO">UPPERCASE</a>와 <a href="http://nsp.js.org">NSP</a>를 기반으로 제작되었습니다. <a href="https://github.com/Hanul/gclife.net">소스코드</a>
+		</footer>
 		<script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -13,7 +11,6 @@
 		
 		  ga('create', 'UA-76643463-1', 'auto');
 		  ga('send', 'pageview');
-		
 		</script>
 	</body>
 </html>

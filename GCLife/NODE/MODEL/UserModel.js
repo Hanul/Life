@@ -89,6 +89,179 @@ OVERRIDE(GCLife.UserModel, function(origin) {
 				}
 			});
 			
+			inner.on('update', {
+			
+				before : function(data, next, ret, clientInfo) {
+					
+					var
+					// cookies
+					cookies;
+					
+					// 보안상 삭제
+					delete data.email;
+					delete data.isBanned;
+					delete data.isLeft;
+					
+					NEXT([
+					function(next) {
+						
+						if (clientInfo === undefined) {
+							next();
+						}
+						
+						else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
+							cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
+							
+							if (cookies['session-key'] !== undefined) {
+								
+								GCLife.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
+									
+									if (data.id === sessionKeyData.userId) {
+										next();
+									}
+								});
+							}
+						}
+					},
+					
+					function() {
+						return function() {
+							
+							self.get(data.id, function(userData) {
+								
+								NEXT([
+								function(next) {
+									
+									// 아이디가 기존과 같고 비밀번호만 바꾸는 경우
+									if (data.username === userData.username) {
+										
+										if (data.password !== undefined) {
+										
+											data.password = SHA256({
+												key : userData.username,
+												password : data.password
+											});
+										}
+			
+										next();
+									}
+									
+									// 아이디를 변경하는 경우
+									else if (data.username !== undefined) {
+			
+										self.checkIsExists({
+											filter : {
+												username : data.username
+											}
+										}, function(isExists) {
+			
+											if (isExists === true) {
+			
+												ret({
+													validErrors : {
+														username : {
+															type : 'existed'
+														}
+													}
+												});
+			
+											} else if (isExists === false) {
+												
+												// 비밀번호도 바꾸는 경우
+												if (data.password !== undefined) {
+													data.password = SHA256({
+														key : data.username,
+														password : data.password
+													});
+												}
+			
+												next();
+											}
+										});
+									}
+									
+									// 아이디 변경 없이 비밀번호만 바꾸는 경우
+									else if (data.password !== undefined) {
+										
+										data.password = SHA256({
+											key : userData.username,
+											password : data.password
+										});
+										
+										next();
+									}
+									
+									// 아이디 비밀번호 변경이 아닌 경우
+									else {
+										next();
+									}
+								},
+								
+								function(next) {
+									return function() {
+										
+										if (data.nickname !== undefined && data.nickname !== userData.nickname) {
+											
+											self.checkIsExists({
+												filter : {
+													nickname : data.nickname
+												}
+											}, function(isExists) {
+						
+												if (isExists === true) {
+						
+													ret({
+														validErrors : {
+															nickname : {
+																type : 'existed'
+															}
+														}
+													});
+						
+												} else {
+													next();
+												}
+											});
+										}
+										
+										else {
+											next();
+										}
+									};
+								},
+								
+								function() {
+									return function() {
+										
+										if (data.iconFileId !== undefined) {
+											
+											IMAGEMAGICK_RESIZE({
+												srcPath : '__RF/GCLife/' + data.iconFileId,
+												distPath : '__RF/GCLife/ICON/' + data.iconFileId,
+												width : 24,
+												height : 24
+											}, next);
+										}
+										
+										else {
+											next();
+										}
+									};
+								}]);
+							});
+						};
+					}]);
+					
+					return false;
+				},
+
+				after : function(savedData) {
+
+					// 보안상 삭제
+					delete savedData.password;
+				}
+			});
+			
 			inner.on('get', function(savedData) {
 				
 				// 보안상 삭제

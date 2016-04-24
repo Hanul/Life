@@ -44,7 +44,7 @@
 		pause();
 	%>
 	<? isNotWriter === true >
-		당신이 작성한 글이 아니 아니 아니오!
+		당신이 작성한 글이 아닙니다.
 	</?>
 	<? else >
 		<% include('form.nsp'); %>

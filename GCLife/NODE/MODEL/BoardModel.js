@@ -20,6 +20,12 @@ OVERRIDE(GCLife.BoardModel, function(origin) {
 			
 				before : function(data, next) {
 					
+					if (data.description === undefined) {
+						data.html = undefined;
+					} else {
+						data.html = Markdown.MarkUp(data.description);
+					}
+					
 					self.get({
 						sort : {
 							index : -1
@@ -42,6 +48,13 @@ OVERRIDE(GCLife.BoardModel, function(origin) {
 			inner.on('update', {
 			
 				before : function(data, next, ret, clientInfo) {
+					
+					if (data.description === undefined) {
+						data.html = undefined;
+					} else {
+						data.html = Markdown.MarkUp(data.description);
+					}
+					
 					if (clientInfo !== undefined) {
 						delete data.index;
 					}

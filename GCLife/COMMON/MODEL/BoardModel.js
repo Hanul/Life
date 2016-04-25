@@ -26,6 +26,8 @@ GCLife.BoardModel = OBJECT({
 				}
 			},
 			
+			html : true,
+			
 			index : {
 				real : true
 			},

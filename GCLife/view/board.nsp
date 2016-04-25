@@ -3,6 +3,12 @@
 	var data;
 	
 	var page = self.params.page;
+	if (page === undefined) {
+		page = 1;
+	} else {
+		page = parseInt(page);
+	}
+	
 	var perPageArticleCount = 20;
 	var totalArticleCount;
 	var articleDataSet;
@@ -93,15 +99,17 @@
 			<h1>
 				<img class="logo" src="/R/logo-{{RANDOM(3) + 1}}.png"><span class="version">v0.3</span>
 			</h1>
-			<? self.signedUserData === undefined >
-				<p>
-					게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
-				</p>
-			</?>
-			<? else >
-				<p>
-					{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
-				</p>
+			<? page <= 1 >
+				<? self.signedUserData === undefined >
+					<p>
+						게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
+					</p>
+				</?>
+				<? else >
+					<p>
+						{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
+					</p>
+				</?>
 			</?>
 		</div>
 		
@@ -109,9 +117,11 @@
 	</?>
 	<? else >
 		<h3>{{data.name}}</h3>
-		<p>
-			{{data.description}}
-		</p>
+		<? page <= 1 >
+			<p>
+				{{data.html}}
+			</p>
+		</?>
 	</?>
 </div>
 
@@ -161,7 +171,7 @@
 	</tbody>
 </table>
 
-<div class="pagination"><~ Math.ceil(totalArticleCount / perPageArticleCount) -> i ><a href="/board{{data === undefined ? '' : '/' + data.id}}?page={{i + 1}}"{{(i === 0 && page === undefined) || page === String(i + 1) ? ' class="now"' : ''}}>{{i + 1}}</a></~></div>
+<div class="pagination"><~ Math.ceil(totalArticleCount / perPageArticleCount) -> i ><a href="/board{{data === undefined ? '' : '/' + data.id}}?page={{i + 1}}"{{page === i + 1 ? ' class="now"' : ''}}>{{i + 1}}</a></~></div>
 
 <a class="pure-button pure-button-primary right" href="/article/create{{data === undefined ? '' : '?boardId=' + data.id}}">글 작성</a>
 <div class="clear"></div>

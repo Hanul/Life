@@ -66,15 +66,19 @@
 	        
 	        <div class="pure-controls">
 	            <button type="submit" class="pure-button pure-button-primary">게시판 정보 수정 완료</button>
-	            <a class="pure-button" href="/admin/board/remove?id={{data.id}}">게시판 삭제</a>
+	            <a id="board-form-submit" class="pure-button" href="/admin/board/remove?id={{data.id}}">게시판 삭제</a>
 	        </div>
 	    </fieldset>
 	</form>
+	
+	<% include('../../layout/bottom-script.nsp'); %>
+	<% include('upload-script.nsp'); %>
+	<% include('../../layout/bottom-html.nsp'); %>
 </?>
 <? else >
 	<p>
 		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
 	</p>
+	
+	<% include('../../layout/bottom.nsp'); %>
 </?>
-
-<% include('../../layout/bottom.nsp'); %>

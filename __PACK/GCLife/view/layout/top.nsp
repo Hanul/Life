@@ -43,7 +43,8 @@
 		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />
 		<title>{{self.title === undefined ? '' : self.title + ' - '}}겜창인생</title>
 		<link rel="stylesheet" href="/R/pure-min.css">
-		<link rel="stylesheet" href="/Markdown/R/github-markdown.css">
+		<link rel="stylesheet" href="/Markdown/R/markdown.css">
+		<link rel="stylesheet" href="/Markdown/R/highlight.css">
 		<link rel="stylesheet" href="/R/gclife.css">
 	</head>
 	<body>

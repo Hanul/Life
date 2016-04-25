@@ -55,15 +55,19 @@
 	        </div>
 	        
 	        <div class="pure-controls">
-	            <button type="submit" class="pure-button pure-button-primary">게시판 생성!</button>
+	            <button id="board-form-submit" type="submit" class="pure-button pure-button-primary">게시판 생성!</button>
 	        </div>
 	    </fieldset>
 	</form>
+	
+	<% include('../../layout/bottom-script.nsp'); %>
+	<% include('upload-script.nsp'); %>
+	<% include('../../layout/bottom-html.nsp'); %>
 </?>
 <? else >
 	<p>
 		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
 	</p>
+	
+	<% include('../../layout/bottom.nsp'); %>
 </?>
-
-<% include('../../layout/bottom.nsp'); %>

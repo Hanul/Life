@@ -3,6 +3,10 @@
 	var data;
 	
 	var page = self.params.page;
+	if (page === undefined) {
+		page = 1;
+	}
+	
 	var perPageArticleCount = 20;
 	var totalArticleCount;
 	var articleDataSet;
@@ -93,15 +97,17 @@
 			<h1>
 				<img class="logo" src="/R/logo-{{RANDOM(3) + 1}}.png"><span class="version">v0.3</span>
 			</h1>
-			<? self.signedUserData === undefined >
-				<p>
-					게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
-				</p>
-			</?>
-			<? else >
-				<p>
-					{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
-				</p>
+			<? page <= 1 >
+				<? self.signedUserData === undefined >
+					<p>
+						게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
+					</p>
+				</?>
+				<? else >
+					<p>
+						{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
+					</p>
+				</?>
 			</?>
 		</div>
 		
@@ -109,9 +115,11 @@
 	</?>
 	<? else >
 		<h3>{{data.name}}</h3>
-		<p>
-			{{data.description}}
-		</p>
+		<? page <= 1 >
+			<p>
+				{{data.html}}
+			</p>
+		</?>
 	</?>
 </div>
 

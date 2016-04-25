@@ -1,0 +1,114 @@
+<script>
+	READY(function() {
+		
+		var uploadForm;
+		var input;
+		
+		DOM({
+			el : document.getElementById('board-form-submit')
+		}).after(uploadForm = UUI.FULL_UPLOAD_FORM({
+			style : {
+				border : '1px solid #999',
+				marginTop : 20,
+				marginBottom : 20
+			},
+			box : GCLife,
+			isMultiple : true
+		}, {
+			overSizeFile : function(maxUploadFileMB) {
+				alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+			},
+			success : function(fileDataSet, form) {
+				
+				EACH(fileDataSet, function(fileData) {
+					
+					var
+					// input
+					input;
+					
+					if (
+					fileData.type === 'image/png' ||
+					fileData.type === 'image/jpeg' ||
+					fileData.type === 'image/gif') {
+					
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '[![ScreenShot](' + GCLife.RF(fileData.id) + ')](' + GCLife.RF(fileData.id) + ')'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'audio/aac' ||
+					fileData.type === 'audio/mp4' ||
+					fileData.type === 'audio/mpeg' ||
+					fileData.type === 'audio/oga' ||
+					fileData.type === 'audio/wav' ||
+					fileData.type === 'audio/webm') {
+					
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '<audio src="' + GCLife.RF(fileData.id) + '" />'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'video/mp4' ||
+					fileData.type === 'video/ogg' ||
+					fileData.type === 'video/webm') {
+					
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '<video controls src="' + GCLife.RF(fileData.id) + '"></video>'
+							})]
+						}));
+					}
+					
+					else {
+						
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '[파일 다운로드](' + GCLife.RF(fileData.id) + ')'
+							})]
+						}));
+					}
+					
+					input.select();
+				});
+			}
+		}));
+	});
+</script>

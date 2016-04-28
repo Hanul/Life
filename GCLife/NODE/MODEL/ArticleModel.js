@@ -85,6 +85,15 @@ OVERRIDE(GCLife.ArticleModel, function(origin) {
 									
 									if (data.writerId === sessionKeyData.userId) {
 										next();
+									} else {
+										GCLife.UserModel.get(sessionKeyData.userId, function(userData) {
+											if (CHECK_IS_IN({
+												array : userData.roles,
+												value : GCLife.ROLE.MANAGER
+											}) === true) {
+												next();
+											}
+										});
 									}
 								});
 							});
@@ -92,6 +101,23 @@ OVERRIDE(GCLife.ArticleModel, function(origin) {
 					}
 					
 					return false;
+				},
+				
+				after : function(savedData, originData) {
+					
+					GCLife.BoardModel.updateNoHistory({
+						id : savedData.boardId,
+						$inc : {
+							articleCount : 1
+						}
+					});
+					
+					GCLife.BoardModel.updateNoHistory({
+						id : originData.boardId,
+						$inc : {
+							articleCount : -1
+						}
+					});
 				}
 			});
 			

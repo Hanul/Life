@@ -83,7 +83,7 @@
 					}) === true >
 						<li class="pure-menu-item"><a href="/admin" class="pure-menu-link">관리자</a></li>
 					</?>
-					<li class="pure-menu-item"><a href="/account/update" class="pure-menu-link">내 정보</a></li>
+					<li class="pure-menu-item"><a href="/user/{{self.signedUserData.id}}" class="pure-menu-link">내 정보</a></li>
 					<li class="pure-menu-item"><a href="/logout" class="pure-menu-link">로그아웃</a></li>
 				</?>
 				<div class="clear"></div>

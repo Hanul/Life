@@ -9,7 +9,10 @@
 		
 		GCLife.ArticleModel.get(data.id, function(savedData) {
 			
-			if (savedData.writerId === self.signedUserData.id) {
+			if (savedData.writerId === self.signedUserData.id || CHECK_IS_IN({
+				array : self.signedUserData.roles,
+				value : GCLife.ROLE.MANAGER
+			}) === true) {
 				
 				if (self.method === 'GET') {
 					data = savedData;

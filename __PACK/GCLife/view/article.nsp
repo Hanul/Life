@@ -82,7 +82,7 @@
 			</?>
 			<? else >
 			<img class="icon" src="/__RF/GCLife/ICON/{{data.writerData.iconFileId}}">
-			</?> {{data.writerData.nickname}}
+			</?> <a href="/user/{{data.writerData.id}}">{{data.writerData.nickname}}</a>
 		</p>
 		<p class="time">작성일: <%
 			var cal = CALENDAR(data.createTime);
@@ -112,22 +112,22 @@
 <div id="comment-list">
 	<~ commentDataSet -> commentData >
 		<div id="comment-{{commentData.id}}" class="comment">
-			<span class="nickname"><? commentData.writerData.iconFileId === undefined >
+			<? commentData.writerData.iconFileId === undefined >
 			<img class="icon" src="/R/icon-default.png">
 			</?>
 			<? else >
 			<img class="icon" src="/__RF/GCLife/ICON/{{commentData.writerData.iconFileId}}">
-			</?> {{commentData.writerData.nickname}}</span>
+			</?> <a class="nickname" href="/user/{{commentData.writerData.id}}">{{commentData.writerData.nickname}}</a>
 			<span class="time"><%
 				var cal = CALENDAR(commentData.createTime);
 				print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
 			%></span>
 			<? self.signedUserData !== undefined && commentData.writerId === self.signedUserData.id >
-				<a class="right" href="javascript:removeComment('{{commentData.id}}');">댓글 삭제</a>
+				<div class="menu">
+					<a href="javascript:updateComment('{{commentData.id}}');">댓글 수정</a><a href="javascript:removeComment('{{commentData.id}}');">댓글 삭제</a>
+				</div>
 			</?>
-			<p>
-				{{commentData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}}
-			</p>
+			<p id="comment-{{commentData.id}}-content"></p>
 		</div>
 	</~>
 </div>
@@ -141,6 +141,184 @@
 					GCLife.CommentModel.remove(commentId);
 				}
 			};
+			
+			global.updateComment = function(commentId) {
+				
+				var commentDom = DOM({
+					el : document.getElementById('comment-' + commentId)
+				});
+				
+				DOM({
+					el : document.getElementById('comment-' + commentId + '-content')
+				}).remove();
+				
+				var contentDom = P({
+					id : 'comment-' + commentId + '-content',
+					c : '로딩중...'
+				}).appendTo(commentDom);
+				
+				GCLife.CommentModel.get(commentId, function(commentData) {
+					
+					commentDom.hide();
+					
+					var form;
+					
+					commentDom.after(form = UUI.VALID_FORM({
+						errorMsgs : {
+							content : {
+								notEmpty : '댓글을 입력해주세요. 잇힝!',
+								size : function(validParams) {
+									return '댓글을 ' + validParams.max + '자 이내로 입력해주세요. 잇힝!';
+								}
+							}
+						},
+						errorMsgStyle : {
+							backgroundColor: '#FFBABA',
+							color : '#D8000C',
+							padding : 10,
+							margin : 0
+						},
+						style : {
+							borderTop : '1px solid #ccc',
+							borderBottom : '1px solid #ccc',
+							onDisplayResize : function(width) {
+								if (width < 920) {
+									return {
+										borderLeft : 'none',
+										borderRight : 'none'
+									};
+								} else {
+									return {
+										borderLeft : '1px solid #ccc',
+										borderRight : '1px solid #ccc'
+									};
+								}
+							}
+						},
+						c : [UUI.FULL_TEXTAREA({
+							style : {
+								height : 50
+							},
+							name : 'content',
+							value : commentData.content
+						}), UUI.FULL_SUBMIT({
+							style : {
+								background: '#0078e7',
+								color: '#fff',
+								fontWeight: 'bold'
+							},
+							value : '댓글 수정'
+						})],
+						on : {
+							submit : function(e, form) {
+								
+								var data = form.getData();
+								
+								data.id = commentData.id;
+								
+								GCLife.CommentModel.update(data, {
+									notValid : function(validErrors) {
+										form.showErrors(validErrors);
+										form.setData(data);
+									},
+									success : function(commentData) {
+										
+										form.remove();
+										
+										contentDom.empty();
+										changeURLToLink(commentData.content, contentDom);
+										
+										commentDom.show();
+									}
+								});
+							}
+						}
+					}));
+				});
+			};
+			
+			var changeURLToLink = function(content, dom) {
+				
+				var
+				// regex result
+				regexResult,
+				
+				// found url
+				foundURL;
+				
+				while (true) {
+					
+					regexResult = content.match(/(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/);
+					
+					if (regexResult === TO_DELETE) {
+						dom.append(content);
+						break;
+					}
+					
+					else {
+						
+						foundURL = regexResult[0];
+						
+						dom.append(content.substring(0, content.indexOf(foundURL)));
+						
+						dom.append(A({
+							style : {
+								color : '#4183c4'
+							},
+							href : foundURL,
+							target : '_blank',
+							c : foundURL
+						}));
+						
+						content = content.substring(content.indexOf(foundURL) + foundURL.length);
+					}
+				}
+			};
+			
+			var generateCommentLikeButton = function(commentDom, commentId, likeCount) {
+				
+				var likeButton;
+				
+				commentDom.append(likeButton = A({
+					style : {
+						marginTop : 10,
+						textDecoration : 'none',
+						fontSize : 12,
+						padding : '4px 8px'
+					},
+					cls : 'pure-button pure-button-primary',
+					c : likeCount + ' 따봉',
+					on : {
+						tap : function() {
+							GCLife.CommentLikeModel.create({
+								commentId : commentId,
+								userId : '{{self.signedUserData.id}}'
+							}, {
+								notValid : function(validErrors) {
+									if (validErrors.commentId.type === 'existed') {
+										alert('이미 1따봉 날렸습니다.');
+									}
+								},
+								success : function() {
+									likeButton.remove();
+									generateCommentLikeButton(commentDom, commentId, likeCount + 1);
+								}
+							});
+						}
+					}
+				}));
+			};
+			
+			<~ commentDataSet -> commentData >
+				RUN(function() {
+					changeURLToLink('{{commentData.content.replace(/'/g, '\\\'').replace(/\n/g, '\\n')}}', DOM({
+						el : document.getElementById('comment-{{commentData.id}}-content')
+					}));
+					generateCommentLikeButton(DOM({
+						el : document.getElementById('comment-{{commentData.id}}')
+					}), '{{commentData.id}}', {{commentData.likeCount}});
+				});
+			</~>
 			
 			var commentList = DOM({
 				el : document.getElementById('comment-list')
@@ -217,14 +395,17 @@
 				
 				GCLife.UserModel.get(commentData.writerId, function(writerData) {
 					
-					commentList.append(DIV({
+					var commentDom;
+					
+					commentList.append(commentDom = DIV({
 						id : 'comment-' + commentData.id,
 						cls : 'comment',
 						c : [IMG({
 							cls : 'icon',
 							src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/GCLife/ICON/' + writerData.iconFileId
-						}), ' ', SPAN({
+						}), ' ', A({
 							cls : 'nickname',
+							href : '/user/' + writerData.id,
 							c : writerData.nickname
 						}), ' ', SPAN({
 							cls : 'time',
@@ -232,18 +413,29 @@
 								var cal = CALENDAR(commentData.createTime);
 								return cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true);
 							})
-						}), (writerData.id === '{{self.signedUserData.id}}' ? A({
-							cls : 'right',
-							c : '댓글 삭제',
-							on : {
-								tap : function() {
-									removeComment(commentData.id);
+						}), (writerData.id === '{{self.signedUserData.id}}' ? DIV({
+							cls : 'menu',
+							c : [A({
+								c : '댓글 수정',
+								on : {
+									tap : function() {
+										updateComment(commentData.id);
+									}
 								}
-							}
+							}), A({
+								c : '댓글 삭제',
+								on : {
+									tap : function() {
+										removeComment(commentData.id);
+									}
+								}
+							})]
 						}) : ''), P({
 							c : commentData.content
 						})]
 					}));
+					
+					generateCommentLikeButton(commentDom, commentData.id, commentData.likeCount);
 				});
 			});
 			

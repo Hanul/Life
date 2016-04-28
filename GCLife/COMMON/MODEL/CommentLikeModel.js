@@ -27,7 +27,9 @@ GCLife.CommentLikeModel = OBJECT({
 		return {
 			name : 'CommentLike',
 			methodConfig : {
-				create : false,
+				create : {
+					valid : VALID(validDataSet)
+				},
 				update : false,
 				remove : false
 			}

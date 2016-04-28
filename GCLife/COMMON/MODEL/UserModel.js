@@ -81,13 +81,25 @@ GCLife.UserModel = OBJECT({
 			
 			iconFileId : {
 				id : true
+			},
+			
+			articleCount : {
+				notEmpty : true,
+				integer : true
+			},
+			
+			commentCount : {
+				notEmpty : true,
+				integer : true
 			}
 		};
 
 		return {
 			name : 'User',
 			initData : {
-				loginCount : 0
+				loginCount : 0,
+				articleCount : 0,
+				commentCount : 0
 			},
 			methodConfig : {
 				create : {

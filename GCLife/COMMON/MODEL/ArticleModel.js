@@ -36,7 +36,7 @@ GCLife.ArticleModel = OBJECT({
 			
 			content : {
 				size : {
-					max : 3000
+					max : 30000
 				}
 			},
 			

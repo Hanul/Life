@@ -41,7 +41,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 		<link rel="shortcut icon" href="/R/favicon.ico" />
 		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />
-		<title>{{self.title === undefined ? '' : self.title + ' - '}}겜창인생</title>
+		<title>{{self.title === undefined ? '' : self.title + ' - '}}{{CONFIG.title}}</title>
 		<link rel="stylesheet" href="/R/pure-min.css">
 		<link rel="stylesheet" href="/Markdown/R/markdown.css">
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">
@@ -67,7 +67,7 @@
 				});
 				pause();
 			%>
-			<a href="/" class="pure-menu-link pure-menu-heading">겜창인생 ({{totalArticleCount}})</a>
+			<a href="/" class="pure-menu-link pure-menu-heading">{{CONFIG.title}} ({{totalArticleCount}})</a>
 			<ul class="pure-menu-list">
 		        <~ self.boardDataSet -> boardData >
 					<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>

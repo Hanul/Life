@@ -29,7 +29,7 @@
 <form class="pure-form" method="POST">
 
 	<p>
-		오늘도 겜창인생에 방문해주신 당신을 환영합니다!
+		오늘도 {{CONFIG.title}}에 방문해주신 당신을 환영합니다!
 	</p>
 	
 	<? self.method === 'POST' && isNotValid === true >

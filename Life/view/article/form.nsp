@@ -71,7 +71,7 @@
         <div class="pure-controls">
             <button id="article-form-submit" type="submit" class="pure-button pure-button-primary">글 작성 완료</button>
         	<p>
-        		<a href="/markdown-sample" target="_blank">겜창인생은 Markdown 문법을 사용합니다.</a>
+        		<a href="/markdown-sample" target="_blank">{{CONFIG.title}}은 Markdown 문법을 사용합니다.</a>
         	</p>
         </div>
     </fieldset>

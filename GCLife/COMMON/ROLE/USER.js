@@ -1,1 +1,0 @@
-GCLife('ROLE').USER = 'User';

@@ -1,0 +1,20 @@
+<% include('../../layout/top.nsp'); %>
+
+<? self.checkIsAdmin() === true >
+	<%
+		Life.CategoryModel.create(self.params, {
+			notValid : function() {
+				redirect('/admin/category?boardId=' + self.params.boardId);
+				resume();
+			},
+			success : function(savedData) {
+				redirect('/admin/category?boardId=' + savedData.boardId);
+				resume();
+			}
+		});
+		
+		pause();
+	%>
+</?>
+
+<% include('../../layout/bottom.nsp'); %>

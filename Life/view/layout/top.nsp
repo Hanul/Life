@@ -1,0 +1,92 @@
+<%
+	var sessionKey = cookie('session-key');
+	if (sessionKey !== undefined) {
+		Life.SessionKeyModel.get(sessionKey, {
+			notExists : function() {
+				resume();
+			},
+			success : function(sessionKeyData) {
+				Life.UserModel.get(sessionKeyData.userId, {
+					notExists : function() {
+						resume();
+					},
+					success : function(userData) {
+						self.signedUserData = userData;
+						resume();
+					}
+				});
+			}
+		});
+		pause();
+	}
+	
+	self.checkIsSigned = function() {
+		return self.signedUserData !== undefined && CHECK_IS_IN({
+			array : self.signedUserData.roles,
+			value : Life.ROLE.USER
+		}) === true;
+	};
+	
+	self.checkIsAdmin = function() {
+		return self.signedUserData !== undefined && CHECK_IS_IN({
+			array : self.signedUserData.roles,
+			value : Life.ROLE.ADMIN
+		}) === true;
+	};
+%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<link rel="shortcut icon" href="/R/favicon.ico" />
+		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />
+		<title>{{self.title === undefined ? '' : self.title + ' - '}}겜창인생</title>
+		<link rel="stylesheet" href="/R/pure-min.css">
+		<link rel="stylesheet" href="/Markdown/R/markdown.css">
+		<link rel="stylesheet" href="/Markdown/R/highlight.css">
+		<link rel="stylesheet" href="/R/gclife.css">
+	</head>
+	<body>
+		<nav id="menu" class="pure-menu pure-menu-horizontal scroll-x">
+            <%
+            	var totalArticleCount = 0;
+            	
+				Life.BoardModel.find({
+					sort : {
+						index : 1
+					}
+				}, function(_boardDataSet) {
+					self.boardDataSet = _boardDataSet;
+					
+					EACH(_boardDataSet, function(boardData) {
+						totalArticleCount += boardData.articleCount;
+					});
+					
+					resume();
+				});
+				pause();
+			%>
+			<a href="/" class="pure-menu-link pure-menu-heading">겜창인생 ({{totalArticleCount}})</a>
+			<ul class="pure-menu-list">
+		        <~ self.boardDataSet -> boardData >
+					<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>
+				</~>
+				<? self.signedUserData === undefined >
+					<li class="pure-menu-item"><a href="/login" class="pure-menu-link">로그인</a></li>
+					<li class="pure-menu-item"><a href="/join" class="pure-menu-link">가입하기</a></li>
+				</?>
+				<? else >
+					<? CHECK_IS_IN({
+						array : self.signedUserData.roles,
+						value : Life.ROLE.ADMIN
+					}) === true >
+						<li class="pure-menu-item"><a href="/admin" class="pure-menu-link">관리자</a></li>
+					</?>
+					<li class="pure-menu-item"><a href="/user/{{self.signedUserData.id}}" class="pure-menu-link">내 정보</a></li>
+					<li class="pure-menu-item"><a href="/logout" class="pure-menu-link">로그아웃</a></li>
+				</?>
+				<div class="clear"></div>
+			</ul>
+		</nav>
+		<div class="wrapper">

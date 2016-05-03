@@ -1,0 +1,43 @@
+<% include('../../layout/top.nsp'); %>
+
+<? self.checkIsAdmin() === true >
+
+	<%
+		var data = self.params;
+		
+		if (self.method === 'GET') {
+			
+			Life.BoardModel.get(data.id, function(boardData) {
+				data = boardData;
+				resume();
+			});
+			
+			pause();
+		}
+		
+		else if (self.method === 'POST') {
+			
+			Life.BoardModel.remove(data.id, function() {
+				redirect('/admin/board');
+				resume();
+			});
+			
+			pause();
+		}
+	%>
+	
+	<p>
+		정말 [{{data.name}}] 게시판을 삭제하시겠습니까?
+	</p>
+	
+	<form class="pure-form pure-form-aligned" method="POST">
+	    <button type="submit" class="pure-button">게시판 삭제</button>
+	</form>
+</?>
+<? else >
+	<p>
+		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
+	</p>
+</?>
+
+<% include('../../layout/bottom.nsp'); %>

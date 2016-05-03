@@ -1,0 +1,35 @@
+<% include('../layout/top.nsp'); %>
+
+<? self.checkIsSigned() === true >
+
+	<%
+		var data = self.params;
+		var validErrors;
+		
+		if (self.method === 'POST') {
+			
+			data.writerId = self.signedUserData.id;
+			
+			Life.ArticleModel.create(data, {
+				notValid : function(_validErrors) {
+					validErrors = _validErrors;
+					resume();
+				},
+				success : function(savedData) {
+					redirect('/article/' + savedData.id);
+					resume();
+				}
+			});
+			
+			pause();
+		}
+	%>
+	<% include('form.nsp'); %>
+</?>
+<? else >
+	<%
+		redirect('/login');
+	%>
+</?>
+
+<% include('../layout/bottom-html.nsp'); %>

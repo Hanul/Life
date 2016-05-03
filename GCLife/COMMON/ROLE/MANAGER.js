@@ -1,1 +1,0 @@
-GCLife('ROLE').MANAGER = 'Manager';

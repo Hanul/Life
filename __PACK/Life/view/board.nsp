@@ -1,0 +1,186 @@
+<%
+	var id = self.subURI.substring(self.subURI.lastIndexOf('/'));
+	var data;
+	
+	var page = self.params.page;
+	if (page === undefined) {
+		page = 1;
+	} else {
+		page = parseInt(page);
+	}
+	
+	var perPageArticleCount = 20;
+	var totalArticleCount;
+	var articleDataSet;
+	
+	NEXT([
+	function(next) {
+		if (id === '') {
+			next();
+		} else {
+			Life.BoardModel.get(id, function(savedData) {
+				data = savedData;
+				self.title = data.name;
+				next();
+			});
+		}
+	},
+	
+	function(next) {
+		return function() {
+			Life.ArticleModel.count({
+				filter : data === undefined ? {} : {
+					boardId : data.id
+				}
+			}, function(count) {
+				totalArticleCount = count;
+				next();
+			});
+		};
+	},
+	
+	function() {
+		return function() {
+			
+			Life.ArticleModel.find({
+				filter : data === undefined ? {} : {
+					boardId : data.id
+				},
+				start : (page - 1) * perPageArticleCount,
+				count : perPageArticleCount
+			}, function(_articleDataSet) {
+				articleDataSet = _articleDataSet;
+				
+				PARALLEL(articleDataSet, [
+			    function(articleData, done) {
+			    	
+			    	PARALLEL([
+				    function(done) {
+				    	Life.UserModel.get(articleData.writerId, function(userData) {
+			        		articleData.writerData = userData;
+			        		done();
+			      		});
+				    },
+				    function(done) {
+				    	if (articleData.categoryId === undefined) {
+			        		done();
+			        	} else {
+			        		Life.CategoryModel.get(articleData.categoryId, {
+			        			notExists : done,
+			        			success : function(categoryData) {
+			        				articleData.categoryData = categoryData;
+			        				done();
+			        			}
+			        		});
+			        	}
+				    },
+				    function(done) {
+				    	Life.BoardModel.get(articleData.boardId, {
+		        			notExists : done,
+		        			success : function(boardData) {
+		        				articleData.boardData = boardData;
+		        				done();
+		        			}
+		        		});
+				    },
+				    done]);
+			    },
+			    resume]);
+			});
+		};
+	}]);
+	
+	pause();
+%>
+<% include('layout/top.nsp'); %>
+<div id="board-decoration">
+	<? data === undefined >
+		<div id="main">
+			<h1>
+				<img class="logo" src="/R/logo.png"><span class="version">v0.5</span>
+			</h1>
+			<? page <= 1 >
+				<p>
+				<? self.signedUserData === undefined >
+					게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
+				</?>
+				<? else >
+					{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
+				</?>
+				</p>
+				<p>
+					총 <%
+						Life.UserModel.count(function(count) {
+							print(count);
+							resume();
+						});
+						pause();
+					%>명의 겜창인생들이 있습니다.
+				</p>
+			</?>
+		</div>
+		
+		<h3>전체 글보기 ({{totalArticleCount}})</h3>
+	</?>
+	<? else >
+		<h3>{{data.name}} ({{totalArticleCount}})</h3>
+		<? page <= 1 >
+			<p>
+				{{data.html}}
+			</p>
+		</?>
+	</?>
+</div>
+
+<table class="pure-table pure-table-horizontal pure-table-striped board">
+	<thead class="pc">
+		<tr>
+			<? data === undefined >
+				<th width="14%">게시판</th>
+			</?>
+			<th>제목</th>
+			<th width="16%">작성자</th>
+			<th class="center" width="12%">작성일</th>
+			<th class="center" width="8%">조회수</th>
+			<th class="center" width="8%">따봉수</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<~ articleDataSet -> articleData >
+			<tr>
+				<? data === undefined >
+					<td class="pc">{{articleData.boardData === undefined ? '' : '<a href="/board/' + articleData.boardData.id + '">' + articleData.boardData.name + '</a>'}}</td>
+				</?>
+				<td>
+					{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}<a href="/article/{{articleData.id}}">{{articleData.title}}</a> ({{articleData.commentCount}})
+					<div class="mobile more">
+						<a href="/user/{{articleData.writerData.id}}">{{articleData.writerData.nickname}}</a> | <%
+							var cal = CALENDAR(articleData.createTime);
+							print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
+						%> | 조회 {{articleData.viewCount}} | 따봉 {{articleData.likeCount}}
+					</div>
+				</td>
+				<td class="pc"><? articleData.writerData.iconFileId === undefined >
+				<img class="icon" src="/R/icon-default.png">
+				</?>
+				<? else >
+				<img class="icon" src="/__RF/Life/ICON/{{articleData.writerData.iconFileId}}">
+				</?> <a href="/user/{{articleData.writerData.id}}">{{articleData.writerData.nickname}}</a></td>
+				<td class="pc center"><%
+					var cal = CALENDAR(articleData.createTime);
+					print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
+				%></td>
+				<td class="pc center">{{articleData.viewCount}}</td>
+				<td class="pc center">{{articleData.likeCount}}</td>
+			</tr>
+		</~>
+	</tbody>
+</table>
+
+<div class="pagination"><~ Math.ceil(totalArticleCount / perPageArticleCount) -> i ><a href="/board{{data === undefined ? '' : '/' + data.id}}?page={{i + 1}}"{{page === i + 1 ? ' class="now"' : ''}}>{{i + 1}}</a></~></div>
+
+<a class="pure-button pure-button-primary right" href="/article/create{{data === undefined ? '' : '?boardId=' + data.id}}">글 작성</a>
+<div class="clear"></div>
+
+<% include('layout/bottom.nsp'); %>

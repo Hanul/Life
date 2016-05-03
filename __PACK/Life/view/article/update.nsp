@@ -1,0 +1,62 @@
+<% include('../layout/top.nsp'); %>
+
+<? self.checkIsSigned() === true >
+
+	<%
+		var data = self.params;
+		var validErrors;
+		var isNotWriter = false;
+		
+		Life.ArticleModel.get(data.id, function(savedData) {
+			
+			if (savedData.writerId === self.signedUserData.id || CHECK_IS_IN({
+				array : self.signedUserData.roles,
+				value : Life.ROLE.MANAGER
+			}) === true) {
+				
+				if (self.method === 'GET') {
+					data = savedData;
+					resume();
+				}
+				
+				else if (self.method === 'POST') {
+					
+					data.writerId = self.signedUserData.id;
+					
+					Life.ArticleModel.update(data, {
+						notValid : function(_validErrors) {
+							validErrors = _validErrors;
+							resume();
+						},
+						success : function(savedData) {
+							redirect('/article/' + savedData.id);
+							resume();
+						}
+					});
+					
+					pause();
+				}
+			}
+			
+			else {
+				isNotWriter = true;
+				resume();
+			}
+		});
+		
+		pause();
+	%>
+	<? isNotWriter === true >
+		당신이 작성한 글이 아닙니다.
+	</?>
+	<? else >
+		<% include('form.nsp'); %>
+	</?>
+</?>
+<? else >
+	<%
+		redirect('/login');
+	%>
+</?>
+
+<% include('../layout/bottom-html.nsp'); %>

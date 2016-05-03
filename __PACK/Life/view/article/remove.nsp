@@ -1,0 +1,59 @@
+<% include('../layout/top.nsp'); %>
+
+<? self.checkIsSigned() === true >
+
+	<%
+		var data = self.params;
+		var validErrors;
+		var isNotWriter = false;
+		
+		Life.ArticleModel.get(data.id, function(savedData) {
+			
+			if (savedData.writerId === self.signedUserData.id) {
+				
+				if (self.method === 'GET') {
+					data = savedData;
+					resume();
+				}
+				
+				else if (self.method === 'POST') {
+					
+					Life.ArticleModel.remove(data.id, function(originData) {
+						redirect('/board/' + originData.boardId);
+						resume();
+					});
+					
+					pause();
+				}
+			}
+			
+			else {
+				isNotWriter = true;
+				resume();
+			}
+		});
+		
+		pause();
+	%>
+	
+	<? isNotWriter === true >
+		당신이 작성한 글이 아닙니다.
+	</?>
+	<? else >
+		
+		<p>
+			정말 [{{data.title}}]을 삭제하시겠습니까?
+		</p>
+		
+		<form class="pure-form pure-form-aligned" method="POST">
+		    <button type="submit" class="pure-button">게시글 삭제</button>
+		</form>
+	</?>
+</?>
+<? else >
+	<%
+		redirect('/login');
+	%>
+</?>
+
+<% include('../layout/bottom.nsp'); %>

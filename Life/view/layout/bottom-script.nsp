@@ -1,0 +1,39 @@
+<script src="/__SCRIPT"></script>
+<script>
+	OVERRIDE(DOM, function(origin) {
+		global.DOM = CLASS({
+			preset : function() {
+				return origin;
+			},
+			init : function(inner, self, params) {
+				if (self.getEl() !== undefined) {
+					if (params.id !== undefined) {
+						self.getEl().setAttribute('id', params.id);
+					}
+					if (params.cls !== undefined) {
+						self.getEl().setAttribute('class', params.cls);
+					}
+				}
+			}
+		});
+	});
+	
+	var menu = DOM({
+		el : document.getElementById('menu')
+	});
+	
+	var scrollPositionStore = Life.STORE('scrollPositionStore');
+	
+	if (scrollPositionStore.get('left') !== undefined) {
+		menu.scrollTo({
+			left : scrollPositionStore.get('left')
+		});
+	}
+	
+	menu.on('scroll', function(e) {
+		scrollPositionStore.save({
+			name : 'left',
+			value : menu.getScrollLeft()
+		});
+	});
+</script>

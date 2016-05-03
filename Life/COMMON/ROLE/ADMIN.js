@@ -1,0 +1,1 @@
+Life('ROLE').ADMIN = 'Admin';

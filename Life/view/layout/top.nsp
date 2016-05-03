@@ -42,13 +42,13 @@
 		<link rel="shortcut icon" href="/R/favicon.ico" />
 		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />
 		<title>{{self.title === undefined ? '' : self.title + ' - '}}{{CONFIG.title}}</title>
-		<link rel="stylesheet" href="/R/pure-min.css">
+		<link rel="stylesheet" href="/R/BASE_STYLE.css">
 		<link rel="stylesheet" href="/Markdown/R/markdown.css">
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">
-		<link rel="stylesheet" href="/R/gclife.css">
+		<link rel="stylesheet" href="/R/gclife.less">
 	</head>
 	<body>
-		<nav id="menu" class="pure-menu pure-menu-horizontal scroll-x">
+		<nav id="menu" class="x-scroll">
             <%
             	var totalArticleCount = 0;
             	
@@ -67,26 +67,26 @@
 				});
 				pause();
 			%>
-			<a href="/" class="pure-menu-link pure-menu-heading">{{CONFIG.title}} ({{totalArticleCount}})</a>
-			<ul class="pure-menu-list">
+			<a href="/" class="head">{{CONFIG.title}} ({{totalArticleCount}})</a>
+			<ul>
 		        <~ self.boardDataSet -> boardData >
-					<li class="pure-menu-item"><a href="/board/{{boardData.id}}" class="pure-menu-link">{{boardData.name}} ({{boardData.articleCount}})</a></li>
+					<li><a href="/board/{{boardData.id}}">{{boardData.name}} ({{boardData.articleCount}})</a></li>
 				</~>
 				<? self.signedUserData === undefined >
-					<li class="pure-menu-item"><a href="/login" class="pure-menu-link">로그인</a></li>
-					<li class="pure-menu-item"><a href="/join" class="pure-menu-link">가입하기</a></li>
+					<li><a href="/login">로그인</a></li>
+					<li><a href="/join">가입하기</a></li>
 				</?>
 				<? else >
 					<? CHECK_IS_IN({
 						array : self.signedUserData.roles,
 						value : Life.ROLE.ADMIN
 					}) === true >
-						<li class="pure-menu-item"><a href="/admin" class="pure-menu-link">관리자</a></li>
+						<li><a href="/admin">관리자</a></li>
 					</?>
-					<li class="pure-menu-item"><a href="/user/{{self.signedUserData.id}}" class="pure-menu-link">내 정보</a></li>
-					<li class="pure-menu-item"><a href="/logout" class="pure-menu-link">로그아웃</a></li>
+					<li><a href="/user/{{self.signedUserData.id}}">내 정보</a></li>
+					<li><a href="/logout">로그아웃</a></li>
 				</?>
 				<div class="clear"></div>
 			</ul>
 		</nav>
-		<div class="wrapper">
+		<div id="wrapper">

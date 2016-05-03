@@ -4,6 +4,9 @@ Life.MAIN = METHOD({
 		'use strict';
 		
 		var
+		//IMPORT: Less
+		Less = require('less'),
+		
 		// nsp core
 		nspCore = NSP({
 			rootPath : './Life/view',
@@ -11,6 +14,20 @@ Life.MAIN = METHOD({
 		});
 		
 		addRequestListener(nspCore.requestListener);
+		
+		RESOURCE_SERVER.addPreprocessor({
+			extension : 'less',
+			preprocessor : function(content, response) {
+				
+				Less.render(content, function(error, output) {
+					response({
+						content : output.css,
+						contentType : 'text/css',
+						version : CONFIG.version
+					});
+				});
+			}
+		});
 		
 		UMAIL.CONNECT_TO_MAIL_SERVER({
 			host : 'smtp.gmail.com',

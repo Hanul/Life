@@ -27,7 +27,6 @@
         <div class="pure-control-group">
             <label>게시판</label>
             <select name="boardId" value="{{data.boardId}}">
-            	<option value="">게시판 선택</option>
                 <~ self.boardDataSet -> boardData >
                 	<option value="{{boardData.id}}"{{boardData.id === data.boardId ? ' selected' : ''}}>{{boardData.name}}</option>
                 </~>

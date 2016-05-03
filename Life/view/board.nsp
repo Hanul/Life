@@ -93,46 +93,39 @@
 	pause();
 %>
 <% include('layout/top.nsp'); %>
-<div id="board-decoration">
-	<? data === undefined >
-		<div id="main">
-			<h1>
-				<img class="logo" src="/R/logo.png"><span class="version">v0.5</span>
-			</h1>
-			<? page <= 1 >
-				<p>
-				<? self.signedUserData === undefined >
-					게임을 창작하는 아름다운 人生에 오신것을 환영합니다.
-				</?>
-				<? else >
-					{{self.signedUserData.nickname}}님 어서오세요! 오늘 하루는 어떠셨나요? <a href="https://gclife.net/board/5714a2ef9173c9f93510b412">인사하러 가기</a>
-				</?>
-				</p>
-				<p>
-					총 <%
-						Life.UserModel.count(function(count) {
-							print(count);
-							resume();
-						});
-						pause();
-					%>명의 유저가 있습니다.
-				</p>
-			</?>
-		</div>
-		
-		<h3>전체 글보기 ({{totalArticleCount}})</h3>
+<div id="board">
+<? data === undefined >
+	<div class="main">
+		<h1>
+			<img class="logo" src="/R/logo.png"><span class="version">v0.6</span>
+		</h1>
+	</div>
+	
+	<h3 class="left">전체 글보기 ({{totalArticleCount}})</h3>
+	<? page <= 1 >
+		<p class="right">
+			총 <%
+				Life.UserModel.count(function(count) {
+					print(count);
+					resume();
+				});
+				pause();
+			%>명의 유저가 있습니다.
+		</p>
 	</?>
-	<? else >
+	<div class="clear"></div>
+</?>
+<? else >
+	<div class="decoration">
 		<h3>{{data.name}} ({{totalArticleCount}})</h3>
 		<? page <= 1 >
 			<p>
 				{{data.html}}
 			</p>
 		</?>
-	</?>
-</div>
-
-<table class="pure-table pure-table-horizontal pure-table-striped board">
+	</div>
+</?>
+<table>
 	<thead class="pc">
 		<tr>
 			<? data === undefined >
@@ -141,8 +134,8 @@
 			<th>제목</th>
 			<th width="16%">작성자</th>
 			<th class="center" width="12%">작성일</th>
-			<th class="center" width="8%">조회수</th>
-			<th class="center" width="8%">따봉수</th>
+			<th class="center" width="6%">조회</th>
+			<th class="center" width="6%">따봉</th>
 		</tr>
 	</thead>
 
@@ -180,7 +173,8 @@
 
 <div class="pagination"><~ Math.ceil(totalArticleCount / perPageArticleCount) -> i ><a href="/board{{data === undefined ? '' : '/' + data.id}}?page={{i + 1}}"{{page === i + 1 ? ' class="now"' : ''}}>{{i + 1}}</a></~></div>
 
-<a class="pure-button pure-button-primary right" href="/article/create{{data === undefined ? '' : '?boardId=' + data.id}}">글 작성</a>
+<a class="right" href="/article/create{{data === undefined ? '' : '?boardId=' + data.id}}">글 작성</a>
 <div class="clear"></div>
+</div>
 
 <% include('layout/bottom.nsp'); %>

@@ -32,4 +32,4 @@
 	%>
 </?>
 
-<% include('../layout/bottom-html.nsp'); %>
+<% include('../layout/bottom.nsp'); %>

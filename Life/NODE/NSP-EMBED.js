@@ -554,11 +554,11 @@ __resumeFuncStr = function resume() {
 									__column = __repeatInfo.column;
 									
 									if (__repeatItemName === undefined) {
-										eval('var ' + __repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];');
+										eval(__repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];');
 									} else {
 										eval(
-											'var ' + __repeatItemName + ' = \'' + __repeatTargetNowKey + '\';' +
-											'var ' + __repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];'
+											__repeatItemName + ' = \'' + __repeatTargetNowKey + '\';' +
+											__repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];'
 										);
 									}
 								}
@@ -612,11 +612,11 @@ __resumeFuncStr = function resume() {
 									__column = __repeatInfo.column;
 									
 									if (__repeatItemName === undefined) {
-										eval('var ' + __repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];');
+										eval(__repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];');
 									} else {
 										eval(
-											'var ' + __repeatItemName + ' = \'' + __repeatTargetNowKey + '\';' +
-											'var ' + __repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];'
+											__repeatItemName + ' = \'' + __repeatTargetNowKey + '\';' +
+											__repeatItemValue + ' = ' + __repeatTargetName + '[\'' + __repeatTargetNowKey + '\'];'
 										);
 									}
 								}

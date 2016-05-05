@@ -39,51 +39,37 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		
 		<link rel="shortcut icon" href="/R/favicon.ico" />
 		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />
+		
 		<title>{{self.title === undefined ? '' : self.title + ' - '}}{{CONFIG.title}}</title>
+		
+		<link rel="stylesheet" href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css">
 		<link rel="stylesheet" href="/R/BASE_STYLE.css">
 		<link rel="stylesheet" href="/Markdown/R/markdown.css">
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">
 		<link rel="stylesheet" href="/R/style.less">
+		
+		<script src="/__SCRIPT"></script>
+		<script>
+			OVERRIDE(DOM, function(origin) {
+				global.DOM = CLASS({
+					preset : function() {
+						return origin;
+					},
+					init : function(inner, self, params) {
+						if (self.getEl() !== undefined) {
+							if (params.id !== undefined) {
+								self.getEl().setAttribute('id', params.id);
+							}
+							if (params.cls !== undefined) {
+								self.getEl().setAttribute('class', params.cls);
+							}
+						}
+					}
+				});
+			});
+		</script>
 	</head>
 	<body>
-		<nav id="menu" class="x-scroll">
-            <%
-            	var totalArticleCount = 0;
-            	
-				Life.BoardModel.find({
-					sort : {
-						index : 1
-					}
-				}, function(_boardDataSet) {
-					self.boardDataSet = _boardDataSet;
-					
-					EACH(_boardDataSet, function(boardData) {
-						totalArticleCount += boardData.articleCount;
-					});
-					
-					resume();
-				});
-				pause();
-			%>
-			<a href="/" class="head">{{CONFIG.title}} ({{totalArticleCount}})</a>
-	        <~ self.boardDataSet -> boardData >
-				<a href="/board/{{boardData.id}}">{{boardData.name}} ({{boardData.articleCount}})</a>
-			</~>
-			<? self.signedUserData === undefined >
-				<a href="/login">로그인</a>
-				<a href="/join">가입하기</a>
-			</?>
-			<? else >
-				<? CHECK_IS_IN({
-					array : self.signedUserData.roles,
-					value : Life.ROLE.ADMIN
-				}) === true >
-					<a href="/admin">관리자</a>
-				</?>
-				<a href="/user/{{self.signedUserData.id}}">내 정보</a>
-				<a href="/logout">로그아웃</a>
-			</?>
-		</nav>
-		<div id="wrapper">

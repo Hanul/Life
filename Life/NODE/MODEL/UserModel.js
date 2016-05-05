@@ -238,8 +238,8 @@ OVERRIDE(Life.UserModel, function(origin) {
 											IMAGEMAGICK_RESIZE({
 												srcPath : '__RF/Life/' + data.iconFileId,
 												distPath : '__RF/Life/ICON/' + data.iconFileId,
-												width : 24,
-												height : 24
+												width : 40,
+												height : 40
 											}, next);
 										}
 										

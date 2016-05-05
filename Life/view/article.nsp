@@ -1,42 +1,32 @@
 <%
-	var id = self.subURI.substring(self.subURI.lastIndexOf('/'));
-	var data;
+	var articleData;
 	var commentDataSet;
 	
 	Life.ArticleModel.update({
-		id : id,
+		id : articleId,
 		lastViewTime : new Date(),
 		$inc : {
 			viewCount : 1
 		}
 	}, function(savedData) {
-		data = savedData;
-		
-		self.title = data.title;
+		articleData = savedData;
 		
 		PARALLEL([
 		function(done) {
-			Life.BoardModel.get(data.boardId, function(boardData) {
-				data.boardData = boardData;
+			Life.UserModel.get(articleData.writerId, function(userData) {
+				articleData.writerData = userData;
 				done();
 			});
 		},
 		
 		function(done) {
-			Life.UserModel.get(data.writerId, function(userData) {
-				data.writerData = userData;
-				done();
-			});
-		},
-		
-		function(done) {
-			if (data.categoryId === undefined) {
+			if (articleData.categoryId === undefined) {
 	    		done();
 	    	} else {
-	    		Life.CategoryModel.get(data.categoryId, {
+	    		Life.CategoryModel.get(articleData.categoryId, {
 	    			notExists : done,
 	    			success : function(categoryData) {
-	    				data.categoryData = categoryData;
+	    				articleData.categoryData = categoryData;
 	    				done();
 	    			}
 	    		});
@@ -46,7 +36,7 @@
 		function(done) {
 			Life.CommentModel.find({
 				filter : {
-					articleId : data.id
+					articleId : articleData.id
 				},
 				sort : {
 					createTime : 1
@@ -70,66 +60,69 @@
 	
 	pause();
 %>
-<% include('layout/top.nsp'); %>
-<div id="article">
-	
-	<h3 class="title">{{data.categoryData === undefined ? '' : '[' + data.categoryData.category + '] '}}{{data.title}}</h3>
-	
-	<div class="other">
-		<p class="left">
-			작성자: <? data.writerData.iconFileId === undefined >
-			<img class="icon" src="/R/icon-default.png">
-			</?>
-			<? else >
-			<img class="icon" src="/__RF/Life/ICON/{{data.writerData.iconFileId}}">
-			</?> <a href="/user/{{data.writerData.id}}">{{data.writerData.nickname}}</a>
-		</p>
-		<p class="time">작성일: <%
-			var cal = CALENDAR(data.createTime);
-			print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
-		%></p>
-		<p class="view-count">조회수: {{data.viewCount}}</p>
-	</div>
-	
-	<div class="clear"></div>
-	
-	<div class="content markdown-body">
-		{{data.html === undefined ? '제곧내 (제곧내는 제목은 곧 내용입니다의 약자입니다. ㅎㅎ)' : data.html}}
-	</div>
-	
-	<div id="like-menu" class="left">
-	</div>
-	
-	<? self.signedUserData !== undefined && data.writerId === self.signedUserData.id >
-	    <a class="right-button" href="/article/update?id={{data.id}}">글 수정</a>
-	    <a class="right-button" href="/article/remove?id={{data.id}}">글 삭제</a>
-	</?>
-	
-	<div class="clear"></div>
-</div>
-<div id="comment-list">
-	<~ commentDataSet -> commentData >
-		<div id="comment-{{commentData.id}}" class="comment">
-			<? commentData.writerData.iconFileId === undefined >
-			<img class="icon" src="/R/icon-default.png">
-			</?>
-			<? else >
-			<img class="icon" src="/__RF/Life/ICON/{{commentData.writerData.iconFileId}}">
-			</?> <a class="nickname" href="/user/{{commentData.writerData.id}}">{{commentData.writerData.nickname}}</a>
-			<span class="time"><%
-				var cal = CALENDAR(commentData.createTime);
+
+<header>
+	<div class="left">
+		<h1>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}}</h1>
+		<p>
+			<a href="/user/{{articleData.writerData.id}}">
+				<? articleData.writerData.iconFileId === undefined >
+					<img class="icon" src="/R/icon-default.png">
+				</?>
+				<? else >
+					<img class="icon" src="/__RF/Life/ICON/{{articleData.writerData.iconFileId}}">
+				</?> <span class="nickname">{{articleData.writerData.nickname}}</span>
+			</a> | <%
+				var cal = CALENDAR(articleData.createTime);
 				print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
-			%></span>
-			<? self.signedUserData !== undefined && commentData.writerId === self.signedUserData.id >
-				<div class="menu">
-					<a href="javascript:updateComment('{{commentData.id}}');">댓글 수정</a><a href="javascript:removeComment('{{commentData.id}}');">댓글 삭제</a>
+			%> | 조회 {{articleData.viewCount}}
+		</p>
+	</div>
+	<ul class="menu">
+		<li id="like-menu"></li>
+		<? self.signedUserData !== undefined && articleData.writerId === self.signedUserData.id >
+		    <li><a href="/article/update?id={{articleData.id}}">수정</a></li>
+		    <li><a href="/article/remove?id={{articleData.id}}">삭제</a></li>
+		</?>
+	</ul>
+	<div class="clear"></div>
+</header>
+
+<article class="markdown-body">
+	{{articleData.html === undefined ? '제곧내 (제곧내는 제목은 곧 내용입니다의 약자입니다. ㅎㅎ)' : articleData.html}}
+</article>
+
+<ul id="comment-list">
+	<~ commentDataSet -> commentData >
+		<li id="comment-{{commentData.id}}" class="comment">
+			<div class="left">
+				<div class="header">
+					<a href="/user/{{commentData.writerData.id}}">
+						<? commentData.writerData.iconFileId === undefined >
+							<img class="icon" src="/R/icon-default.png">
+						</?>
+						<? else >
+							<img class="icon" src="/__RF/Life/ICON/{{commentData.writerData.iconFileId}}">
+						</?> <span class="nickname">{{commentData.writerData.nickname}}</span>
+					</a> | <%
+						var cal = CALENDAR(commentData.createTime);
+						print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
+					%>
 				</div>
-			</?>
-			<p id="comment-{{commentData.id}}-content"></p>
-		</div>
+				<p id="comment-{{commentData.id}}-content"></p>
+			</div>
+			<ul class="menu">
+				<li id="comment-{{commentData.id}}-like-menu"></li>
+				<? self.signedUserData !== undefined && commentData.writerId === self.signedUserData.id >
+					<li><a href="javascript:updateComment('{{commentData.id}}');">수정</a></li>
+					<li><a href="javascript:removeComment('{{commentData.id}}');">삭제</a></li>
+				</?>
+			</ul>
+			<div class="clear"></div>
+		</li>
 	</~>
-</div>
-<% include('layout/bottom-script.nsp'); %>
+</ul>
+
 <script>
 	READY(function() {
 		
@@ -225,36 +218,28 @@
 						padding : 10,
 						margin : 0
 					},
-					style : {
-						borderTop : '1px solid #ccc',
-						borderBottom : '1px solid #ccc',
-						onDisplayResize : function(width) {
-							if (width < 920) {
-								return {
-									borderLeft : 'none',
-									borderRight : 'none'
-								};
-							} else {
-								return {
-									borderLeft : '1px solid #ccc',
-									borderRight : '1px solid #ccc'
-								};
-							}
-						}
-					},
 					c : [UUI.FULL_TEXTAREA({
 						style : {
+							padding : '10px 30px',
 							height : 50
 						},
 						name : 'content',
 						value : commentData.content
-					}), UUI.FULL_SUBMIT({
+					}), DIV({
 						style : {
-							background: '#0078e7',
-							color: '#fff',
-							fontWeight: 'bold'
+							borderTop : '1px solid #ccc',
+							padding : '10px 30px',
+							borderBottom : '1px solid #ccc'
 						},
-						value : '댓글 수정'
+						c : UUI.FULL_SUBMIT({
+							style : {
+								background : '#1b98f8',
+								color : '#fff',
+								padding : '10px 0',
+								borderRadius : 20
+							},
+							value : '수정'
+						})
 					})],
 					on : {
 						submit : function(e, form) {
@@ -284,17 +269,11 @@
 			});
 		};
 		
-		var generateCommentLikeButton = function(commentDom, commentId, likeCount) {
+		var generateCommentLikeButton = function(likeDom, commentId, likeCount) {
 			
 			var likeButton;
 			
-			commentDom.append(likeButton = A({
-				style : {
-					marginTop : 10,
-					textDecoration : 'none',
-					fontSize : 12,
-					padding : '4px 8px'
-				},
+			likeDom.append(likeButton = A({
 				cls : 'left-button',
 				c : likeCount + ' 따봉',
 				on : {
@@ -310,20 +289,18 @@
 							},
 							success : function() {
 								likeButton.remove();
-								generateCommentLikeButton(commentDom, commentId, likeCount + 1);
+								generateCommentLikeButton(likeDom, commentId, likeCount + 1);
 							}
 						});
 					}
 				}
 			}));
-			
-			commentDom.append(CLEAR_BOTH());
 		};
 		
 		<~ commentDataSet -> commentData >
 			RUN(function() {
 				generateCommentLikeButton(DOM({
-					el : document.getElementById('comment-{{commentData.id}}')
+					el : document.getElementById('comment-{{commentData.id}}-like-menu')
 				}), '{{commentData.id}}', {{commentData.likeCount}});
 			});
 		</~>
@@ -347,42 +324,33 @@
 				padding : 10,
 				margin : 0
 			},
-			style : {
-				borderTop : '1px solid #ccc',
-				borderBottom : '1px solid #ccc',
-				onDisplayResize : function(width) {
-					if (width < 920) {
-						return {
-							borderLeft : 'none',
-							borderRight : 'none'
-						};
-					} else {
-						return {
-							borderLeft : '1px solid #ccc',
-							borderRight : '1px solid #ccc'
-						};
-					}
-				}
-			},
 			c : [UUI.FULL_TEXTAREA({
 				style : {
+					padding : '10px 30px',
 					height : 50
 				},
 				name : 'content'
-			}), UUI.FULL_SUBMIT({
+			}), DIV({
 				style : {
-					background: '#0078e7',
-					color: '#fff',
-					fontWeight: 'bold'
+					borderTop : '1px solid #ccc',
+					padding : '10px 30px'
 				},
-				value : '댓글 쓰기'
+				c : UUI.FULL_SUBMIT({
+					style : {
+						background : '#1b98f8',
+						color : '#fff',
+						padding : '10px 0',
+						borderRadius : 20
+					},
+					value : '댓글 쓰기'
+				})
 			})],
 			on : {
 				submit : function(e, form) {
 					
 					var data = form.getData();
 					
-					data.articleId = '{{data.id}}';
+					data.articleId = '{{articleData.id}}';
 					data.writerId = '{{self.signedUserData.id}}';
 					
 					form.setData({});
@@ -398,59 +366,71 @@
 		}));
 		
 		Life.CommentModel.onNew({
-			articleId : '{{data.id}}'
+			articleId : '{{articleData.id}}'
 		}, function(commentData) {
 			
 			Life.UserModel.get(commentData.writerId, function(writerData) {
 				
 				var commentDom;
 				var contentDom;
+				var likeDom;
 				
-				commentList.append(commentDom = DIV({
+				commentList.append(commentDom = LI({
 					id : 'comment-' + commentData.id,
 					cls : 'comment',
-					c : [IMG({
-						cls : 'icon',
-						src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
-					}), ' ', A({
-						cls : 'nickname',
-						href : '/user/' + writerData.id,
-						c : writerData.nickname
-					}), ' ', SPAN({
-						cls : 'time',
-						c : RUN(function() {
-							var cal = CALENDAR(commentData.createTime);
-							return cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true);
-						})
-					}), (writerData.id === '{{self.signedUserData.id}}' ? DIV({
-						cls : 'menu',
-						c : [A({
-							c : '댓글 수정',
-							on : {
-								tap : function() {
-									updateComment(commentData.id);
-								}
-							}
-						}), A({
-							c : '댓글 삭제',
-							on : {
-								tap : function() {
-									removeComment(commentData.id);
-								}
-							}
+					c : [DIV({
+						cls : 'left',
+						c : [DIV({
+							cls : 'header',
+							c : [A({
+								href : '/user/' + writerData.id,
+								c : [IMG({
+									cls : 'icon',
+									src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
+								}), ' ', SPAN({
+									cls : 'nickname',
+									c : writerData.nickname
+								})]
+							}), ' | ', RUN(function() {
+								var cal = CALENDAR(commentData.createTime);
+								return cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true);
+							})]
+						}), contentDom = P({
+							id : 'comment-' + commentData.id + '-content'
 						})]
-					}) : ''), contentDom = P({
-						id : 'comment-' + commentData.id + '-content'
-					})]
+					}), UL({
+						cls : 'menu',
+						c : COMBINE([[likeDom = LI({
+							id : 'comment-' + commentData.id + '-like-menu'
+						})], (writerData.id === '{{self.signedUserData.id}}' ? [LI({
+							c : A({
+								c : '수정',
+								on : {
+									tap : function() {
+										updateComment(commentData.id);
+									}
+								}
+							})
+						}), LI({
+							c : A({
+								c : '삭제',
+								on : {
+									tap : function() {
+										removeComment(commentData.id);
+									}
+								}
+							})
+						})] : [])])
+					}), CLEAR_BOTH()]
 				}));
 				
 				changeURLToLink(commentData.content, contentDom);
-				generateCommentLikeButton(commentDom, commentData.id, commentData.likeCount);
+				generateCommentLikeButton(likeDom, commentData.id, commentData.likeCount);
 			});
 		});
 		
 		Life.CommentModel.onRemove({
-			articleId : '{{data.id}}'
+			articleId : '{{articleData.id}}'
 		}, function(originData) {
 			var commentEl = document.getElementById('comment-' + originData.id);
 			if (commentEl !== TO_DELETE && commentEl.parentNode !== TO_DELETE) {
@@ -462,21 +442,17 @@
 			el : document.getElementById('like-menu')
 		});
 		
-		var likeCount = {{data.likeCount}};
+		var likeCount = {{articleData.likeCount}};
 		
 		var generateLikeButton = RAR(function() {
 			
 			likeMenu.empty();
 			likeMenu.append(A({
-				style : {
-					textDecoration : 'none'
-				},
-				cls : 'left-button',
 				c : likeCount + ' 따봉',
 				on : {
 					tap : function() {
 						Life.ArticleLikeModel.create({
-							articleId : '{{data.id}}',
+							articleId : '{{articleData.id}}',
 							userId : '{{self.signedUserData.id}}'
 						}, {
 							notValid : function(validErrors) {
@@ -491,7 +467,7 @@
 		});
 		
 		Life.ArticleLikeModel.onNew({
-			articleId : '{{data.id}}'
+			articleId : '{{articleData.id}}'
 		}, function() {
 			likeCount += 1;
 			generateLikeButton();
@@ -500,4 +476,3 @@
 		</?>
 	});
 </script>
-<% include('layout/bottom-html.nsp'); %>

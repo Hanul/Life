@@ -71,14 +71,11 @@
 	    </fieldset>
 	</form>
 	
-	<% include('../../layout/bottom-script.nsp'); %>
 	<% include('upload-script.nsp'); %>
-	<% include('../../layout/bottom-html.nsp'); %>
 </?>
 <? else >
 	<p>
 		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
 	</p>
-	
-	<% include('../../layout/bottom.nsp'); %>
 </?>
+<% include('../../layout/bottom.nsp'); %>

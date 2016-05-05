@@ -53,6 +53,16 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 							articleCount : 1
 						}
 					});
+					
+					if (savedData.categoryId !== undefined) {
+						Life.CategoryModel.updateNoHistory({
+							id : savedData.categoryId,
+							lastArticleTime : new Date(),
+							$inc : {
+								articleCount : 1
+							}
+						});
+					}
 				}
 			});
 			
@@ -118,6 +128,24 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 							articleCount : -1
 						}
 					});
+					
+					if (savedData.categoryId !== undefined) {
+						Life.CategoryModel.updateNoHistory({
+							id : savedData.categoryId,
+							$inc : {
+								articleCount : 1
+							}
+						});
+					}
+					
+					if (originData.categoryId !== undefined) {
+						Life.CategoryModel.updateNoHistory({
+							id : originData.categoryId,
+							$inc : {
+								articleCount : -1
+							}
+						});
+					}
 				}
 			});
 			
@@ -153,14 +181,23 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 					return false;
 				},
 				
-				after : function(savedData) {
+				after : function(originData) {
 					
 					Life.BoardModel.updateNoHistory({
-						id : savedData.boardId,
+						id : originData.boardId,
 						$inc : {
 							articleCount : -1
 						}
 					});
+					
+					if (originData.categoryId !== undefined) {
+						Life.CategoryModel.updateNoHistory({
+							id : originData.categoryId,
+							$inc : {
+								articleCount : -1
+							}
+						});
+					}
 				}
 			});
 		}

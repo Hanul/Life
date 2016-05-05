@@ -46,7 +46,6 @@
 	%>
 </?>
 
-<% include('../layout/bottom-script.nsp'); %>
 <? self.signedUserData !== undefined >
 	<script>
 		READY(function() {
@@ -116,4 +115,4 @@
 		});
 	</script>
 </?>
-<% include('../layout/bottom-html.nsp'); %>
+<% include('../layout/bottom.nsp'); %>

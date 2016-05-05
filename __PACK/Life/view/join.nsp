@@ -12,11 +12,11 @@
 				
 				// 메일을 보냅니다.
 				Life.sendMail({
-					senderName : '겜창인생',
+					senderName : '{{CONFIG.title}}',
 					senderAddress : NODE_CONFIG.Life.email,
 					receiverAddress : data.email,
-					title : '겜창인생 가입 경로를 전달합니다.',
-					content : '겜창인생에 가입해주셔서 감사합니다. 아래 링크를 통해 가입을 진행해 주시기 바랍니다.\n\nhttps://gclife.net/account/create/' + joinKeyData.id
+					title : '{{CONFIG.title}} 가입 경로를 전달합니다.',
+					content : '{{CONFIG.title}}에 가입해주셔서 감사합니다. 아래 링크를 통해 가입을 진행해 주시기 바랍니다.\n\nhttps://gclife.net/account/create/' + joinKeyData.id
 				});
 				
 				resume();

@@ -27,7 +27,6 @@
         <div class="pure-control-group">
             <label>게시판</label>
             <select name="boardId" value="{{data.boardId}}">
-            	<option value="">게시판 선택</option>
                 <~ self.boardDataSet -> boardData >
                 	<option value="{{boardData.id}}"{{boardData.id === data.boardId ? ' selected' : ''}}>{{boardData.name}}</option>
                 </~>
@@ -71,7 +70,7 @@
         <div class="pure-controls">
             <button id="article-form-submit" type="submit" class="pure-button pure-button-primary">글 작성 완료</button>
         	<p>
-        		<a href="/markdown-sample" target="_blank">겜창인생은 Markdown 문법을 사용합니다.</a>
+        		<a href="/markdown-sample" target="_blank">{{CONFIG.title}}은 Markdown 문법을 사용합니다.</a>
         	</p>
         </div>
     </fieldset>

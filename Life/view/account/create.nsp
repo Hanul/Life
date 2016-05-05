@@ -34,7 +34,7 @@
 %>
 <% include('../layout/top.nsp'); %>
 
-<form class="account-create-form pure-form pure-form-stacked" method="POST">
+<form id="account-create-form" method="POST">
 	
 	<? data.email === undefined >
 		해당 경로는 만료되었습니다.
@@ -101,16 +101,16 @@
 			<input type="password" name="password" value="{{data.password}}" placeholder="비밀번호">
 			
 			<pre><% include('../../R/terms.txt'); %></pre>
-			<label for="isAgreedTerms" class="pure-checkbox">
+			<label for="isAgreedTerms">
 	            <input id="isAgreedTerms" name="isAgreedTerms" value="true" type="checkbox"> 이용약관에 동의합니다.
 	        </label>
 	        
 			<pre><% include('../../R/privacy.txt'); %></pre>
-			<label for="isAgreedPrivacy" class="pure-checkbox">
+			<label for="isAgreedPrivacy">
 	            <input id="isAgreedPrivacy" name="isAgreedPrivacy" value="true" type="checkbox"> 개인정보 보호정책에 동의합니다.
 	        </label>
 			
-			<input class="pure-button pure-button-primary" type="submit" value="계정 생성">
+			<input class="button" type="submit" value="계정 생성">
 		</fieldset>
 	</?>
 </form>

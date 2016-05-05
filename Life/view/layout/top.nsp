@@ -45,7 +45,7 @@
 		<link rel="stylesheet" href="/R/BASE_STYLE.css">
 		<link rel="stylesheet" href="/Markdown/R/markdown.css">
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">
-		<link rel="stylesheet" href="/R/gclife.less">
+		<link rel="stylesheet" href="/R/style.less">
 	</head>
 	<body>
 		<nav id="menu" class="x-scroll">
@@ -68,25 +68,22 @@
 				pause();
 			%>
 			<a href="/" class="head">{{CONFIG.title}} ({{totalArticleCount}})</a>
-			<ul>
-		        <~ self.boardDataSet -> boardData >
-					<li><a href="/board/{{boardData.id}}">{{boardData.name}} ({{boardData.articleCount}})</a></li>
-				</~>
-				<? self.signedUserData === undefined >
-					<li><a href="/login">로그인</a></li>
-					<li><a href="/join">가입하기</a></li>
+	        <~ self.boardDataSet -> boardData >
+				<a href="/board/{{boardData.id}}">{{boardData.name}} ({{boardData.articleCount}})</a>
+			</~>
+			<? self.signedUserData === undefined >
+				<a href="/login">로그인</a>
+				<a href="/join">가입하기</a>
+			</?>
+			<? else >
+				<? CHECK_IS_IN({
+					array : self.signedUserData.roles,
+					value : Life.ROLE.ADMIN
+				}) === true >
+					<a href="/admin">관리자</a>
 				</?>
-				<? else >
-					<? CHECK_IS_IN({
-						array : self.signedUserData.roles,
-						value : Life.ROLE.ADMIN
-					}) === true >
-						<li><a href="/admin">관리자</a></li>
-					</?>
-					<li><a href="/user/{{self.signedUserData.id}}">내 정보</a></li>
-					<li><a href="/logout">로그아웃</a></li>
-				</?>
-				<div class="clear"></div>
-			</ul>
+				<a href="/user/{{self.signedUserData.id}}">내 정보</a>
+				<a href="/logout">로그아웃</a>
+			</?>
 		</nav>
 		<div id="wrapper">

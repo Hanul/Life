@@ -22,9 +22,9 @@
 	</ul>
 </?>
 
-<form class="article-form pure-form pure-form-stacked" method="POST">
+<form id="article-form" method="POST">
     <fieldset>
-        <div class="pure-control-group">
+        <div>
             <label>게시판</label>
             <select name="boardId" value="{{data.boardId}}">
                 <~ self.boardDataSet -> boardData >
@@ -33,7 +33,7 @@
             </select>
         </div>
         
-        <div class="pure-control-group">
+        <div>
             <label>카테고리</label>
             <select name="categoryId" value="{{data.categoryId}}">
             	<%
@@ -57,19 +57,19 @@
             </select>
         </div>
         
-        <div class="pure-control-group">
+        <div>
             <label>제목</label>
             <input name="title" value="{{data.title}}" placeholder="제목">
         </div>
 
-        <div class="pure-control-group">
+        <div>
             <label>내용</label>
             <textarea name="content" placeholder="내용" rows="10">{{data.content}}</textarea>
         </div>
         
-        <div class="pure-controls">
-            <button id="article-form-submit" type="submit" class="pure-button pure-button-primary">글 작성 완료</button>
-        	<p>
+        <div>
+            <button id="article-form-submit" type="submit" class="button">글 작성 완료</button>
+            <p>
         		<a href="/markdown-sample" target="_blank">{{CONFIG.title}}은 Markdown 문법을 사용합니다.</a>
         	</p>
         </div>

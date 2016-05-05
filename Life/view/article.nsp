@@ -71,7 +71,7 @@
 	pause();
 %>
 <% include('layout/top.nsp'); %>
-<div class="article">
+<div id="article">
 	
 	<h3 class="title">{{data.categoryData === undefined ? '' : '[' + data.categoryData.category + '] '}}{{data.title}}</h3>
 	
@@ -100,12 +100,10 @@
 	<div id="like-menu" class="left">
 	</div>
 	
-	<div class="right">
-		<? self.signedUserData !== undefined && data.writerId === self.signedUserData.id >
-		    <a class="pure-button pure-button-primary" href="/article/update?id={{data.id}}">글 수정</a>
-		    <a class="pure-button" href="/article/remove?id={{data.id}}">글 삭제</a>
-		</?>
-	</div>
+	<? self.signedUserData !== undefined && data.writerId === self.signedUserData.id >
+	    <a class="right-button" href="/article/update?id={{data.id}}">글 수정</a>
+	    <a class="right-button" href="/article/remove?id={{data.id}}">글 삭제</a>
+	</?>
 	
 	<div class="clear"></div>
 </div>
@@ -297,7 +295,7 @@
 					fontSize : 12,
 					padding : '4px 8px'
 				},
-				cls : 'pure-button pure-button-primary',
+				cls : 'left-button',
 				c : likeCount + ' 따봉',
 				on : {
 					tap : function() {
@@ -318,6 +316,8 @@
 					}
 				}
 			}));
+			
+			commentDom.append(CLEAR_BOTH());
 		};
 		
 		<~ commentDataSet -> commentData >
@@ -471,7 +471,7 @@
 				style : {
 					textDecoration : 'none'
 				},
-				cls : 'pure-button pure-button-primary',
+				cls : 'left-button',
 				c : likeCount + ' 따봉',
 				on : {
 					tap : function() {

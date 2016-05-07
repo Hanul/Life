@@ -62,6 +62,7 @@
 						category : 1
 					}
 				}, function(categoryDataSet) {
+					
 					categorySelect.empty();
 					
 					EACH(categoryDataSet, function(categoryData) {
@@ -69,6 +70,10 @@
 							c : categoryData.category,
 							value : categoryData.id
 						}));
+						
+						if (categoryData.id === '{{data.categoryId}}') {
+							categorySelect.getEl().value = '{{data.categoryId}}';
+						}
 					});
 				});
 			}));
@@ -147,6 +152,10 @@
 									},
 									c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
 								}), input = UUI.FULL_INPUT({
+									style : {
+										padding : 10,
+										border : '1px solid #ccc'
+									},
 									value : '[![ScreenShot](' + Life.RF(fileData.id) + ')](' + Life.RF(fileData.id) + ')'
 								})]
 							}));

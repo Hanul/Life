@@ -28,13 +28,15 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<form class="pure-form" method="POST">
+<h1 id="form-title">환영합니다.</h1>
+
+<form id="form" method="POST">
 	
 	<? self.method === 'POST' && VALID.email(data.email) === true >
 		<p>
-			이메일로 계정 생성 경로가 전송되었습니다! 메일을 확인해보세요!
+			이메일로 계정 생성 경로가 전송되었습니다! 메일을 확인해보세요!<br>
+			<a href="http://{{data.email.substring(data.email.indexOf('@') + 1)}}">http://{{data.email.substring(data.email.indexOf('@') + 1)}}</a>
 		</p>
-		<a href="http://{{data.email.substring(data.email.indexOf('@') + 1)}}">http://{{data.email.substring(data.email.indexOf('@') + 1)}}</a>
 		<p>
 			메일이 오질 않았다면, 스팸 메일함을 확인해주시고, 거기에도 없으면 메일을 재전송해 주시기 바랍니다!
 		</p>
@@ -52,11 +54,12 @@
 		</ul>
 	</?>
 
-	<fieldset>
+	<div class="input">
 		<input type="email" name="email" value="{{data.email}}" placeholder="이메일">
-		<input class="pure-button pure-button-primary" type="submit" value="이메일 인증">
-	</fieldset>
+	</div>
 	
+	<input type="submit" value="이메일 인증">
+
 </form>
 
 <% include('layout/bottom.nsp'); %>

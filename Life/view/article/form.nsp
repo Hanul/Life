@@ -1,79 +1,94 @@
-<? validErrors !== undefined >
-	<ul class="error">
-		<~ validErrors -> name : validError >
-			<? name === 'boardId' >
-				<? validError.type === 'notEmpty' >
-					<li>게시판을 선택해주세요.</li>
-				</?>
-			</?><? name === 'title' >
-				<? validError.type === 'notEmpty' >
-					<li>제목을 입력해주세요.</li>
-				</?>
-				<? validError.type === 'size' >
-					<li>제목은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
-				</?>
-			</?>
-			<? name === 'content' >
-				<? validError.type === 'size' >
-					<li>내용은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
-				</?>
-			</?>
-		</~>
-	</ul>
-</?>
+<h1 id="form-title">글 작성</h1>
 
-<form id="article-form" method="POST">
-    <fieldset>
-        <div>
-            <label>게시판</label>
-            <select name="boardId" value="{{data.boardId}}">
-                <~ self.boardDataSet -> boardData >
-                	<option value="{{boardData.id}}"{{boardData.id === data.boardId ? ' selected' : ''}}>{{boardData.name}}</option>
-                </~>
-            </select>
-        </div>
-        
-        <div>
-            <label>카테고리</label>
-            <select name="categoryId" value="{{data.categoryId}}">
-            	<%
-            		var categoryDataSet;
-            		
-            		Life.CategoryModel.find({
-            			filter : {
-            				boardId : data.boardId
-            			}
-            		}, function(_categoryDataSet) {
-            			categoryDataSet = _categoryDataSet;
-            			resume();
-            		});
-            		
-            		pause();
-            	%>
-            	<option value="">카테고리 선택</option>
-                <~ categoryDataSet -> categoryData >
-                	<option value="{{categoryData.id}}"{{categoryData.id === data.categoryId ? ' selected' : ''}}>{{categoryData.category}}</option>
-                </~>
-            </select>
-        </div>
-        
-        <div>
-            <label>제목</label>
-            <input name="title" value="{{data.title}}" placeholder="제목">
-        </div>
+<form id="form" method="POST">
+	
+	<? validErrors !== undefined >
+		<ul class="error">
+			<~ validErrors -> name : validError >
+				<? name === 'boardId' >
+					<? validError.type === 'notEmpty' >
+						<li>게시판을 선택해주세요.</li>
+					</?>
+				</?><? name === 'title' >
+					<? validError.type === 'notEmpty' >
+						<li>제목을 입력해주세요.</li>
+					</?>
+					<? validError.type === 'size' >
+						<li>제목은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
+					</?>
+				</?>
+				<? name === 'content' >
+					<? validError.type === 'size' >
+						<li>내용은 {{validError.validParams.max}}글자 이하로 입력해주시기 바랍니다.</li>
+					</?>
+				</?>
+			</~>
+		</ul>
+	</?>
 
-        <div>
-            <label>내용</label>
-            <textarea name="content" placeholder="내용" rows="10">{{data.content}}</textarea>
-        </div>
-        
-        <div>
-            <button id="article-form-submit" type="submit" class="button">글 작성 완료</button>
-            <p>
-        		<a href="/markdown-sample" target="_blank">{{CONFIG.title}}은 Markdown 문법을 사용합니다.</a>
-        	</p>
-        </div>
-    </fieldset>
+	<label>게시판</label>
+	<div class="input">
+		<select id="boardSelect" name="boardId" value="{{data.boardId}}">
+			<option value="">게시판 선택</option>
+			<~ self.boardDataSet -> boardData >
+				<option value="{{boardData.id}}"{{boardData.id === data.boardId ? ' selected' : ''}}>{{boardData.name}}</option>
+			</~>
+		</select>
+	</div>
+	
+	<label>카테고리</label>
+	<div class="input">
+		<select id="categorySelect" name="categoryId" value="{{data.categoryId}}">
+			<option value="">카테고리 선택</option>
+		</select>
+	</div>
+	
+	<script>
+		READY(function() {
+			var boardSelect = DOM({
+				el : document.getElementById('boardSelect')
+			});
+			var categorySelect = DOM({
+				el : document.getElementById('categorySelect')
+			});
+			
+			boardSelect.on('change', RAR(function() {
+				
+				Life.CategoryModel.find({
+					filter : {
+						boardId : boardSelect.getEl().value
+					},
+					sort : {
+						category : 1
+					}
+				}, function(categoryDataSet) {
+					categorySelect.empty();
+					
+					EACH(categoryDataSet, function(categoryData) {
+						categorySelect.append(OPTION({
+							c : categoryData.category,
+							value : categoryData.id
+						}));
+					});
+				});
+			}));
+		});
+	</script>
+	
+	<label>제목</label>
+	<div class="input">
+		<input name="title" value="{{data.title}}" placeholder="제목">
+	</div>
+
+	<label>내용</label>
+	<div class="input">
+		<textarea name="content" placeholder="내용" rows="10">{{data.content}}</textarea>
+	</div>
+
+	<button id="article-form-submit" type="submit" class="button">글 작성 완료</button>
+	<p>
+		<a href="/markdown-sample" target="_blank">{{CONFIG.title}}은 Markdown 문법을 사용합니다.</a>
+	</p>
 </form>
 
 <script>
@@ -84,109 +99,123 @@
 		
 		DOM({
 			el : document.getElementById('article-form-submit')
-		}).after(uploadForm = UUI.FULL_UPLOAD_FORM({
+		}).after(DIV({
 			style : {
-				border : '1px solid #999',
-				marginTop : 20,
-				marginBottom : 20
+				marginTop : 20
 			},
-			box : Life,
-			isMultiple : true
-		}, {
-			overSizeFile : function(maxUploadFileMB) {
-				alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
-			},
-			success : function(fileDataSet, form) {
-				
-				EACH(fileDataSet, function(fileData) {
+			c : [H5({
+				style : {
+					fontSize : 16,
+					color : '#999'
+				},
+				c : '파일 추가'
+			}), uploadForm = UUI.FULL_UPLOAD_FORM({
+				style : {
+					border : '1px solid #ccc',
+					marginTop : 10,
+					marginBottom : 20
+				},
+				formStyle : {
+					padding : 5
+				},
+				box : Life,
+				isMultiple : true
+			}, {
+				overSizeFile : function(maxUploadFileMB) {
+					alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+				},
+				success : function(fileDataSet, form) {
 					
-					var
-					// input
-					input;
-					
-					if (
-					fileData.type === 'image/png' ||
-					fileData.type === 'image/jpeg' ||
-					fileData.type === 'image/gif') {
-					
-						uploadForm.after(DIV({
-							style : {
-								paddingBottom : 20
-							},
-							c : [P({
-								style : {
-									fontSize : 14
-								},
-								c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-							}), input = UUI.FULL_INPUT({
-								value : '[![ScreenShot](' + Life.RF(fileData.id) + ')](' + Life.RF(fileData.id) + ')'
-							})]
-						}));
-					}
-					
-					else if (
-					fileData.type === 'audio/aac' ||
-					fileData.type === 'audio/mp4' ||
-					fileData.type === 'audio/mpeg' ||
-					fileData.type === 'audio/oga' ||
-					fileData.type === 'audio/wav' ||
-					fileData.type === 'audio/webm') {
-					
-						uploadForm.after(DIV({
-							style : {
-								paddingBottom : 20
-							},
-							c : [P({
-								style : {
-									fontSize : 14
-								},
-								c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-							}), input = UUI.FULL_INPUT({
-								value : '<audio src="' + Life.RF(fileData.id) + '" />'
-							})]
-						}));
-					}
-					
-					else if (
-					fileData.type === 'video/mp4' ||
-					fileData.type === 'video/ogg' ||
-					fileData.type === 'video/webm') {
-					
-						uploadForm.after(DIV({
-							style : {
-								paddingBottom : 20
-							},
-							c : [P({
-								style : {
-									fontSize : 14
-								},
-								c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-							}), input = UUI.FULL_INPUT({
-								value : '<video controls src="' + Life.RF(fileData.id) + '"></video>'
-							})]
-						}));
-					}
-					
-					else {
+					EACH(fileDataSet, function(fileData) {
 						
-						uploadForm.after(DIV({
-							style : {
-								paddingBottom : 20
-							},
-							c : [P({
+						var
+						// input
+						input;
+						
+						if (
+						fileData.type === 'image/png' ||
+						fileData.type === 'image/jpeg' ||
+						fileData.type === 'image/gif') {
+						
+							uploadForm.after(DIV({
 								style : {
-									fontSize : 14
+									paddingBottom : 20
 								},
-								c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-							}), input = UUI.FULL_INPUT({
-								value : '[파일 다운로드](' + Life.RF(fileData.id) + ')'
-							})]
-						}));
-					}
-					
-					input.select();
-				});
-			}
+								c : [P({
+									style : {
+										fontSize : 14
+									},
+									c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+								}), input = UUI.FULL_INPUT({
+									value : '[![ScreenShot](' + Life.RF(fileData.id) + ')](' + Life.RF(fileData.id) + ')'
+								})]
+							}));
+						}
+						
+						else if (
+						fileData.type === 'audio/aac' ||
+						fileData.type === 'audio/mp4' ||
+						fileData.type === 'audio/mpeg' ||
+						fileData.type === 'audio/oga' ||
+						fileData.type === 'audio/wav' ||
+						fileData.type === 'audio/webm') {
+						
+							uploadForm.after(DIV({
+								style : {
+									paddingBottom : 20
+								},
+								c : [P({
+									style : {
+										fontSize : 14
+									},
+									c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+								}), input = UUI.FULL_INPUT({
+									value : '<audio src="' + Life.RF(fileData.id) + '" />'
+								})]
+							}));
+						}
+						
+						else if (
+						fileData.type === 'video/mp4' ||
+						fileData.type === 'video/ogg' ||
+						fileData.type === 'video/webm') {
+						
+							uploadForm.after(DIV({
+								style : {
+									paddingBottom : 20
+								},
+								c : [P({
+									style : {
+										fontSize : 14
+									},
+									c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+								}), input = UUI.FULL_INPUT({
+									value : '<video controls src="' + Life.RF(fileData.id) + '"></video>'
+								})]
+							}));
+						}
+						
+						else {
+							
+							uploadForm.after(DIV({
+								style : {
+									paddingBottom : 20
+								},
+								c : [P({
+									style : {
+										fontSize : 14
+									},
+									c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+								}), input = UUI.FULL_INPUT({
+									value : '[파일 다운로드](' + Life.RF(fileData.id) + ')'
+								})]
+							}));
+						}
+						
+						input.select();
+					});
+				}
+			})]
 		}));
 	});
 </script>

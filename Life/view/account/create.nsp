@@ -34,7 +34,9 @@
 %>
 <% include('../layout/top.nsp'); %>
 
-<form id="account-create-form" method="POST">
+<h1 id="form-title">계정 생성</h1>
+
+<form id="form" method="POST">
 	
 	<? data.email === undefined >
 		해당 경로는 만료되었습니다.
@@ -86,32 +88,35 @@
 			</ul>
 		</?>
 		
-		<fieldset>
-			<legend>계정을 생성합니다.</legend>
-			<label>이메일</label>
-			<p class="email">{{data.email}}</p>
-			
-			<label for="username">로그인 아이디</label>
+		<label>이메일</label>
+		<p class="email">{{data.email}}</p>
+		
+		<label for="username">로그인 아이디</label>
+		<div class="input">
 			<input name="username" value="{{data.username}}" placeholder="로그인 아이디">
-			
-			<label>닉네임</label>
+		</div>
+		
+		<label>닉네임</label>
+		<div class="input">
 			<input name="nickname" value="{{data.nickname}}" placeholder="닉네임">
-			
-			<label>비밀번호</label>
+		</div>
+		
+		<label>비밀번호</label>
+		<div class="input">
 			<input type="password" name="password" value="{{data.password}}" placeholder="비밀번호">
-			
-			<pre><% include('../../R/terms.txt'); %></pre>
-			<label for="isAgreedTerms">
-	            <input id="isAgreedTerms" name="isAgreedTerms" value="true" type="checkbox"> 이용약관에 동의합니다.
-	        </label>
-	        
-			<pre><% include('../../R/privacy.txt'); %></pre>
-			<label for="isAgreedPrivacy">
-	            <input id="isAgreedPrivacy" name="isAgreedPrivacy" value="true" type="checkbox"> 개인정보 보호정책에 동의합니다.
-	        </label>
-			
-			<input class="button" type="submit" value="계정 생성">
-		</fieldset>
+		</div>
+		
+		<label for="isAgreedTerms">
+            <input id="isAgreedTerms" name="isAgreedTerms" value="true" type="checkbox"> 이용약관에 동의합니다.
+        </label>
+		<pre><% include('../../R/terms.txt'); %></pre>
+        
+		<label for="isAgreedPrivacy">
+            <input id="isAgreedPrivacy" name="isAgreedPrivacy" value="true" type="checkbox"> 개인정보 보호정책에 동의합니다.
+        </label>
+		<pre><% include('../../R/privacy.txt'); %></pre>
+		
+		<input type="submit" value="계정 생성">
 	</?>
 </form>
 

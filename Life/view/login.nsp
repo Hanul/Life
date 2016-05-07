@@ -26,7 +26,9 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<form class="pure-form" method="POST">
+<h1 id="form-title">로그인</h1>
+
+<form id="form" method="POST">
 
 	<p>
 		오늘도 {{CONFIG.title}}에 방문해주신 당신을 환영합니다!
@@ -38,14 +40,19 @@
 		</ul>
 	</?>
 	
-	<fieldset>
+	<div class="input">
 		<input type="text" name="username" value="{{data.username}}" placeholder="아이디">
+	</div>
+	
+	<div class="input">
 		<input type="password" name="password" value="{{data.password}}" placeholder="비밀번호">
-		<input class="pure-button pure-button-primary" type="submit" value="로그인">
-		<label for="isToRememberMe" class="pure-checkbox">
-            <input id="isToRememberMe" name="isToRememberMe" value="true" type="checkbox"> 로그인 유지
-        </label>
-	</fieldset>
+	</div>
+	
+	<label for="isToRememberMe">
+        <input id="isToRememberMe" name="isToRememberMe" value="true" type="checkbox"> 로그인 유지
+    </label>
+	
+	<input type="submit" value="로그인">
 	
 	<a href="/join">아직 아이디가 없으세요?</a>
 	

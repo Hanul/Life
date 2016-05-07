@@ -33,6 +33,23 @@
 			value : Life.ROLE.ADMIN
 		}) === true;
 	};
+	
+	self.totalArticleCount = 0;
+	
+	Life.BoardModel.find({
+		sort : {
+			index : 1
+		}
+	}, function(_boardDataSet) {
+		self.boardDataSet = _boardDataSet;
+		
+		EACH(_boardDataSet, function(boardData) {
+			self.totalArticleCount += boardData.articleCount;
+		});
+		
+		resume();
+	});
+	pause();
 %>
 <!DOCTYPE html>
 <html>
@@ -45,7 +62,7 @@
 		
 		<title>{{self.title === undefined ? '' : self.title + ' - '}}{{CONFIG.title}}</title>
 		
-		<link rel="stylesheet" href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css">
+		<link rel="stylesheet" href="//fonts.googleapis.com/earlyaccess/notosanskr.css">
 		<link rel="stylesheet" href="/R/BASE_STYLE.css">
 		<link rel="stylesheet" href="/Markdown/R/markdown.css">
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">

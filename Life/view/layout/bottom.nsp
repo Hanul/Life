@@ -1,28 +1,48 @@
-		<div id="menu">
+		<div id="toolbar" class="mobile">
+			<div class="clear"></div>
+		</div>
+		<script>
+			DOM({
+				el : document.getElementById('toolbar')
+			}).prepend(A({
+				style : {
+					flt : 'left',
+					padding : 10,
+					lineHeight : 0
+				},
+				c : IMG({
+					src : Life.R('menu.png')
+				}),
+				on : {
+					tap : function() {
+						
+						var menuDom = DOM({
+							el : document.getElementById('menu')
+						});
+						
+						menuDom.addStyle({
+							display : 'block'
+						});
+						
+						DELAY(function() {
+							
+							EVENT_ONCE('tap', function() {
+								menuDom.addStyle({
+									display : 'none'
+								});
+							});
+						});
+					}
+				}
+			}));
+		</script>
+		<div id="menu" class="tablet">
 			<div class="inner">
 				<div class="logo"><a href="/"><img src="/R/logo.png"></a></div>
 				<p class="version">v0.8</p>
-				<a id="write-button" href="/article/write">글 작성</a>
+				<a id="write-button" href="/article/write?boardId={{self.boardId}}">글 작성</a>
 				<ul>
-		            <%
-		            	var totalArticleCount = 0;
-		            	
-						Life.BoardModel.find({
-							sort : {
-								index : 1
-							}
-						}, function(_boardDataSet) {
-							self.boardDataSet = _boardDataSet;
-							
-							EACH(_boardDataSet, function(boardData) {
-								totalArticleCount += boardData.articleCount;
-							});
-							
-							resume();
-						});
-						pause();
-					%>
-					<li><a href="/">{{CONFIG.title}} <span class="count">({{totalArticleCount}})</span></a></li>
+					<li><a href="/">{{CONFIG.title}} <span class="count">({{self.totalArticleCount}})</span></a></li>
 			        <~ self.boardDataSet -> boardData >
 						<li><a href="/board/{{boardData.id}}">{{boardData.name}} <span class="count">({{boardData.articleCount}})</span></a></li>
 					</~>

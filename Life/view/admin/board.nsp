@@ -5,7 +5,7 @@
 		<li><a href="/admin/board/create">게시판 추가</a></li>
 	</ul>
 	
-	<table class="pure-table">
+	<table>
 		<thead>
 			<tr>
 				<th>게시판 아이디</th>

@@ -8,6 +8,7 @@ BOOT({
 		isDevMode : true,
 		defaultBoxName : 'Life',
 		title : 'Life CMS',
+		description : 'Life는 쉽게 게시판 형 사이트를 구축할 수 있는 <a href="https://github.com/Hanul/UPPERCASE">UPPERCASE</a>와 <a href="https://github.com/Hanul/NSP">NSP</a> 기반의 CMS(Content Management System)입니다.',
 		webServerPort : 8410
 	},
 	NODE_CONFIG : {

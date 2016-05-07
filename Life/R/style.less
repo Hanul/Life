@@ -1,7 +1,7 @@
 html, body {
 	background-color: #fff;
 	color: #000;
-	font-family: 'Nanum Gothic';
+	font-family: 'Noto Sans KR';
 }
 
 .left {
@@ -12,6 +12,49 @@ html, body {
 	clear: both;
 }
 
+.pc {
+	@media screen {
+		@media (min-width: 980px) {
+			display: auto;
+		}
+		@media (max-width: 979px) {
+			display: none;
+		}
+	}
+}
+
+.tablet {
+	@media screen {
+		@media (min-width: 600px) {
+			display: auto;
+		}
+		@media (max-width: 599px) {
+			display: none;
+		}
+	}
+}
+
+.mobile {
+	@media screen {
+		@media (min-width: 600px) {
+			display: none;
+		}
+		@media (max-width: 599px) {
+			display: auto;
+		}
+	}
+}
+
+#toolbar {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 40px;
+	background-color: #252a3a;
+	color: #fff;
+}
+
 #menu {
 	position: fixed;
 	left: 0;
@@ -20,10 +63,11 @@ html, body {
 	height: 100%;
 	background-color: #252a3a;
 	color: #fff;
+	overflow-x: hidden;
 	overflow-y: auto;
 	.inner {
 		width: 110px;
-		margin: 20px auto auto auto;
+		margin: 20px auto;
 		.logo {
 			img {
 				width: 100%;
@@ -75,16 +119,35 @@ html, body {
 }
 
 body {
-	padding-left: 150px;
+	@media screen {
+		@media (min-width: 600px) {
+			padding-top: 0;
+			padding-left: 150px;
+		}
+		@media (max-width: 599px) {
+			padding-top: 40px;
+			padding-left: 0;
+		}
+	}
 }
 
 #list {
-	position: fixed;
-	left: 150px;
+	@media screen {
+		@media (min-width: 980px) {
+			position: fixed;
+			left: 150px;
+			width: 380px;
+		}
+		@media (max-width: 979px) {
+			position: relative;
+			left: 0;
+			width: auto;
+		}
+	}
 	top: 0;
 	line-height: 1.5em;
-	width: 380px;
 	height: 100%;
+	overflow-x: hidden;
 	overflow-y: auto;
 	word-break: break-all;
 	.item {
@@ -99,12 +162,14 @@ body {
 			vertical-align: top;
 		}
 		.icon {
-			display: block;
-			width: 40px;
-			border-radius: 3px;
+			width: 50px;
+			img {
+				display: block;
+				width: 40px;
+				border-radius: 3px;
+			}
 		}
 		.nickname {
-			width: 274px;
 			color: #999;
 			font-weight: bold;
 		}
@@ -154,7 +219,20 @@ body {
 }
 
 #article {
-	margin-left: 380px;
+	@media screen {
+		@media (min-width: 980px) {
+			margin-left: 380px;
+		}
+		@media (max-width: 979px) {
+			margin-left: 0;
+		}
+	}
+	a, .count {
+		color: rgb(65, 131, 196);
+	}
+	.description {
+		margin-bottom: 20px;
+	}
 	header {
 		padding: 40px 30px 15px 30px;
 		border-bottom: 1px solid #ccc;
@@ -179,6 +257,7 @@ body {
 			}
 		}
 		.menu {
+			margin-top: 15px;
 			float: right;
 			li {
 				margin-left: 8px;
@@ -193,8 +272,21 @@ body {
 			}
 		}
 	}
+	.category {
+		border-bottom: 1px solid #ccc;
+		padding: 15px 30px;
+		line-height: 2em;
+		h5 {
+			color: #333;
+			font-size: 16px;
+		}
+		a {
+			float: left;
+			margin-right: 10px;
+		}
+	}
 	article {
-		padding: 40px 30px;
+		padding: 30px;
 		color: #333;
 		font-size: 14px;
 	}
@@ -219,6 +311,7 @@ body {
 				color: #333;
 			}
 			.menu {
+				margin-top: 15px;
 				float: right;
 				li {
 					margin-left: 8px;
@@ -233,5 +326,67 @@ body {
 				}
 			}
 		}
+	}
+}
+
+#form-title {
+	padding: 40px 30px 15px 30px;
+	border-bottom: 1px solid #ccc;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10px;
+}
+
+#form {
+	padding: 30px;
+	p {
+		color: #333;
+		margin-bottom: 20px;
+	}
+	.error {
+		color: red;
+		margin-bottom: 20px;
+	}
+	label {
+		margin-bottom: 10px;
+		display: block;
+		font-size: 16px;
+		color: #999;
+	}
+	.input {
+		margin-bottom: 15px;
+		display: block;
+		border: 1px solid #ccc;
+		padding: 10px;
+		select, input, textarea {
+			border: none;
+			width: 100%;
+		}
+	}
+	pre {
+		margin-bottom: 15px;
+		display: block;
+		border: 1px solid #ccc;
+		padding: 10px;
+		height: 150px;
+		overflow-y: scroll;
+	}
+	[type=submit] {
+		border: none;
+		margin-top: 20px;
+		background-color: #1b98f8;
+		display: block;
+		width: 100%;
+		text-align: center;
+		padding: 10px 0;
+		border-radius: 20px;
+		cursor: pointer;
+		font-size: 14px;
+		color: #fff;
+		margin-bottom: 20px;
+	}
+	a {
+		color: rgb(65, 131, 196);
 	}
 }

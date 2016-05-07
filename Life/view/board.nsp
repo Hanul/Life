@@ -11,6 +11,8 @@
 		articleId = undefined;
 	}
 	
+	self.boardId = boardId;
+	
 	var boardData;
 	
 	var page = self.params.page;
@@ -142,8 +144,8 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<div id="article">
-	<? articleId === undefined >
+<? articleId === undefined >
+	<div id="article" class="pc">
 		<? boardData === undefined >
 			<header>
 				<h1 class="logo">
@@ -151,48 +153,64 @@
 				</h1>
 			</header>
 			<article>
-				<h3 class="left">전체글 ({{totalArticleCount}})</h3>
+				<p class="description">
+					{{CONFIG.description}}
+				</p>
+				<p>전체 총 <span class="count">{{totalArticleCount}}</span>개의 글이 있습니다.</p>
 				<? page <= 1 >
-					<p class="right">
-						총 <%
+					<p>
+						총 <span class="count"><%
 							Life.UserModel.count(function(count) {
 								print(count);
 								resume();
 							});
 							pause();
-						%>명의 유저가 있습니다.
+						%></span>명의 유저가 있습니다.
 					</p>
 				</?>
 			</article>
 		</?>
 		<? else >
-			<h3>{{boardData.name}} ({{totalArticleCount}})</h3>
-			<? page <= 1 >
-				<p>
-					{{boardData.html}}
-				</p>
+			<header>
+				<h1>{{boardData.name}} <span class="count">({{totalArticleCount}})</span></h1>
+			</header>
+			<? self.categoryDataSet !== undefined >
+				<div class="category">
+					<h5>카테고리</h5>
+					<ul>
+						<~ self.categoryDataSet -> categoryData >
+							<li><a href="/board/{{categoryData.boardId}}?categoryId={{categoryData.id}}">{{categoryData.category}} <span class="count">({{categoryData.articleCount}})</span></a></li>
+						</~>
+						<div class="clear"></div>
+					</ul>
+				</div>
 			</?>
+			<article>
+				{{boardData.html}}
+			</article>
 		</?>
-	</?>
-	<? else >
+	</div>
+</?>
+<? else >
+	<div id="article">
 		<% include('article.nsp'); %>
-	</?>
-</div>
+	</div>
+</?>
 
-<div id="list">
+<div id="list" {{articleId === undefined ? '' : 'class="pc"'}}>
 	<ul>
 		<~ articleDataSet -> articleData >
 			<li>
 				<a class="item" href="/board/{{boardData === undefined ? 'all' : boardData.id}}/{{articleData.id}}">
 					<table>
 						<tr>
-							<td rowspan="4">
+							<td rowspan="4" class="icon">
 								<a href="/user/{{articleData.writerData.id}}">
 									<? articleData.writerData.iconFileId === undefined >
-										<img class="icon" src="/R/icon-default.png">
+										<img src="/R/icon-default.png">
 									</?>
 									<? else >
-										<img class="icon" src="/__RF/Life/ICON/{{articleData.writerData.iconFileId}}">
+										<img src="/__RF/Life/ICON/{{articleData.writerData.iconFileId}}">
 									</?>
 								</a>
 							</td>

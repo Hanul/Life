@@ -229,7 +229,15 @@
 									글 내용이 없습니다.
 								</?>
 								<? else >
-									{{(articleData.content.length > 75 ? articleData.content.substring(0, 75) + '...' : articleData.content).replace(/</g, '').replace(/>/g, '')}}
+									<%
+										var content =  articleData
+											.content
+											.replace(/<.*>/g, '')
+											.replace(/\[.*\)/g, '')
+											.replace(/\n/g, '')
+											.replace(/#/g, '');
+									%>
+									{{content.length > 75 ? content.substring(0, 75) + '...' : content}}
 								</?>
 							</td>
 						</tr>

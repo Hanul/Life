@@ -29,20 +29,6 @@ Life.MAIN = METHOD({
 			}
 		});
 		
-		// 나중에 지울것
-		Life.CategoryModel.find(EACH(function(categoryData) {
-			Life.ArticleModel.count({
-				filter : {
-					categoryId : categoryData.id
-				}
-			}, function(count) {
-				Life.CategoryModel.updateNoHistory({
-					id : categoryData.id,
-					articleCount : count
-				});
-			});
-		}));
-		
 		UMAIL.CONNECT_TO_MAIL_SERVER({
 			host : 'smtp.gmail.com',
 			port : 465,

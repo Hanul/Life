@@ -82,7 +82,7 @@
 				box : Life
 			}, {
 				overSizeFile : function(maxUploadFileMB) {
-					alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+					Yogurt.Alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
 				},
 				success : function(fileData, form) {
 					
@@ -108,7 +108,7 @@
 					}
 					
 					else {
-						alert('이미지 파일만 업로드 가능합니다.');
+						Yogurt.Alert('이미지 파일만 업로드 가능합니다.');
 					}
 				}
 			}));

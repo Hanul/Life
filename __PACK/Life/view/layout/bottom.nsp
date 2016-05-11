@@ -8,10 +8,12 @@
 				style : {
 					flt : 'left',
 					padding : 10,
-					lineHeight : 0
+					lineHeight : 0,
+					fontSize : 18
 				},
-				c : IMG({
-					src : Life.R('menu.png')
+				c : DOM({
+					tag : 'i',
+					cls : 'axi axi-menu'
 				}),
 				on : {
 					tap : function() {
@@ -21,17 +23,28 @@
 						});
 						
 						menuDom.addStyle({
-							display : 'block'
+							display : 'block',
+							zIndex : 999
 						});
 						
-						DELAY(function() {
-							
-							EVENT_ONCE('tap', function() {
-								menuDom.addStyle({
-									display : 'none'
-								});
-							});
-						});
+						var backDom = DIV({
+							style : {
+								position : 'fixed',
+								left : 0,
+								top : 0,
+								width : '100%',
+								height : '100%',
+								backgroundColor : RGBA([0, 0, 0, 0.5])
+							},
+							on : {
+								tap : function() {
+									menuDom.addStyle({
+										display : 'none'
+									});
+									backDom.remove();
+								}
+							}
+						}).appendTo(BODY);
 					}
 				}
 			}));
@@ -39,12 +52,12 @@
 		<div id="menu" class="tablet">
 			<div class="inner">
 				<div class="logo"><a href="/"><img src="/R/logo.png"></a></div>
-				<p class="version">v0.8</p>
-				<a id="write-button" href="/article/write">글 작성</a>
+				<p class="version">v0.9</p>
+				<a id="write-button" href="/article/write?boardId={{self.boardId}}">글 작성</a>
 				<ul>
-					<li><a href="/">{{CONFIG.title}} <span class="count">({{self.totalArticleCount}})</span></a></li>
+					<li><a href="/board/all">전체글보기 <span class="count">({{self.totalArticleCount}})</span></a></li>
 			        <~ self.boardDataSet -> boardData >
-						<li><a href="/board/{{boardData.id}}">{{boardData.name}} <span class="count">({{boardData.articleCount}})</span></a></li>
+						<li><a href="/board/{{boardData.id}}" onclick="Life.STORE('listScrollStore').remove('scrollTop');">{{boardData.name}} <span class="count">({{boardData.articleCount}})</span></a></li>
 					</~>
 					<? self.signedUserData === undefined >
 						<li><a href="/login">로그인</a></li>
@@ -73,13 +86,76 @@
 			</div>
 		</div>
 		
+		<!-- 메뉴 스크롤 고정 -->
+		<script>
+			var menuDom = DOM({
+				el : document.getElementById('menu')
+			});
+			
+			var menuScrollStore = Life.STORE('menuScrollStore');
+			
+			if (menuScrollStore.get('scrollTop') !== undefined) {
+				menuDom.scrollTo({
+					top : menuScrollStore.get('scrollTop')
+				});
+			}
+			
+			menuDom.on('scroll', function() {
+				menuScrollStore.save({
+					name : 'scrollTop',
+					value : menuDom.getScrollTop()
+				});
+			});
+		</script>
+		
+		<!-- 새 글 알림 -->
+		<script>
+		READY(function() {
+			
+			Life.ArticleModel.onNew(function(articleData) {
+				
+				var article = UUI.PANEL({
+					style : {
+						position : 'fixed',
+						right : 10,
+						bottom : 10,
+						borderRadius : 3
+					},
+					contentStyle : {
+						padding : '4px 8px',
+						backgroundColor : '#252a3a',
+						color : '#fff',
+						fontSize : 12
+					},
+					c : A({
+						href : '/board/all/' + articleData.id,
+						c : '새 글! ' + articleData.title
+					})
+				}).appendTo(BODY);
+				
+				UANI.SHOW_SLIDE_UP({
+					node : article
+				});
+				
+				DELAY(3, function() {
+					
+					UANI.HIDE_SLIDE_DOWN({
+						node : article
+					}, function() {
+						article.remove();
+					});
+				});
+			});
+		});
+	</script>
+		
 		<script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 		
-		  ga('create', 'UA-76643463-1', 'auto');
+		  ga('create', '{{CONFIG.googleAnalyticsId}}', 'auto');
 		  ga('send', 'pageview');
 		</script>
 	</body>

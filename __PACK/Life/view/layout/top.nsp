@@ -67,6 +67,7 @@
 		<link rel="stylesheet" href="/Markdown/R/markdown.css">
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">
 		<link rel="stylesheet" href="/R/style.less">
+		<link rel="stylesheet" href="/R/axicon/axicon.min.css">
 		
 		<script src="/__SCRIPT"></script>
 		<script>

@@ -1,4 +1,13 @@
-html, body {
+@keyframes highlight {
+	0% {
+		background-color: #fff2a8;
+	}
+	100% {
+		background-color: none;
+	}
+}
+
+html, body, .markdown-body {
 	background-color: #fff;
 	color: #000;
 	font-family: 'Noto Sans KR';
@@ -6,6 +15,10 @@ html, body {
 
 .left {
 	float: left;
+}
+
+.right {
+	float: right;
 }
 
 .clear {
@@ -137,11 +150,13 @@ body {
 			position: fixed;
 			left: 150px;
 			width: 380px;
+			border-right: 1px solid #ccc;
 		}
 		@media (max-width: 979px) {
 			position: relative;
 			left: 0;
 			width: auto;
+			border-right: none;
 		}
 	}
 	top: 0;
@@ -150,11 +165,40 @@ body {
 	overflow-x: hidden;
 	overflow-y: auto;
 	word-break: break-all;
+	.page-info {
+		padding: 10px 15px;
+		color: #999;
+		text-transform: uppercase;
+		font-size: 12px;
+		h3 {
+			font-size: 14px;
+		}
+		p {
+			margin-top: 2px;
+		}
+		.axi-search {
+			margin-top: 10px;
+			margin-left: 10px;
+			margin-right: -5px;
+			font-size: 22px;
+			line-height: 0;
+		}
+	}
+	.new {
+		animation: highlight 0.5s;
+	}
 	.item {
+		border-top: 1px solid #ccc;
 		display: block;
-		padding: 20px;
+		@media screen {
+			@media (min-width: 600px) {
+				padding: 20px;
+			}
+			@media (max-width: 599px) {
+				padding: 15px;
+			}
+		}
 		cursor: pointer;
-		border-bottom: 1px solid #ccc;
 		&:hover {
 			background-color: #eee;
 		}
@@ -193,7 +237,9 @@ body {
 		}
 	}
 	.pagination {
+		border-top: 1px solid #ccc;
 		border-bottom: 1px solid #ccc;
+		margin-bottom: 100px;
 		li {
 			float: left;
 			border-left: 1px solid #ccc;
@@ -234,7 +280,14 @@ body {
 		margin-bottom: 20px;
 	}
 	header {
-		padding: 40px 30px 15px 30px;
+		@media screen {
+			@media (min-width: 600px) {
+				padding: 40px 30px 15px 30px;
+			}
+			@media (max-width: 599px) {
+				padding: 20px 15px 15px 15px;
+			}
+		}
 		border-bottom: 1px solid #ccc;
 		.logo {
 			text-align: center;
@@ -286,15 +339,51 @@ body {
 		}
 	}
 	article {
-		padding: 30px;
+		@media screen {
+			@media (min-width: 600px) {
+				padding: 30px;
+			}
+			@media (max-width: 599px) {
+				padding: 15px;
+			}
+		}
 		color: #333;
 		font-size: 14px;
+	}
+	.bottom-menu {
+		border-top: 1px solid #ccc;
+		@media screen {
+			@media (min-width: 600px) {
+				padding: 15px 30px;
+			}
+			@media (max-width: 599px) {
+				padding: 15px;
+			}
+		}
+		li {
+			margin-right: 8px;
+			float: left;
+			a {
+				display: block;
+				border: 1px solid #ddd;
+				padding: 10px 20px;
+				border-radius: 20px;
+				color: #666;
+			}
+		}
 	}
 	#comment-list {
 		border-top: 1px solid #ccc;
 		.comment {
 			border-bottom: 1px solid #ccc;
-			padding: 20px 30px;
+			@media screen {
+				@media (min-width: 600px) {
+					padding: 20px 30px;
+				}
+				@media (max-width: 599px) {
+					padding: 15px;
+				}
+			}
 			.header {
 				color: #999;
 				.icon {
@@ -330,7 +419,14 @@ body {
 }
 
 #form-title {
-	padding: 40px 30px 15px 30px;
+	@media screen {
+		@media (min-width: 600px) {
+			padding: 40px 30px 15px 30px;
+		}
+		@media (max-width: 599px) {
+			padding: 15px;
+		}
+	}
 	border-bottom: 1px solid #ccc;
 	font-size: 24px;
 	font-weight: bold;
@@ -339,7 +435,14 @@ body {
 }
 
 #form {
-	padding: 30px;
+	@media screen {
+		@media (min-width: 600px) {
+			padding: 30px;
+		}
+		@media (max-width: 599px) {
+			padding: 15px;
+		}
+	}
 	p {
 		color: #333;
 		margin-bottom: 20px;
@@ -362,6 +465,9 @@ body {
 		select, input, textarea {
 			border: none;
 			width: 100%;
+		}
+		textarea {
+			height: 300px;
 		}
 	}
 	pre {
@@ -388,5 +494,20 @@ body {
 	}
 	a {
 		color: rgb(65, 131, 196);
+	}
+}
+
+#user-info {
+	color: #333;
+	h1 {
+		padding: 15px;
+		font-size: 24px;
+		font-weight: bold;
+		border-bottom: 1px solid #ccc;
+		.icon {
+			width: 40px;
+			vertical-align: middle;
+			border-radius: 3px;
+		}
 	}
 }

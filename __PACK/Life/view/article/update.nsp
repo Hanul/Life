@@ -29,12 +29,10 @@
 							resume();
 						},
 						success : function(savedData) {
-							redirect('/article/' + savedData.id);
+							redirect('/board/' + savedData.boardId + '/' + savedData.id);
 							resume();
 						}
 					});
-					
-					pause();
 				}
 			}
 			

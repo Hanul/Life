@@ -6,6 +6,9 @@
 	var boardId = subURI.substring(subURI.lastIndexOf('/') + 1);
 	subURI = subURI.substring(0, subURI.lastIndexOf('/'));
 	
+	var categoryId = self.params.categoryId;
+	var query = self.params.query;
+	
 	if (boardId === '') {
 		boardId = articleId;
 		articleId = undefined;
@@ -26,6 +29,8 @@
 	var totalArticleCount;
 	var articleDataSet;
 	
+	var filter;
+	
 	NEXT([
 	function(next) {
 		if (boardId === '' || boardId === 'all') {
@@ -41,6 +46,22 @@
 	
 	function(next) {
 		return function() {
+			
+			filter = boardData === undefined ? {} : {
+				boardId : boardData.id,
+				categoryId : categoryId
+			};
+			
+			if (query !== undefined) {
+				filter = {
+					$or : [COMBINE([filter, {
+						title : new RegExp(query)
+					}]), COMBINE([filter, {
+						content : new RegExp(query)
+					}])]
+				};
+			}
+			
 			if (articleId === undefined) {
 				next();
 			} else {
@@ -56,9 +77,7 @@
 		return function() {
 			
 			Life.ArticleModel.count({
-				filter : boardData === undefined ? {} : {
-					boardId : boardData.id
-				}
+				filter : filter
 			}, function(count) {
 				totalArticleCount = count;
 				next();
@@ -93,9 +112,7 @@
 		return function() {
 			
 			Life.ArticleModel.find({
-				filter : boardData === undefined ? {} : {
-					boardId : boardData.id
-				},
+				filter : filter,
 				start : (page - 1) * perPageArticleCount,
 				count : perPageArticleCount
 			}, function(_articleDataSet) {
@@ -145,7 +162,7 @@
 <% include('layout/top.nsp'); %>
 
 <? articleId === undefined >
-	<div id="article" class="pc">
+	<div id="article" class="{{self.subURI === '' ? '' : 'pc'}}">
 		<? boardData === undefined >
 			<header>
 				<h1 class="logo">
@@ -196,12 +213,40 @@
 		<% include('article.nsp'); %>
 	</div>
 </?>
-
-<div id="list" {{articleId === undefined ? '' : 'class="pc"'}}>
-	<ul>
+<div id="list" {{self.subURI !== '' && articleId === undefined ? '' : 'class="pc"'}}>
+	<div class="page-info">
+		<h3 class="left">{{boardData === undefined ? '전체글보기' : boardData.name}}{{categoryId === undefined ? '' : ' - ' + RUN(function() {
+			
+			var category = '';
+			EACH(self.categoryDataSet, function(categoryData) {
+				if (categoryData.id === categoryId) {
+					category = categoryData.category;
+				}
+			});
+			return category;
+			
+		})}} <span class="count">({{totalArticleCount}})</span></h3>
+		<div class="right">
+			<span class="left">
+				{{page}} page / {{Math.ceil(totalArticleCount / perPageArticleCount)}}
+			</span>
+			<script>
+				function openSearchBox() {
+					
+					Yogurt.Prompt('검색어를 입력해주세요.', function(value) {
+						location.href = '/board/{{boardData === undefined ? 'all' : boardData.id}}?query=' + value;
+					});
+				}
+			</script>
+			<a onclick="openSearchBox();"><i class="left axi axi-search"></i></a>
+			<div class="clear"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<ul id="article-list">
 		<~ articleDataSet -> articleData >
 			<li>
-				<a class="item" href="/board/{{boardData === undefined ? 'all' : boardData.id}}/{{articleData.id}}">
+				<a class="item" href="/board/{{boardData === undefined ? 'all' : boardData.id}}/{{articleData.id}}?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}">
 					<table>
 						<tr>
 							<td rowspan="4" class="icon">
@@ -220,7 +265,9 @@
 						</tr>
 						<tr>
 							<td class="title">
-								{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}} <span class="count">({{articleData.commentCount}})</span>
+								<a href="/board/{{boardData === undefined ? 'all' : boardData.id}}/{{articleData.id}}?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}">
+									{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}} <span id="article-{{articleData.id}}-comment-count" class="count">({{articleData.commentCount}})</span>
+								</a>
 							</td>
 						</tr>
 						<tr>
@@ -230,7 +277,7 @@
 								</?>
 								<? else >
 									<%
-										var content =  articleData
+										var content = articleData
 											.content
 											.replace(/<.*>/g, '')
 											.replace(/\[.*\)/g, '')
@@ -267,12 +314,125 @@
 			if (endPage > Math.ceil(totalArticleCount / perPageArticleCount)) {
 				endPage = Math.ceil(totalArticleCount / perPageArticleCount);
 			}
+			
+			if (endPage === 0) {
+				endPage = 1;
+			}
 		%>
 		<~ endPage - startPage + 1 -> i >
-			<li><a href="/board{{boardData === undefined ? '' : '/' + boardData.id}}?page={{i + startPage}}"{{page === i + startPage ? ' class="now"' : ''}}>{{i + startPage}}</a></li>
+			<li><a href="/board/{{boardData === undefined ? 'all' : boardData.id}}?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{i + startPage}}"{{page === i + startPage ? ' class="now"' : ''}} onclick="Life.STORE('listScrollStore').remove('scrollTop');">{{i + startPage}}</a></li>
 		</~>
 		<div class="clear"></div>
 	</ul>
 </div>
+
+<script>
+	var listDom = DOM({
+		el : document.getElementById('list')
+	});
+	
+	var listScrollStore = Life.STORE('listScrollStore');
+	
+	if (listScrollStore.get('scrollTop') !== undefined) {
+		listDom.scrollTo({
+			top : listScrollStore.get('scrollTop')
+		});
+	}
+	
+	listDom.on('scroll', function() {
+		listScrollStore.save({
+			name : 'scrollTop',
+			value : listDom.getScrollTop()
+		});
+	});
+</script>
+
+<? page === 1 >
+<script>
+	READY(function() {
+		
+		var articleListDom = DOM({
+			el : document.getElementById('article-list')
+		});
+		
+		Life.ArticleModel.onNew({
+			boardId : {{boardData === undefined ? 'undefined' : '\'' + boardData.id + '\''}},
+			categoryId : {{categoryId === undefined ? 'undefined' : '\'' + categoryId + '\''}}
+		}, function(articleData) {
+			
+			var content = articleData.content === undefined ? '글 내용이 없습니다.' : articleData
+				.content
+				.replace(/<.*>/g, '')
+				.replace(/\[.*\)/g, '')
+				.replace(/\n/g, '')
+				.replace(/#/g, '');
+			
+			Life.UserModel.get(articleData.writerId, function(writerData) {
+				
+				var article;
+				
+				articleListDom.prepend(article = LI({
+					c : A({
+						cls : 'new item',
+						href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}',
+						c : TABLE({
+							c : [TR({
+								c : [TD({
+									rowspan : 4,
+									cls : 'icon',
+									c : A({
+										href : '/user/' + writerData.id,
+										c : IMG({
+											src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
+										})
+									})
+								}), TD({
+									cls : 'nickname',
+									c : A({
+										href : '/user/' + writerData.id,
+										c : writerData.nickname
+									})
+								})]
+							}), TR({
+								c : TD({
+									cls : 'title',
+									c : A({
+										href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}',
+										c : [articleData.title, ' ', SPAN({
+											id : 'article-' + articleData.id + '-comment-count',
+											cls : 'count',
+											c : '(' + articleData.commentCount + ')'
+										})]
+									})
+								})
+							}), TR({
+								c : TD({
+									cls : 'content',
+									c : content.length > 75 ? content.substring(0, 75) + '...' : content
+								})
+							}), TR({
+								c : TD({
+									cls : 'more',
+									c : RUN(function() {
+										
+										var cal = CALENDAR(articleData.createTime);
+										
+										return cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true);
+										
+									}) + ' | 조회 ' + articleData.viewCount + ' | 따봉 ' + articleData.likeCount
+								})
+							})]
+						})
+					})
+				}));
+				
+				UANI.SHOW_SLIDE_DOWN({
+					node : article
+				});
+			});
+		});
+	});
+</script>
+</?>
 
 <% include('layout/bottom.nsp'); %>

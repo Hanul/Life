@@ -16,7 +16,7 @@
 			isMultiple : true
 		}, {
 			overSizeFile : function(maxUploadFileMB) {
-				alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+				Yogurt.Alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
 			},
 			success : function(fileDataSet, form) {
 				
@@ -85,6 +85,25 @@
 								c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
 							}), input = UUI.FULL_INPUT({
 								value : '<video controls src="' + Life.RF(fileData.id) + '"></video>'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'audio/mp3' ||
+					fileData.type === 'audio/ogg') {
+					
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								value : '<audio controls src="' + Life.RF(fileData.id) + '"></audio>'
 							})]
 						}));
 					}

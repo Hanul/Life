@@ -51,7 +51,7 @@
 			        	done();
 			        });
 			    },
-			    resume])
+			    done])
 			});
 		},
 		
@@ -78,19 +78,32 @@
 			%> | 조회 {{articleData.viewCount}}
 		</p>
 	</div>
-	<ul class="menu">
-		<li id="like-menu"></li>
-		<? self.signedUserData !== undefined && articleData.writerId === self.signedUserData.id >
-		    <li><a href="/article/update?id={{articleData.id}}">수정</a></li>
-		    <li><a href="/article/remove?id={{articleData.id}}">삭제</a></li>
-		</?>
-	</ul>
+	<? self.signedUserData !== undefined >
+		<ul class="menu">
+			<li id="like-menu"></li>
+			<? articleData.writerId === self.signedUserData.id >
+			    <li><a href="/article/update?id={{articleData.id}}">수정</a></li>
+			    <li><a href="/article/remove?id={{articleData.id}}">삭제</a></li>
+			</?>
+		</ul>
+	</?>
 	<div class="clear"></div>
 </header>
 
 <article class="markdown-body">
 	{{articleData.html === undefined ? '제곧내 (제곧내는 제목은 곧 내용입니다의 약자입니다. ㅎㅎ)' : articleData.html}}
 </article>
+
+<? self.signedUserData !== undefined >
+	<ul class="bottom-menu">
+		<li id="like-menu-2"></li>
+		<? articleData.writerId === self.signedUserData.id >
+		    <li><a href="/article/update?id={{articleData.id}}">수정</a></li>
+		    <li><a href="/article/remove?id={{articleData.id}}">삭제</a></li>
+		</?>
+		<div class="clear"></div>
+	</ul>
+</?>
 
 <ul id="comment-list">
 	<~ commentDataSet -> commentData >
@@ -109,7 +122,9 @@
 						print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
 					%>
 				</div>
-				<p id="comment-{{commentData.id}}-content"></p>
+				<p id="comment-{{commentData.id}}-content">
+					{{commentData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}}
+				</p>
 			</div>
 			<ul class="menu">
 				<li id="comment-{{commentData.id}}-like-menu"></li>
@@ -166,6 +181,9 @@
 		
 		<~ commentDataSet -> commentData >
 			RUN(function() {
+				
+				document.getElementById('comment-{{commentData.id}}-content').innerHTML = '';
+				
 				changeURLToLink('{{commentData.content.replace(/'/g, '\\\'').replace(/\n/g, '\\n')}}', DOM({
 					el : document.getElementById('comment-{{commentData.id}}-content')
 				}));
@@ -175,9 +193,10 @@
 		<? self.signedUserData !== undefined >
 
 		global.removeComment = function(commentId) {
-			if (confirm('레알 삭제합니까?') === true) {
+			
+			Yogurt.Confim('레알 삭제합니까?', function() {
 				Life.CommentModel.remove(commentId);
-			}
+			});
 		};
 		
 		global.updateComment = function(commentId) {
@@ -284,7 +303,7 @@
 						}, {
 							notValid : function(validErrors) {
 								if (validErrors.commentId.type === 'existed') {
-									alert('이미 1따봉 날렸습니다.');
+									Yogurt.Alert('이미 1따봉 날렸습니다.');
 								}
 							},
 							success : function() {
@@ -326,14 +345,34 @@
 			},
 			c : [UUI.FULL_TEXTAREA({
 				style : {
-					padding : '10px 30px',
-					height : 50
+					height : 50,
+					onDisplayResize : function(width) {
+						if (width >= 600) {
+							return {
+								padding : '10px 30px'
+							};
+						} else {
+							return {
+								padding : '10px 15px'
+							};
+						}
+					}
 				},
 				name : 'content'
 			}), DIV({
 				style : {
 					borderTop : '1px solid #ccc',
-					padding : '10px 30px'
+					onDisplayResize : function(width) {
+						if (width >= 600) {
+							return {
+								padding : '10px 30px'
+							};
+						} else {
+							return {
+								padding : '10px 15px'
+							};
+						}
+					}
 				},
 				c : UUI.FULL_SUBMIT({
 					style : {
@@ -442,28 +481,35 @@
 			el : document.getElementById('like-menu')
 		});
 		
+		var likeMenu2 = DOM({
+			el : document.getElementById('like-menu-2')
+		});
+		
 		var likeCount = {{articleData.likeCount}};
 		
 		var generateLikeButton = RAR(function() {
 			
-			likeMenu.empty();
-			likeMenu.append(A({
-				c : likeCount + ' 따봉',
-				on : {
-					tap : function() {
-						Life.ArticleLikeModel.create({
-							articleId : '{{articleData.id}}',
-							userId : '{{self.signedUserData.id}}'
-						}, {
-							notValid : function(validErrors) {
-								if (validErrors.articleId.type === 'existed') {
-									alert('이미 1따봉 날렸습니다.');
+			EACH([likeMenu, likeMenu2], function(likeMenu) {
+				
+				likeMenu.empty();
+				likeMenu.append(A({
+					c : likeCount + ' 따봉',
+					on : {
+						tap : function() {
+							Life.ArticleLikeModel.create({
+								articleId : '{{articleData.id}}',
+								userId : '{{self.signedUserData.id}}'
+							}, {
+								notValid : function(validErrors) {
+									if (validErrors.articleId.type === 'existed') {
+										Yogurt.Alert('이미 1따봉 날렸습니다.');
+									}
 								}
-							}
-						});
+							});
+						}
 					}
-				}
-			}));
+				}));
+			});
 		});
 		
 		Life.ArticleLikeModel.onNew({

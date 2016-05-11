@@ -8,7 +8,7 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<div class="article">
+<div id="user-info">
 	
 	<h1>
 		<? data.iconFileId === undefined >
@@ -19,16 +19,24 @@
 		</?> <span class="nickname">{{data.nickname}}</span>
 	</h1>
 	
-	<ul>
-		<li>가입일: <%
+	<p>
+		<%
 			var cal = CALENDAR(data.createTime);
-			print(cal.getYear() + '. ' + cal.getMonth(true) + '. ' + cal.getDate(true) + '.');
-		%></li>
-		<li>글 작성수: {{data.articleCount}}</li>
-		<li>댓글 작성수: {{data.commentCount}}</li>
-	</ul>
+			print(cal.getYear() + '년 ' + cal.getMonth(true) + '월 ' + cal.getDate(true) + '일');
+		%>부터 {{CONFIG.title}} 회원입니다.
+	</p>
 	
-	<? data.id === self.signedUserData.id >
+	<div class="panel">
+		<h3>최근 글</h3>
+		글 {{data.articleCount}}개 작성
+	</div>
+	
+	<div class="panel">
+		<h3>최근 댓글</h3>
+		댓글 {{data.commentCount}}개 작성
+	</div>
+	
+	<? self.signedUserData !== undefined && data.id === self.signedUserData.id >
 		<a class="pure-button pure-button-primary" href="/account/update">정보 수정</a>
 	</?>
 </div>

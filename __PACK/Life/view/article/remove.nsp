@@ -22,8 +22,6 @@
 						redirect('/board/' + originData.boardId);
 						resume();
 					});
-					
-					pause();
 				}
 			}
 			

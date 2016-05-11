@@ -28,7 +28,8 @@
 
 	<label>게시판</label>
 	<div class="input">
-		<select name="boardId" value="{{data.boardId}}">
+		<select id="boardSelect" name="boardId" value="{{data.boardId}}">
+			<option value="">게시판 선택</option>
 			<~ self.boardDataSet -> boardData >
 				<option value="{{boardData.id}}"{{boardData.id === data.boardId ? ' selected' : ''}}>{{boardData.name}}</option>
 			</~>
@@ -37,42 +38,65 @@
 	
 	<label>카테고리</label>
 	<div class="input">
-		<select name="categoryId" value="{{data.categoryId}}">
-			<%
-				var categoryDataSet;
+		<select id="categorySelect" name="categoryId" value="{{data.categoryId}}">
+			<option value="">카테고리 선택</option>
+		</select>
+	</div>
+	
+	<script>
+		READY(function() {
+			var boardSelect = DOM({
+				el : document.getElementById('boardSelect')
+			});
+			var categorySelect = DOM({
+				el : document.getElementById('categorySelect')
+			});
+			
+			boardSelect.on('change', RAR(function() {
 				
 				Life.CategoryModel.find({
 					filter : {
-						boardId : data.boardId
+						boardId : boardSelect.getEl().value
+					},
+					sort : {
+						category : 1
 					}
-				}, function(_categoryDataSet) {
-					categoryDataSet = _categoryDataSet;
-					resume();
+				}, function(categoryDataSet) {
+					
+					categorySelect.empty();
+					
+					EACH(categoryDataSet, function(categoryData) {
+						categorySelect.append(OPTION({
+							c : categoryData.category,
+							value : categoryData.id
+						}));
+						
+						if (categoryData.id === '{{data.categoryId}}') {
+							categorySelect.getEl().value = '{{data.categoryId}}';
+						}
+					});
 				});
-				
-				pause();
-			%>
-			<option value="">카테고리 선택</option>
-			<~ categoryDataSet -> categoryData >
-				<option value="{{categoryData.id}}"{{categoryData.id === data.categoryId ? ' selected' : ''}}>{{categoryData.category}}</option>
-			</~>
-		</select>
-	</div>
+			}));
+		});
+	</script>
 	
 	<label>제목</label>
 	<div class="input">
 		<input name="title" value="{{data.title}}" placeholder="제목">
 	</div>
 
-	<label>내용</label>
+	<label class="left">내용</label>
+	<a class="right" href="/markdown-sample" target="_blank">Markdown 문법 익히기</a>
+	<div class="clear"></div>
+	
 	<div class="input">
-		<textarea name="content" placeholder="내용" rows="10">{{data.content}}</textarea>
+		<textarea id="content" name="content" placeholder="내용" rows="10">{{data.content}}</textarea>
 	</div>
 
 	<button id="article-form-submit" type="submit" class="button">글 작성 완료</button>
-	<p>
-		<a href="/markdown-sample" target="_blank">{{CONFIG.title}}은 Markdown 문법을 사용합니다.</a>
-	</p>
+	
+	<div id="preview">
+	</div>
 </form>
 
 <script>
@@ -106,7 +130,7 @@
 				isMultiple : true
 			}, {
 				overSizeFile : function(maxUploadFileMB) {
-					alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+					Yogurt.Alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
 				},
 				success : function(fileDataSet, form) {
 					
@@ -131,6 +155,10 @@
 									},
 									c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
 								}), input = UUI.FULL_INPUT({
+									style : {
+										padding : 10,
+										border : '1px solid #ccc'
+									},
 									value : '[![ScreenShot](' + Life.RF(fileData.id) + ')](' + Life.RF(fileData.id) + ')'
 								})]
 							}));
@@ -138,7 +166,8 @@
 						
 						else if (
 						fileData.type === 'audio/aac' ||
-						fileData.type === 'audio/mp4' ||
+						fileData.type === 'audio/mp3' ||
+						fileData.type === 'audio/ogg' ||
 						fileData.type === 'audio/mpeg' ||
 						fileData.type === 'audio/oga' ||
 						fileData.type === 'audio/wav' ||
@@ -154,7 +183,11 @@
 									},
 									c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
 								}), input = UUI.FULL_INPUT({
-									value : '<audio src="' + Life.RF(fileData.id) + '" />'
+									style : {
+										padding : 10,
+										border : '1px solid #ccc'
+									},
+									value : '<audio controls src="' + Life.RF(fileData.id) + '"></audio>'
 								})]
 							}));
 						}
@@ -174,6 +207,10 @@
 									},
 									c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
 								}), input = UUI.FULL_INPUT({
+									style : {
+										padding : 10,
+										border : '1px solid #ccc'
+									},
 									value : '<video controls src="' + Life.RF(fileData.id) + '"></video>'
 								})]
 							}));
@@ -191,6 +228,10 @@
 									},
 									c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
 								}), input = UUI.FULL_INPUT({
+									style : {
+										padding : 10,
+										border : '1px solid #ccc'
+									},
 									value : '[파일 다운로드](' + Life.RF(fileData.id) + ')'
 								})]
 							}));
@@ -200,6 +241,40 @@
 					});
 				}
 			})]
+		}));
+		
+		var previewDom = DOM({
+			el : document.getElementById('preview')
+		});
+		
+		previewDom.before(A({
+			style : {
+				display : 'block',
+				border : '1px solid #ddd',
+				padding : '10px 0',
+				borderRadius: 20,
+				color: '#666',
+				textAlign : 'center'
+			},
+			c : '미리보기',
+			on : {
+				tap : function() {
+					
+					var preview;
+					
+					previewDom.empty();
+					previewDom.append(preview = DIV({
+						style : {
+							padding : '30px 0',
+							color : '#333',
+							fontSize : 14
+						},
+						cls : 'markdown-body'
+					}));
+					
+					preview.getEl().innerHTML = Markdown.MarkUp(document.getElementById('content').value);
+				}
+			}
 		}));
 	});
 </script>

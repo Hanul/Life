@@ -39,7 +39,8 @@
 	Life.BoardModel.find({
 		sort : {
 			index : 1
-		}
+		},
+		isToCache : true
 	}, function(_boardDataSet) {
 		self.boardDataSet = _boardDataSet;
 		

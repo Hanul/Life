@@ -9,6 +9,11 @@ OVERRIDE(Life.CommentModel, function(origin) {
 
 		init : function(inner, self, params) {
 			
+			// 인덱싱
+			self.getDB().createIndex({
+				articleId : 1
+			});
+			
 			inner.on('create', {
 			
 				before : function(data, next, ret, clientInfo) {

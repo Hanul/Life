@@ -9,6 +9,11 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 
 		init : function(inner, self, params) {
 			
+			// 인덱싱
+			self.getDB().createIndex({
+				boardId : 1
+			});
+			
 			inner.on('create', {
 			
 				before : function(data, next, ret, clientInfo) {

@@ -23,7 +23,10 @@
 			if (articleData.categoryId === undefined) {
 	    		done();
 	    	} else {
-	    		Life.CategoryModel.get(articleData.categoryId, {
+	    		Life.CategoryModel.get({
+	    			id : articleData.categoryId,
+	    			isToCache : true
+	    		}, {
 	    			notExists : done,
 	    			success : function(categoryData) {
 	    				articleData.categoryData = categoryData;
@@ -40,7 +43,8 @@
 				},
 				sort : {
 					createTime : 1
-				}
+				},
+				isToCache : true
 			}, function(_commentDataSet) {
 				commentDataSet = _commentDataSet;
 				

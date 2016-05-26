@@ -3,7 +3,7 @@
 	var commentDataSet;
 	
 	Life.ArticleModel.update({
-		id : articleId,
+		id : self.articleId,
 		lastViewTime : new Date(),
 		$inc : {
 			viewCount : 1

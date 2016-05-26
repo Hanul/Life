@@ -51,7 +51,10 @@
 				    	if (articleData.categoryId === undefined) {
 			        		done();
 			        	} else {
-			        		Life.CategoryModel.get(articleData.categoryId, {
+			        		Life.CategoryModel.get({
+			        			id : articleData.categoryId,
+			        			isToCache : true
+			        		}, {
 			        			notExists : done,
 			        			success : function(categoryData) {
 			        				articleData.categoryData = categoryData;
@@ -62,7 +65,10 @@
 				    },
 				    function(done) {
 			    		
-				    	Life.BoardModel.get(articleData.boardId, {
+				    	Life.BoardModel.get({
+				    		id : articleData.boardId,
+				    		isToCache : articleData.boardId
+				    	}, {
 		        			notExists : done,
 		        			success : function(boardData) {
 		        				articleData.boardData = boardData;

@@ -157,7 +157,7 @@
 						else {
 					    	Life.BoardModel.get({
 					    		id : articleData.boardId,
-					    		isToCache : articleData.boardId
+					    		isToCache : true
 					    	}, {
 			        			notExists : done,
 			        			success : function(boardData) {
@@ -231,6 +231,7 @@
 	</?>
 	<? else >
 		<div id="article">
+			<% self.articleId = articleId; %>
 			<% include('article.nsp'); %>
 		</div>
 	</?>

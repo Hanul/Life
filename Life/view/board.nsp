@@ -36,7 +36,10 @@
 		if (boardId === '' || boardId === 'all') {
 			next();
 		} else {
-			Life.BoardModel.get(boardId, function(savedData) {
+			Life.BoardModel.get({
+				id : boardId,
+				isToCache : true
+			}, function(savedData) {
 				boardData = savedData;
 				self.title = boardData.name;
 				next();
@@ -99,7 +102,8 @@
 					},
 					sort : {
 						category : 1
-					}
+					},
+					isToCache : true
 				}, function(categoryDataSet) {
 					self.categoryDataSet = categoryDataSet;
 					next();
@@ -132,7 +136,10 @@
 				    	if (articleData.categoryId === undefined) {
 			        		done();
 			        	} else {
-			        		Life.CategoryModel.get(articleData.categoryId, {
+			        		Life.CategoryModel.get({
+			        			id : articleData.categoryId,
+			        			isToCache : true
+			        		}, {
 			        			notExists : done,
 			        			success : function(categoryData) {
 			        				articleData.categoryData = categoryData;
@@ -148,7 +155,10 @@
 						}
 						
 						else {
-					    	Life.BoardModel.get(articleData.boardId, {
+					    	Life.BoardModel.get({
+					    		id : articleData.boardId,
+					    		isToCache : true
+					    	}, {
 			        			notExists : done,
 			        			success : function(boardData) {
 			        				articleData.boardData = boardData;
@@ -221,6 +231,7 @@
 	</?>
 	<? else >
 		<div id="article">
+			<% self.articleId = articleId; %>
 			<% include('article.nsp'); %>
 		</div>
 	</?>

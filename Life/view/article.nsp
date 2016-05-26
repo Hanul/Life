@@ -3,7 +3,7 @@
 	var commentDataSet;
 	
 	Life.ArticleModel.update({
-		id : articleId,
+		id : self.articleId,
 		lastViewTime : new Date(),
 		$inc : {
 			viewCount : 1
@@ -23,7 +23,10 @@
 			if (articleData.categoryId === undefined) {
 	    		done();
 	    	} else {
-	    		Life.CategoryModel.get(articleData.categoryId, {
+	    		Life.CategoryModel.get({
+	    			id : articleData.categoryId,
+	    			isToCache : true
+	    		}, {
 	    			notExists : done,
 	    			success : function(categoryData) {
 	    				articleData.categoryData = categoryData;

@@ -4,7 +4,6 @@
 
 	<%
 		var data = self.params;
-		var validErrors;
 		var isNotWriter = false;
 		
 		Life.ArticleModel.get(data.id, function(savedData) {
@@ -24,8 +23,8 @@
 					data.writerId = self.signedUserData.id;
 					
 					Life.ArticleModel.update(data, {
-						notValid : function(_validErrors) {
-							validErrors = _validErrors;
+						notValid : function(validErrors) {
+							self.validErrors = validErrors;
 							resume();
 						},
 						success : function(savedData) {
@@ -48,7 +47,10 @@
 		당신이 작성한 글이 아닙니다.
 	</?>
 	<? else >
-		<% include('form.nsp'); %>
+		<%
+			self.data = data;
+			include('form.nsp');
+		%>
 	</?>
 </?>
 <? else >

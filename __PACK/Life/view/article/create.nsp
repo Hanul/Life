@@ -4,15 +4,14 @@
 
 	<%
 		var data = self.params;
-		var validErrors;
 		
 		if (self.method === 'POST') {
 			
 			data.writerId = self.signedUserData.id;
 			
 			Life.ArticleModel.create(data, {
-				notValid : function(_validErrors) {
-					validErrors = _validErrors;
+				notValid : function(validErrors) {
+					self.validErrors = validErrors;
 					resume();
 				},
 				success : function(savedData) {
@@ -24,7 +23,10 @@
 			pause();
 		}
 	%>
-	<% include('form.nsp'); %>
+	<%
+		self.data = data;
+		include('form.nsp');
+	%>
 </?>
 <? else >
 	<%

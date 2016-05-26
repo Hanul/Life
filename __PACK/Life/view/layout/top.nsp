@@ -41,7 +41,7 @@
 			index : 1
 		},
 		isToCache : true
-	}, function(_boardDataSet, isCached) {
+	}, function(_boardDataSet) {
 			
 		self.boardDataSet = _boardDataSet;
 		

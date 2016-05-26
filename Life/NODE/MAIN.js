@@ -8,7 +8,7 @@ Life.MAIN = METHOD({
 		Less = require('less'),
 		
 		// nsp core
-		nspCore = NSP({
+		nspCore = NSP_BRIDGE({
 			rootPath : './Life/view',
 			restURI : ['account/create', 'board', 'article', 'user']
 		});

@@ -23,10 +23,7 @@
 			if (articleData.categoryId === undefined) {
 	    		done();
 	    	} else {
-	    		Life.CategoryModel.get({
-	    			id : articleData.categoryId,
-	    			isToCache : true
-	    		}, {
+	    		Life.CategoryModel.get(articleData.categoryId, {
 	    			notExists : done,
 	    			success : function(categoryData) {
 	    				articleData.categoryData = categoryData;
@@ -43,8 +40,7 @@
 				},
 				sort : {
 					createTime : 1
-				},
-				isToCache : true
+				}
 			}, function(_commentDataSet) {
 				commentDataSet = _commentDataSet;
 				
@@ -55,7 +51,7 @@
 			        	done();
 			        });
 			    },
-			    done])
+			    done]);
 			});
 		},
 		

@@ -27,13 +27,175 @@
 	</p>
 	
 	<div class="panel">
-		<h3>최근 글</h3>
-		글 {{data.articleCount}}개 작성
+		<header>
+			<h3>최근 글</h3>
+			<span class="count">글 {{data.articleCount}}개 작성</span>
+			<div class="clear"></div>
+		</header>
+		<%
+			var articleDataSet;
+			
+			Life.ArticleModel.find({
+				filter : {
+					writerId : data.id
+				},
+				count : 5
+			}, function(_articleDataSet) {
+				articleDataSet = _articleDataSet;
+				
+				PARALLEL(articleDataSet, [
+			    function(articleData, done) {
+			    	
+			    	PARALLEL([
+				    function(done) {
+				    	if (articleData.categoryId === undefined) {
+			        		done();
+			        	} else {
+			        		Life.CategoryModel.get({
+			        			id : articleData.categoryId,
+			        			isToCache : true
+			        		}, {
+			        			notExists : done,
+			        			success : function(categoryData) {
+			        				articleData.categoryData = categoryData;
+			        				done();
+			        			}
+			        		});
+			        	}
+				    },
+				    function(done) {
+			    		
+				    	Life.BoardModel.get({
+				    		id : articleData.boardId,
+				    		isToCache : articleData.boardId
+				    	}, {
+		        			notExists : done,
+		        			success : function(boardData) {
+		        				articleData.boardData = boardData;
+		        				done();
+		        			}
+		        		});
+				    },
+				    done]);
+			    },
+			    resume]);
+			});
+			
+			pause();
+		%>
+		<ul id="article-list">
+			<~ articleDataSet -> articleData >
+				<li>
+					<a class="item" href="/board/{{articleData.boardId}}/{{articleData.id}}">
+						<table>
+							<tr>
+								<td rowspan="4" class="icon">
+									<a href="/user/{{data.id}}">
+										<? data.iconFileId === undefined >
+											<img src="/R/icon-default.png">
+										</?>
+										<? else >
+											<img src="/__RF/Life/ICON/{{data.iconFileId}}">
+										</?>
+									</a>
+								</td>
+								<td class="nickname">
+									<a href="/user/{{data.id}}" class="left">{{data.nickname}}</a>
+									<span class="board">{{articleData.boardData.name}}</span>
+									<div class="clear"></div>
+								</td>
+							</tr>
+							<tr>
+								<td class="title">
+									<a href="/board/{{articleData.boardId}}/{{articleData.id}}">
+										{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}} <span id="article-{{articleData.id}}-comment-count" class="count">({{articleData.commentCount}})</span>
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td class="content">
+									<? articleData.content === undefined >
+										글 내용이 없습니다.
+									</?>
+									<? else >
+										<%
+											var content = articleData
+												.content
+												.replace(/<.*>/g, '')
+												.replace(/\[.*\)/g, '')
+												.replace(/\n/g, '')
+												.replace(/#/g, '');
+										%>
+										{{content.length > 75 ? content.substring(0, 75) + '...' : content}}
+									</?>
+								</td>
+							</tr>
+							<tr>
+								<td class="more">
+									<%
+										var cal = CALENDAR(articleData.createTime);
+										print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true));
+									%> | 조회 {{articleData.viewCount}} | 따봉 {{articleData.likeCount}}
+								</td>
+							</tr>
+						</table>
+					</a>
+				</li>
+			</~>
+		</ul>
 	</div>
 	
 	<div class="panel">
-		<h3>최근 댓글</h3>
-		댓글 {{data.commentCount}}개 작성
+		<header>
+			<h3>최근 댓글</h3>
+			<span class="count">댓글 {{data.commentCount}}개 작성</span>
+			<div class="clear"></div>
+		</header>
+		<%
+			var commentDataSet;
+			
+			Life.CommentModel.find({
+				filter : {
+					writerId : data.id
+				},
+				count : 10
+			}, function(_commentDataSet) {
+				commentDataSet = _commentDataSet;
+				
+				PARALLEL(commentDataSet, [
+			    function(commentData, done) {
+			        Life.ArticleModel.get(commentData.articleId, function(articleData) {
+			        	commentData.articleData = articleData;
+			        	done();
+			        });
+			    },
+			    resume]);
+			});
+			
+			pause();
+		%>
+		<ul id="comment-list">
+			<~ commentDataSet -> commentData >
+				<li id="comment-{{commentData.id}}" class="comment" onclick="location.href='/board/{{commentData.articleData.boardId}}/{{commentData.articleData.id}}';">
+					<div class="header">
+						<a href="/user/{{data.id}}">
+							<? data.iconFileId === undefined >
+								<img class="icon" src="/R/icon-default.png">
+							</?>
+							<? else >
+								<img class="icon" src="/__RF/Life/ICON/{{data.iconFileId}}">
+							</?> <span class="nickname">{{data.nickname}}</span>
+						</a> | <%
+							var cal = CALENDAR(commentData.createTime);
+							print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
+						%>
+					</div>
+					<p id="comment-{{commentData.id}}-content">
+						{{commentData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}}
+					</p>
+				</li>
+			</~>
+		</ul>
 	</div>
 	
 	<? self.signedUserData !== undefined && data.id === self.signedUserData.id >

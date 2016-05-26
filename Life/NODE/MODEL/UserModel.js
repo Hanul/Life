@@ -16,6 +16,12 @@ OVERRIDE(Life.UserModel, function(origin) {
 			inner.on('create', {
 
 				before : function(data, next, ret) {
+					
+					if (data.intoduce === undefined) {
+						data.html = undefined;
+					} else {
+						data.html = Markdown.MarkUp(data.intoduce);
+					}
 
 					self.checkIsExists({
 						filter : {
@@ -96,6 +102,12 @@ OVERRIDE(Life.UserModel, function(origin) {
 					var
 					// cookies
 					cookies;
+					
+					if (data.intoduce === undefined) {
+						data.html = undefined;
+					} else {
+						data.html = Markdown.MarkUp(data.intoduce);
+					}
 					
 					// 보안상 삭제
 					delete data.email;

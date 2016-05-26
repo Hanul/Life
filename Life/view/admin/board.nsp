@@ -1,44 +1,50 @@
 <% include('../layout/top.nsp'); %>
 
-<? self.checkIsAdmin() === true >
-	<ul>
-		<li><a href="/admin/board/create">게시판 추가</a></li>
-	</ul>
-	
-	<table>
-		<thead>
-			<tr>
-				<th>게시판 아이디</th>
-				<th>게시판 이름</th>
-				<th>게시판 설명</th>
-				<th>게시글 수</th>
-				<th>마지막 게시 일자</th>
-				<th>카테고리 관리</th>
-				<th>편집</th>
-				<th>순서</th>
-			</tr>
-		</thead>
-	
-		<tbody>
-			<~ self.boardDataSet -> boardData >
+<div id="admin">
+	<h1>게시판 관리</h1>
+	<? self.checkIsAdmin() === true >
+		<ul>
+			<li><a href="/admin/board/create">게시판 추가</a></li>
+		</ul>
+		
+		<table>
+			<thead>
 				<tr>
-					<td>{{boardData.id}}</td>
-					<td>{{boardData.name}}</td>
-					<td>{{boardData.description}}</td>
-					<td>{{boardData.articleCount}}</td>
-					<td>{{boardData.lastArticleTime}}</td>
-					<td><a href="/admin/category?boardId={{boardData.id}}">카테고리 관리</a></td>
-					<td><a href="/admin/board/update?id={{boardData.id}}">정보 수정</a></td>
-					<td><a href="/admin/board/move-up?id={{boardData.id}}">▲</a> <a href="/admin/board/move-down?id={{boardData.id}}">▼</a></td>
+					<th width="11%">게시판 아이디</th>
+					<th width="10%">게시판 이름</th>
+					<th>게시판 설명</th>
+					<th width="5%">글 수</th>
+					<th width="11%">마지막 게시 일자</th>
+					<th width="11%">관리</th>
+					<th width="7%">순서 변경</th>
 				</tr>
-			</~>
-		</tbody>
-	</table>
-</?>
-<? else >
-	<p>
-		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
-	</p>
-</?>
+			</thead>
+		
+			<tbody>
+				<~ self.boardDataSet -> boardData >
+					<tr>
+						<td class="center">{{boardData.id}}</td>
+						<td class="center">{{boardData.name}}</td>
+						<td>{{boardData.description}}</td>
+						<td class="center">{{boardData.articleCount}}</td>
+						<td class="center">{{boardData.lastArticleTime}}</td>
+						<td class="center">
+							<ul>
+								<li><a href="/admin/category?boardId={{boardData.id}}">카테고리 관리</a></li>
+								<li><a href="/admin/board/update?id={{boardData.id}}">정보 수정</a></li>
+							</ul>
+						</td>
+						<td class="center"><a href="/admin/board/move-up?id={{boardData.id}}">▲</a> <a href="/admin/board/move-down?id={{boardData.id}}">▼</a></td>
+					</tr>
+				</~>
+			</tbody>
+		</table>
+	</?>
+	<? else >
+		<p>
+			미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
+		</p>
+	</?>
+</div>
 
 <% include('../layout/bottom.nsp'); %>

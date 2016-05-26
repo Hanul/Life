@@ -8,9 +8,16 @@
 			el : document.getElementById('board-form-submit')
 		}).after(uploadForm = UUI.FULL_UPLOAD_FORM({
 			style : {
-				border : '1px solid #999',
+				border : '1px solid #ccc',
 				marginTop : 20,
 				marginBottom : 20
+			},
+			formStyle : {
+				margin : 0,
+				padding : 0
+			},
+			inputStyle : {
+				margin : 0
 			},
 			box : Life,
 			isMultiple : true

@@ -51,6 +51,14 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 				
 				after : function(savedData) {
 					
+					Life.UserModel.updateNoHistory({
+						id : savedData.writerId,
+						lastArticleTime : new Date(),
+						$inc : {
+							articleCount : 1
+						}
+					});
+					
 					Life.BoardModel.updateNoHistory({
 						id : savedData.boardId,
 						lastArticleTime : new Date(),

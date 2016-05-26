@@ -21,6 +21,10 @@ html, body, .markdown-body {
 	float: right;
 }
 
+.center {
+	text-align: center;
+}
+
 .clear {
 	clear: both;
 }
@@ -159,6 +163,12 @@ body {
 			border-right: none;
 		}
 	}
+	&.force-list {
+		position: relative;
+		left: 0;
+		width: auto;
+		border-right: none;
+	}
 	top: 0;
 	line-height: 1.5em;
 	height: 100%;
@@ -215,6 +225,12 @@ body {
 		.nickname {
 			color: #999;
 			font-weight: bold;
+			.board {
+				float: right;
+				color: #ccc;
+				font-size: 12px;
+				font-weight: normal;
+			}
 		}
 		.title {
 			padding-top: 5px;
@@ -290,6 +306,17 @@ body {
 		border-bottom: 1px solid #ccc;
 		.logo {
 			text-align: center;
+			@media screen {
+				@media (min-width: 600px) {
+					line-height: auto;
+				}
+				@media (max-width: 599px) {
+					line-height: 0;
+				}
+			}
+			img {
+				max-width: 80%;
+			}
 		}
 		h1 {
 			font-size: 24px;
@@ -497,6 +524,7 @@ body {
 }
 
 #user-info {
+	padding-bottom: 100px;
 	color: #333;
 	h1 {
 		padding: 15px;
@@ -510,4 +538,178 @@ body {
 			margin-right: 5px;
 		}
 	}
+	p {
+		padding: 15px;
+	}
+	.panel {
+		padding: 15px;
+		margin-bottom: 15px;
+		header {
+			padding: 5px 0;
+			border-bottom: 1px solid #ccc;
+			h3 {
+				font-size: 20px;
+				font-weight: bold;
+				float: left;
+			}
+			.count {
+				margin-top: 10px;
+				float: right;
+				color: #999;
+			}
+		}
+		.item {
+			border-bottom: 1px solid #ccc;
+			display: block;
+			padding: 15px;
+			cursor: pointer;
+			&:hover {
+				background-color: #eee;
+			}
+			td {
+				vertical-align: top;
+			}
+			.icon {
+				width: 50px;
+				img {
+					display: block;
+					width: 40px;
+					border-radius: 3px;
+				}
+			}
+			.nickname {
+				color: #999;
+				font-weight: bold;
+				.board {
+					float: right;
+					color: #ccc;
+					font-size: 12px;
+					font-weight: normal;
+				}
+			}
+			.title {
+				padding-top: 5px;
+				color: #333;
+				font-weight: bold;
+				font-size: 16px;
+				.count {
+					color: #999;
+				}
+			}
+			.content {
+				padding-top: 10px;
+				color: #333;
+				font-size: 12px;
+			}
+			.more {
+				color: #999;
+				font-size: 10px;
+			}
+		}
+	}
+	
+	#comment-list {
+		.comment {
+			cursor: pointer;
+			&:hover {
+				background-color: #eee;
+			}
+			border-bottom: 1px solid #ccc;
+			padding: 15px;
+			.header {
+				color: #999;
+				.icon {
+					height: 15px;
+					vertical-align: middle;
+					border-radius: 2px;
+				}
+				.nickname {
+					color: #1b98f8;
+				}
+			}
+			p {
+				margin-top: 6px;
+				padding: 0;
+				color: #333;
+			}
+		}
+	}
 }
+
+#admin {
+	padding: 20px;
+	h1 {
+		font-size: 24px;
+		font-weight: bold;
+		margin-bottom: 15px;
+	}
+	a {
+		color: rgb(65, 131, 196);
+	}
+	ul {
+		margin-left: 20px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		li {
+			list-style: circle;
+		}
+	}
+	table {
+		th, td {
+			border: 1px solid #ccc;
+			padding: 5px;
+			word-break: break-all;
+		}
+		th {
+			background-color: #eee;
+			font-weight: bold;
+			text-align: center;
+		}
+	}
+	form {
+		margin-top: 15px;
+		.error {
+			color: red;
+			margin-bottom: 20px;
+		}
+		label {
+			margin-bottom: 10px;
+			display: block;
+			font-size: 16px;
+			color: #999;
+		}
+		select, input, textarea {
+			margin-bottom: 15px;
+			display: block;
+			border: 1px solid #ccc;
+			padding: 10px;
+		}
+		pre {
+			margin-bottom: 15px;
+			display: block;
+			border: 1px solid #ccc;
+			padding: 10px;
+			height: 150px;
+			overflow-y: scroll;
+		}
+		[type=submit] {
+			border: none;
+			margin-top: 20px;
+			background-color: #1b98f8;
+			display: block;
+			width: 100%;
+			text-align: center;
+			padding: 10px 0;
+			border-radius: 20px;
+			cursor: pointer;
+			font-size: 14px;
+			color: #fff;
+			margin-bottom: 20px;
+		}
+		a {
+			color: rgb(65, 131, 196);
+		}
+	}
+}
+
+

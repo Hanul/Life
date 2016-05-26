@@ -1,17 +1,20 @@
 <% include('layout/top.nsp'); %>
 
-<? self.checkIsAdmin() === true >
-	<p>
-		관리자시군요, 우후훗!
-	</p>
-	<ul>
-		<li><a href="/admin/board">게시판 및 카테고리 관리</a></li>
-	</ul>
-</?>
-<? else >
-	<p>
-		미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
-	</p>
-</?>
+<div id="admin">
+	<h1>관리자 콘솔</h1>
+	<? self.checkIsAdmin() === true >
+		<p>
+			관리자시군요, 우후훗!
+		</p>
+		<ul>
+			<li><a href="/admin/board">게시판 및 카테고리 관리</a></li>
+		</ul>
+	</?>
+	<? else >
+		<p>
+			미안하지만, 이곳은 관리자만 접근할 수 있답니다~! (^_^)~*
+		</p>
+	</?>
+</div>
 
 <% include('layout/bottom.nsp'); %>

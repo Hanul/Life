@@ -1,0 +1,155 @@
+var __html = '';var __pauseCount = 0;var __redirectURL;var __cookieInfo = __requestInfo.cookies;var __newCookieInfo = {};var __basePath = './Life/view/layout';var __lastCondition;function print(content) {
+		
+		if (content !== undefined) {
+			if (typeof content === 'string') {
+				__html += content;
+			} else {
+				__html += JSON.stringify(content);
+			}
+		}
+		
+	}function include(path) {
+		
+		LOAD_NSP(__requestInfo, __basePath + '/' + path, self, function() {
+			print(path + ': File not exists.');
+			resume();
+		}, __errorHandler, function(result) {
+			print(result.html);
+			resume();
+		});
+		
+		pause();
+		
+	}function save(name, value) {
+		
+		if (value === undefined) {
+			__NSP_SHARED_STORE.remove(name);
+		}
+		
+		else {
+			__NSP_SHARED_STORE.save({
+				name : name,
+				value : value
+			});
+		}
+		
+	}function load(name) {
+		
+		return __NSP_SHARED_STORE.get(name);
+		
+	}function cookie(name, value, expireSeconds, path, domain) {
+		
+		if (value === undefined) {
+			value = __cookieInfo[name];
+			
+			if (CHECK_IS_DATA(value) === true) {
+				return value.value;
+			} else {
+				return value;
+			}
+		}
+		
+		else {
+			
+			__newCookieInfo[name] = __cookieInfo[name] = {
+				value : value,
+				expireSeconds : expireSeconds,
+				path : path,
+				domain : domain
+			};
+			
+			return value;
+		}
+		
+	}function upload(uploadPath, callbackOrHandlers) {
+		
+		var
+		// callback
+		callback,
+
+		// error handler
+		errorHandler,
+
+		// over file size handler
+		overFileSizeHandler;
+
+		if (CHECK_IS_DATA(callbackOrHandlers) !== true) {
+			callback = callbackOrHandlers;
+		} else {
+			callback = callbackOrHandlers.success;
+			errorHandler = callbackOrHandlers.error;
+			overFileSizeHandler = callbackOrHandlers.overFileSize;
+		}
+		
+		UPLOAD_REQUEST({
+			requestInfo : __requestInfo,
+			uploadPath : __basePath + '/' + uploadPath
+		}, {
+			error : errorHandler,
+			overFileSize : overFileSizeHandler,
+			success : callback
+		});
+		
+	}function redirect(url) {
+		
+		__redirectURL = url;
+		
+	}function pause() {
+		
+		__pauseCount += 1;
+		
+	}var __store={};var resume;__pauseCount+=1;__store.resume=resume=function(){__pauseCount-=1;if(__pauseCount===0){print('');try{
+	var sessionKey = cookie('session-key');
+	if (sessionKey !== undefined) {
+		Life.SessionKeyModel.get(sessionKey, {
+			notExists : function() {
+				resume();
+			},
+			success : function(sessionKeyData) {
+				Life.UserModel.get(sessionKeyData.userId, {
+					notExists : function() {
+						resume();
+					},
+					success : function(userData) {
+						self.signedUserData = userData;
+						resume();
+					}
+				});
+			}
+		});
+		pause();
+	}
+	
+	self.checkIsSigned = function() {
+		return self.signedUserData !== undefined && CHECK_IS_IN({
+			array : self.signedUserData.roles,
+			value : Life.ROLE.USER
+		}) === true;
+	};
+	
+	self.checkIsAdmin = function() {
+		return self.signedUserData !== undefined && CHECK_IS_IN({
+			array : self.signedUserData.roles,
+			value : Life.ROLE.ADMIN
+		}) === true;
+	};
+	
+	self.totalArticleCount = 0;
+	
+	Life.BoardModel.find({
+		sort : {
+			index : 1
+		},
+		isToCache : true
+	}, function(_boardDataSet, isCached) {
+			
+		self.boardDataSet = _boardDataSet;
+		
+		EACH(_boardDataSet, function(boardData) {
+			self.totalArticleCount += boardData.articleCount;
+		});
+		
+		resume();
+	});
+	pause();
+}catch(e){__errorHandler(e,1,1);}__pauseCount+=1;__store.resume=resume=function(){__pauseCount-=1;if(__pauseCount===0){print('\n<!DOCTYPE html>\n<html>\n	<head>\n		<meta charset="utf-8" />\n		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">\n		\n		<link rel="shortcut icon" href="/R/favicon.ico" />\n		<link rel="apple-touch-icon-precomposed" href="/R/apple-touch-icon.png" />\n		\n		<title>');try{print(self.title === undefined ? '' : self.title + ' - ');}catch(e){__errorHandler(e,65,10);}__pauseCount+=1;__store.resume=resume=function(){__pauseCount-=1;if(__pauseCount===0){print('');try{print(CONFIG.title);}catch(e){__errorHandler(e,65,62);}__pauseCount+=1;__store.resume=resume=function(){__pauseCount-=1;if(__pauseCount===0){print('</title>\n		\n		<link rel="stylesheet" href="//fonts.googleapis.com/earlyaccess/notosanskr.css">\n		<link rel="stylesheet" href="/R/BASE_STYLE.css">\n		<link rel="stylesheet" href="/Markdown/R/markdown.css">\n		<link rel="stylesheet" href="/Markdown/R/highlight.css">\n		<link rel="stylesheet" href="/R/style.less">\n		<link rel="stylesheet" href="/R/axicon/axicon.min.css">\n		\n		<script src="/__SCRIPT"></script>\n		<script>\n			OVERRIDE(DOM, function(origin) {\n				global.DOM = CLASS({\n					preset : function() {\n						return origin;\n					},\n					init : function(inner, self, params) {\n						if (self.getEl() !== undefined) {\n							if (params.id !== undefined) {\n								self.getEl().setAttribute(\'id\', params.id);\n							}\n							if (params.cls !== undefined) {\n								self.getEl().setAttribute(\'class\', params.cls);\n							}\n						}\n					}\n				});\n			});\n		</script>\n	</head>\n	<body>');__handler({html:__html,cookies:__newCookieInfo,redirectURL:__redirectURL});}};resume();}};resume();}};resume();}};resume();

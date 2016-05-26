@@ -41,7 +41,8 @@
 			index : 1
 		},
 		isToCache : true
-	}, function(_boardDataSet) {
+	}, function(_boardDataSet, isCached) {
+			
 		self.boardDataSet = _boardDataSet;
 		
 		EACH(_boardDataSet, function(boardData) {

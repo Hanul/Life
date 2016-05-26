@@ -83,15 +83,31 @@ Life.UserModel = OBJECT({
 				id : true
 			},
 			
+			lastArticleTime : {
+				date : true
+			},
+			
 			articleCount : {
 				notEmpty : true,
 				integer : true
 			},
 			
+			lastCommentTime : {
+				date : true
+			},
+			
 			commentCount : {
 				notEmpty : true,
 				integer : true
-			}
+			},
+			
+			intoduce : {
+				size : {
+					max : 30000
+				}
+			},
+			
+			html : true
 		};
 
 		return {

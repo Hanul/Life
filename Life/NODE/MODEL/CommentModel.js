@@ -45,6 +45,14 @@ OVERRIDE(Life.CommentModel, function(origin) {
 				
 				after : function(savedData) {
 					
+					Life.UserModel.updateNoHistory({
+						id : savedData.writerId,
+						lastCommentTime : new Date(),
+						$inc : {
+							commentCount : 1
+						}
+					});
+					
 					Life.ArticleModel.updateNoHistory({
 						id : savedData.articleId,
 						lastCommentTime : new Date(),

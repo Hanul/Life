@@ -43,8 +43,7 @@
 				},
 				sort : {
 					createTime : 1
-				},
-				isToCache : true
+				}
 			}, function(_commentDataSet) {
 				commentDataSet = _commentDataSet;
 				
@@ -55,7 +54,7 @@
 			        	done();
 			        });
 			    },
-			    done])
+			    done]);
 			});
 		},
 		

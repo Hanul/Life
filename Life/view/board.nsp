@@ -36,10 +36,7 @@
 		if (boardId === '' || boardId === 'all') {
 			next();
 		} else {
-			Life.BoardModel.get({
-				id : boardId,
-				isToCache : true
-			}, function(savedData) {
+			Life.BoardModel.get(boardId, function(savedData) {
 				boardData = savedData;
 				self.title = boardData.name;
 				next();
@@ -102,8 +99,7 @@
 					},
 					sort : {
 						category : 1
-					},
-					isToCache : true
+					}
 				}, function(categoryDataSet) {
 					self.categoryDataSet = categoryDataSet;
 					next();
@@ -136,10 +132,7 @@
 				    	if (articleData.categoryId === undefined) {
 			        		done();
 			        	} else {
-			        		Life.CategoryModel.get({
-			        			id : articleData.categoryId,
-			        			isToCache : true
-			        		}, {
+			        		Life.CategoryModel.get(articleData.categoryId, {
 			        			notExists : done,
 			        			success : function(categoryData) {
 			        				articleData.categoryData = categoryData;
@@ -149,16 +142,20 @@
 			        	}
 				    },
 				    function(done) {
-				    	Life.BoardModel.get({
-				    		id : articleData.boardId,
-				    		isToCache : articleData.boardId
-				    	}, {
-		        			notExists : done,
-		        			success : function(boardData) {
-		        				articleData.boardData = boardData;
-		        				done();
-		        			}
-		        		});
+				    	
+				    	if (boardData !== undefined) {
+							done();
+						}
+						
+						else {
+					    	Life.BoardModel.get(articleData.boardId, {
+			        			notExists : done,
+			        			success : function(boardData) {
+			        				articleData.boardData = boardData;
+			        				done();
+			        			}
+			        		});
+			        	}
 				    },
 				    done]);
 			    },
@@ -171,62 +168,64 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<? articleId === undefined >
-	<div id="article" class="{{self.subURI === '' ? '' : 'pc'}}">
-		<? boardData === undefined >
-			<header>
-				<h1 class="logo">
-					<img src="/R/logo.png">
-				</h1>
-			</header>
-			<article>
-				<p class="description">
-					{{CONFIG.description}}
-				</p>
-				<p>전체 총 <span class="count">{{totalArticleCount}}</span>개의 글이 있습니다.</p>
-				<? page <= 1 >
-					<p>
-						총 <span class="count"><%
-							Life.UserModel.count(function(count) {
-								print(count);
-								resume();
-							});
-							pause();
-						%></span>명의 유저가 있습니다.
+<? self.params.list !== 'true' >
+	<? articleId === undefined >
+		<div id="article" class="{{self.subURI === '' ? '' : 'pc'}}">
+			<? boardData === undefined >
+				<header>
+					<h1 class="logo">
+						<img src="/R/logo.png">
+					</h1>
+				</header>
+				<article>
+					<p class="description">
+						{{CONFIG.description}}
 					</p>
-				</?>
-			</article>
-			<script>
-				Life.STORE('menuScrollStore').remove('scrollTop');
-			</script>
-		</?>
-		<? else >
-			<header>
-				<h1>{{boardData.name}} <span class="count">({{totalArticleCount}})</span></h1>
-			</header>
-			<? self.categoryDataSet !== undefined >
-				<div class="category">
-					<h5>카테고리</h5>
-					<ul>
-						<~ self.categoryDataSet -> categoryData >
-							<li><a href="/board/{{categoryData.boardId}}?categoryId={{categoryData.id}}">{{categoryData.category}} <span class="count">({{categoryData.articleCount}})</span></a></li>
-						</~>
-						<div class="clear"></div>
-					</ul>
-				</div>
+					<p>전체 총 <span class="count">{{totalArticleCount}}</span>개의 글이 있습니다.</p>
+					<? page <= 1 >
+						<p>
+							총 <span class="count"><%
+								Life.UserModel.count(function(count) {
+									print(count);
+									resume();
+								});
+								pause();
+							%></span>명의 유저가 있습니다.
+						</p>
+					</?>
+				</article>
+				<script>
+					Life.STORE('menuScrollStore').remove('scrollTop');
+				</script>
 			</?>
-			<article>
-				{{boardData.html}}
-			</article>
-		</?>
-	</div>
+			<? else >
+				<header>
+					<h1>{{boardData.name}} <span class="count">({{totalArticleCount}})</span></h1>
+				</header>
+				<? self.categoryDataSet !== undefined >
+					<div class="category">
+						<h5>카테고리</h5>
+						<ul>
+							<~ self.categoryDataSet -> categoryData >
+								<li><a href="/board/{{categoryData.boardId}}?categoryId={{categoryData.id}}{{self.params.list === 'true' ? '&list=true' : ''}}">{{categoryData.category}} <span class="count">({{categoryData.articleCount}})</span></a></li>
+							</~>
+							<div class="clear"></div>
+						</ul>
+					</div>
+				</?>
+				<article>
+					{{boardData.html}}
+				</article>
+			</?>
+		</div>
+	</?>
+	<? else >
+		<div id="article">
+			<% include('article.nsp'); %>
+		</div>
+	</?>
 </?>
-<? else >
-	<div id="article">
-		<% include('article.nsp'); %>
-	</div>
-</?>
-<div id="list" {{self.subURI !== '' && articleId === undefined ? '' : 'class="pc"'}}>
+<div id="list" {{self.params.list === 'true' ? 'class="force-list"' : self.subURI !== '' && articleId === undefined ? '' : 'class="pc"'}}>
 	<div class="page-info">
 		<h3 class="left">{{boardData === undefined ? '전체글보기' : boardData.name}}{{categoryId === undefined ? '' : ' - ' + RUN(function() {
 			
@@ -247,7 +246,7 @@
 				function openSearchBox() {
 					
 					Yogurt.Prompt('검색어를 입력해주세요.', function(value) {
-						location.href = '/board/{{boardData === undefined ? 'all' : boardData.id}}?query=' + value;
+						location.href = '/board/{{boardData === undefined ? 'all' : boardData.id}}?query=' + value + '{{self.params.list === 'true' ? '&list=true' : ''}}';
 					});
 				}
 			</script>
@@ -273,7 +272,9 @@
 								</a>
 							</td>
 							<td class="nickname">
-								<a href="/user/{{articleData.writerData.id}}">{{articleData.writerData.nickname}}</a>
+								<a href="/user/{{articleData.writerData.id}}" class="left">{{articleData.writerData.nickname}}</a>
+								<span class="board">{{boardData !== undefined ? '' : articleData.boardData.name}}</span>
+								<div class="clear"></div>
 							</td>
 						</tr>
 						<tr>
@@ -333,7 +334,7 @@
 			}
 		%>
 		<~ endPage - startPage + 1 -> i >
-			<li><a href="/board/{{boardData === undefined ? 'all' : boardData.id}}?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{i + startPage}}"{{page === i + startPage ? ' class="now"' : ''}} onclick="Life.STORE('listScrollStore').remove('scrollTop');">{{i + startPage}}</a></li>
+			<li><a href="/board/{{boardData === undefined ? 'all' : boardData.id}}?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{i + startPage}}{{self.params.list === 'true' ? '&list=true' : ''}}"{{page === i + startPage ? ' class="now"' : ''}} onclick="Life.STORE('listScrollStore').remove('scrollTop');">{{i + startPage}}</a></li>
 		</~>
 		<div class="clear"></div>
 	</ul>
@@ -387,7 +388,7 @@
 				articleListDom.prepend(article = LI({
 					c : A({
 						cls : 'new item',
-						href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}',
+						href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}{{self.params.list === 'true' ? '&list=true' : ''}}',
 						c : TABLE({
 							c : [TR({
 								c : [TD({
@@ -443,6 +444,88 @@
 					node : article
 				});
 			});
+		});
+	});
+</script>
+</?>
+
+<? self.params.list !== 'true' >
+<script>
+	var listDom = DOM({
+		el : document.getElementById('list')
+	});
+	
+	var articleDom = DOM({
+		el : document.getElementById('article')
+	});
+	
+	var isResizing = false;
+	
+	var resizeBarStore = Life.STORE('resizeBarStore');
+	
+	var bar;
+	
+	var resize = function(left) {
+		
+		if (WIN_WIDTH() >= 980 && left > 300) {
+		
+			listDom.addStyle({
+				width : left - 150
+			});
+			articleDom.addStyle({
+				marginLeft : left - 150
+			});
+			
+			if (bar !== undefined) {
+				bar.addStyle({
+					left : left
+				});
+			}
+			
+			resizeBarStore.save({
+				name : 'left',
+				value : left
+			});
+		}
+	};
+	
+	if (resizeBarStore.get('left') !== undefined) {
+		resize(resizeBarStore.get('left'));
+	}
+	
+	READY(function() {
+		
+		bar = DIV({
+			style : {
+				position : 'fixed',
+				left : listDom.getLeft() + listDom.getWidth() - 2,
+				top : 0,
+				width : 5,
+				height : '100%',
+				cursor : 'e-resize'
+			},
+			on : {
+				touchstart : function(e) {
+					isResizing = true;
+					e.stop();
+				}
+			}
+		}).appendTo(BODY);
+		
+		if (resizeBarStore.get('left') !== undefined) {
+			bar.addStyle({
+				left : resizeBarStore.get('left')
+			});
+		}
+		
+		EVENT('touchmove', function(e) {
+			if (isResizing === true) {
+				resize(e.getLeft());
+			}
+		});
+		
+		EVENT('touchend', function() {
+			isResizing = false;
 		});
 	});
 </script>

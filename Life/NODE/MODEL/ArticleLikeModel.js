@@ -9,6 +9,11 @@ OVERRIDE(Life.ArticleLikeModel, function(origin) {
 
 		init : function(inner, self, params) {
 			
+			self.getDB().createIndex({
+				articleId : 1,
+				userId : 1
+			});
+			
 			inner.on('create', {
 			
 				before : function(data, next, ret, clientInfo) {

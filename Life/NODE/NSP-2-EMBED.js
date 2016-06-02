@@ -48,8 +48,12 @@ global.LOAD_NSP = function(requestInfo, path, self, notExistsHandler, errorHandl
 	});
 };
 
+global.__NSP_SAVED_CODES = {};
+
 global.NSP = function(path, code) {
 	//REQUIRED: code
+	
+	__NSP_SAVED_CODES[path] = code;
 	
 	// init
 	var compiledCode = '';
@@ -58,6 +62,7 @@ global.NSP = function(path, code) {
 	compiledCode += 'var __redirectURL;';
 	compiledCode += 'var __cookieInfo = __requestInfo.cookies;';
 	compiledCode += 'var __newCookieInfo = {};';
+	compiledCode += 'var __path = \'' + path + '\';';
 	compiledCode += 'var __basePath = \'' + Path.dirname(path) + '\';';
 	
 	// print
@@ -162,7 +167,19 @@ global.NSP = function(path, code) {
 		
 	}.toString() + ';';
 	
+	// each
+	compiledCode += 'var __each = ' + function(target, func) {
+		
+		if (isNaN(target) === true) {
+			EACH(target, func);
+		} else {
+			REPEAT(target, func);
+		}
+		
+	}.toString() + ';';
+	
 	var i = 0;
+	var savedIndex = 0;
 	
 	var resumeCountStack = [0];
 	
@@ -193,7 +210,9 @@ global.NSP = function(path, code) {
 			LOAD_NSP(__requestInfo, __basePath + '/' + path, self, function() {
 				print(path + ': File not exists.');
 				resume();
-			}, __errorHandler, function(result) {
+			}, function(e, path, startLine, startColumn, endLine, endColumn, startIndex, endIndex) {
+				print('<p><b>' + e + '</b></p><p><b>path: </b>' + path + ' (' + startLine + ':' + startColumn + '~' + endLine + ':' + endColumn + ')</p><pre>' + __NSP_SAVED_CODES[path].substring(startIndex, endIndex) + '</pre>');
+			}, function(result) {
 				print(result.html);
 				resume();
 			});
@@ -264,6 +283,7 @@ global.NSP = function(path, code) {
 			
 			savedLine = line;
 			savedColumn = column;
+			savedIndex = i;
 			
 			if (code[i + 2] === '=') {
 				isCodePrintMode = true;
@@ -271,10 +291,12 @@ global.NSP = function(path, code) {
 				compiledCode += 'print(';
 				
 				i += 2;
+				column += 2;
 			}
 			
 			else {
 				i += 1;
+				column += 1;
 			}
 			continue;
 		}
@@ -289,13 +311,14 @@ global.NSP = function(path, code) {
 				compiledCode += ');';
 			}
 			
-			compiledCode += '} catch(e) { __errorHandler(e, ' + savedLine + ',' + savedColumn + '); }';
+			compiledCode += '} catch(e) { __errorHandler(e, __path, ' + savedLine + ', ' + savedColumn + ', ' + line + ', ' + (column + 1) + ', ' + savedIndex + ', ' + (i + 2) + '); }';
 			
 			addResumeStart();
 			
 			compiledCode += 'print(\'';
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 			
@@ -307,8 +330,10 @@ global.NSP = function(path, code) {
 			
 			savedLine = line;
 			savedColumn = column;
+			savedIndex = i;
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 			
@@ -316,12 +341,14 @@ global.NSP = function(path, code) {
 		if (cch === '<~' && checkIsInCode() !== true) {
 			isRepeatMode = true;
 			
-			compiledCode += '\'); try { EACH(';
+			compiledCode += '\'); try { __each(';
 			
 			savedLine = line;
 			savedColumn = column;
+			savedIndex = i;
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		
@@ -331,6 +358,7 @@ global.NSP = function(path, code) {
 			compiledCode += ', function(';
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		
@@ -348,6 +376,7 @@ global.NSP = function(path, code) {
 			compiledCode += '__lastCondition !== true';
 			
 			i += 3;
+			column += 3;
 			continue;
 		}
 		
@@ -400,13 +429,14 @@ global.NSP = function(path, code) {
 				});
 				resumeCountStack.pop();
 				
-				compiledCode += '__parentPause(); } )(pause, __store); } } catch(e) { __errorHandler(e, ' + savedLine + ', ' + savedColumn + '); }';
+				compiledCode += '__parentPause(); } )(pause, __store); } } catch(e) { __errorHandler(e, __path, ' + savedLine + ', ' + savedColumn + ', ' + line + ', ' + (column + 3) + ', ' + savedIndex + ', ' + (i + 4) + '); }';
 				
 				addResumeStart();
 				
 				compiledCode += 'print(\'';
 				
 				i += 3;
+				column += 3;
 				continue;
 			}
 			
@@ -423,13 +453,14 @@ global.NSP = function(path, code) {
 				});
 				resumeCountStack.pop();
 				
-				compiledCode += '__parentPause(); } )(pause, __store); } ); } catch(e) { __errorHandler(e, ' + savedLine + ', ' + savedColumn + '); }';
+				compiledCode += '__parentPause(); } )(pause, __store); } ); } catch(e) { __errorHandler(e, __path, ' + savedLine + ', ' + savedColumn + ', ' + line + ', ' + (column + 3) + ', ' + savedIndex + ', ' + (i + 4) + '); }';
 				
 				addResumeStart();
 				
 				compiledCode += 'print(\'';
 				
 				i += 3;
+				column += 3;
 				continue;
 			}
 		}
@@ -442,8 +473,10 @@ global.NSP = function(path, code) {
 			
 			savedLine = line;
 			savedColumn = column;
+			savedIndex = i;
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		
@@ -451,13 +484,14 @@ global.NSP = function(path, code) {
 		if (cch === '}}' && checkIsInString() !== true && isPrintMode === true) {
 			isPrintMode = false;
 			
-			compiledCode += '); } catch(e) { __errorHandler(e, ' + savedLine + ', ' + savedColumn + '); }';
+			compiledCode += '); } catch(e) { __errorHandler(e, __path, ' + savedLine + ', ' + savedColumn + ', ' + line + ', ' + (column + 1) + ', ' + savedIndex + ', ' + (i + 2) + '); }';
 			
 			addResumeStart();
 			
 			compiledCode += 'print(\'';
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		
@@ -519,6 +553,7 @@ global.NSP = function(path, code) {
 			compiledCode += '//';
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		
@@ -529,6 +564,7 @@ global.NSP = function(path, code) {
 			compiledCode += '/*';
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		
@@ -539,6 +575,7 @@ global.NSP = function(path, code) {
 			compiledCode += '*/';
 			
 			i += 1;
+			column += 1;
 			continue;
 		}
 		

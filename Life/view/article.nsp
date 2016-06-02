@@ -197,7 +197,7 @@
 
 		global.removeComment = function(commentId) {
 			
-			Yogurt.Confim('레알 삭제합니까?', function() {
+			Yogurt.Confirm('레알 삭제합니까?', function() {
 				Life.CommentModel.remove(commentId);
 			});
 		};
@@ -295,28 +295,36 @@
 			
 			var likeButton;
 			
-			likeDom.append(likeButton = A({
-				cls : 'left-button',
-				c : likeCount + ' 따봉',
-				on : {
-					tap : function() {
-						Life.CommentLikeModel.create({
-							commentId : commentId,
-							userId : '{{self.signedUserData.id}}'
-						}, {
-							notValid : function(validErrors) {
-								if (validErrors.commentId.type === 'existed') {
-									Yogurt.Alert('이미 1따봉 날렸습니다.');
-								}
-							},
-							success : function() {
-								likeButton.remove();
-								generateCommentLikeButton(likeDom, commentId, likeCount + 1);
-							}
-						});
-					}
+			Life.CommentLikeModel.checkIsExists({
+				filter : {
+					commentId : commentId,
+					userId : '{{self.signedUserData.id}}'
 				}
-			}));
+			}, function(isExists) {
+				
+				likeDom.append(likeButton = A({
+					cls : 'left-button' + (isExists === true ? ' already' : ''),
+					c : likeCount + ' 따봉',
+					on : {
+						tap : function() {
+							Life.CommentLikeModel.create({
+								commentId : commentId,
+								userId : '{{self.signedUserData.id}}'
+							}, {
+								notValid : function(validErrors) {
+									if (validErrors.commentId.type === 'existed') {
+										Yogurt.Alert('이미 1따봉 날렸습니다.');
+									}
+								},
+								success : function() {
+									likeButton.remove();
+									generateCommentLikeButton(likeDom, commentId, likeCount + 1);
+								}
+							});
+						}
+					}
+				}));
+			});
 		};
 		
 		<~ commentDataSet -> commentData >
@@ -494,24 +502,32 @@
 			
 			EACH([likeMenu, likeMenu2], function(likeMenu) {
 				
-				likeMenu.empty();
-				likeMenu.append(A({
-					c : likeCount + ' 따봉',
-					on : {
-						tap : function() {
-							Life.ArticleLikeModel.create({
-								articleId : '{{articleData.id}}',
-								userId : '{{self.signedUserData.id}}'
-							}, {
-								notValid : function(validErrors) {
-									if (validErrors.articleId.type === 'existed') {
-										Yogurt.Alert('이미 1따봉 날렸습니다.');
-									}
-								}
-							});
-						}
+				Life.ArticleLikeModel.checkIsExists({
+					filter : {
+						articleId : '{{articleData.id}}',
+						userId : '{{self.signedUserData.id}}'
 					}
-				}));
+				}, function(isExists) {
+					likeMenu.empty();
+					likeMenu.append(A({
+						cls : isExists === true ? ' already' : '',
+						c : likeCount + ' 따봉',
+						on : {
+							tap : function() {
+								Life.ArticleLikeModel.create({
+									articleId : '{{articleData.id}}',
+									userId : '{{self.signedUserData.id}}'
+								}, {
+									notValid : function(validErrors) {
+										if (validErrors.articleId.type === 'existed') {
+											Yogurt.Alert('이미 1따봉 날렸습니다.');
+										}
+									}
+								});
+							}
+						}
+					}));
+				});
 			});
 		});
 		

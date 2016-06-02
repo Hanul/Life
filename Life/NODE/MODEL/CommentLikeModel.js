@@ -9,6 +9,11 @@ OVERRIDE(Life.CommentLikeModel, function(origin) {
 
 		init : function(inner, self, params) {
 			
+			self.getDB().createIndex({
+				commentId : 1,
+				userId : 1
+			});
+			
 			inner.on('create', {
 			
 				before : function(data, next, ret, clientInfo) {

@@ -36,9 +36,6 @@ global.NSP_BRIDGE = function(config) {
 	// rest uri
 	restURI = config.restURI;
 	
-	// if dev mode is true, no resource caching.
-	CONFIG.isDevMode = config.isDevMode;
-	
 	return {
 		
 		notExistsResource : function(resourcePath, requestInfo, response) {

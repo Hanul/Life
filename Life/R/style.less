@@ -651,7 +651,7 @@ body {
 	}
 }
 
-#admin {
+#simple {
 	padding: 20px;
 	h1 {
 		font-size: 24px;
@@ -661,6 +661,10 @@ body {
 	a {
 		color: rgb(65, 131, 196);
 	}
+}
+
+#admin {
+	&:extend(#simple all);
 	ul {
 		margin-left: 20px;
 		margin-top: 10px;

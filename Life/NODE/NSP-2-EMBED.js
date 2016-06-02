@@ -1,3 +1,5 @@
+//TODO: NSP 오류 출력 부분 만들기
+
 var cachedFileInfos = {};
 
 var
@@ -171,7 +173,9 @@ global.NSP = function(path, code) {
 	compiledCode += 'var __each = ' + function(target, func) {
 		
 		if (isNaN(target) === true) {
-			EACH(target, func);
+			EACH(target, function(value, name) {
+				func(name, value);
+			});
 		} else {
 			REPEAT(target, func);
 		}
@@ -359,6 +363,17 @@ global.NSP = function(path, code) {
 			
 			i += 1;
 			column += 1;
+			
+			for (var j = i + 1; j < code.length; j += 1) {
+				if (code[j] === '>') {
+					compiledCode += '__name, ';
+					break;
+				}
+				if (code[j] === ':') {
+					break;
+				}
+			}
+			
 			continue;
 		}
 		

@@ -1,10 +1,14 @@
 <h1 id="form-title">글 작성</h1>
 
+<%
+	var data = self.data;
+%>
+
 <form id="form" method="POST">
 	
-	<? validErrors !== undefined >
+	<? self.validErrors !== undefined >
 		<ul class="error">
-			<~ validErrors -> name : validError >
+			<~ self.validErrors -> name : validError >
 				<? name === 'boardId' >
 					<? validError.type === 'notEmpty' >
 						<li>게시판을 선택해주세요.</li>

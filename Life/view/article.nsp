@@ -291,7 +291,7 @@
 			});
 		};
 		
-		var generateCommentLikeButton = function(likeDom, commentId, likeCount) {
+		var generateCommentLikeButton = function(likeDom, commentId, likeCount, beforeGenerateButton) {
 			
 			var likeButton;
 			
@@ -301,6 +301,10 @@
 					userId : '{{self.signedUserData.id}}'
 				}
 			}, function(isExists) {
+				
+				if (beforeGenerateButton !== undefined) {
+					beforeGenerateButton();
+				}
 				
 				likeDom.append(likeButton = A({
 					cls : 'left-button' + (isExists === true ? ' already' : ''),
@@ -317,8 +321,9 @@
 									}
 								},
 								success : function() {
-									likeButton.remove();
-									generateCommentLikeButton(likeDom, commentId, likeCount + 1);
+									generateCommentLikeButton(likeDom, commentId, likeCount + 1, function() {
+										likeButton.remove();
+									});
 								}
 							});
 						}
@@ -508,6 +513,7 @@
 						userId : '{{self.signedUserData.id}}'
 					}
 				}, function(isExists) {
+					
 					likeMenu.empty();
 					likeMenu.append(A({
 						cls : isExists === true ? ' already' : '',

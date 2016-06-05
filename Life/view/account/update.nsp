@@ -1,31 +1,58 @@
 <% include('../layout/top.nsp'); %>
 
 <? self.checkIsSigned() === true >
-
-	<%
-		var data = self.params;
-		var validErrors;
-		
-		if (self.method === 'POST') {
+	<div id="simple">
+		<h1>내 정보 수정</h1>
+		<%
+			var data = self.params;
+			var validErrors;
 			
-			pause();
-		}
-	%>
-	
-	<h3>아이콘 변경 (최적 크기 24 * 24)</h3>
-	<div id="change-icon">
-	</div>
-	
-	정보 수정 기능 개발중입니다.
-	
-	<!--<form class="pure-form pure-form-stacked" method="POST">
+			if (self.method === 'POST') {
+				
+				data.id = self.signedUserData.id;
+				
+				delete data.email;
+				
+				if (data.password === '') {
+					delete data.password;
+				}
+				
+				Life.UserModel.update(data, {
+					notValid : function(_validErrors) {
+						validErrors = _validErrors;
+						resume();
+					},
+					success : function(userData) {
+						self.signedUserData = userData;
+						redirect('/user/' + userData.id);
+						resume();
+					}
+				});
+				
+				pause();
+			}
+		%>
 		
-		<fieldset>
-			<legend>내 정보를 수정합니다.</legend>
+		<h3>아이콘 변경 (최적 크기 24 * 24)</h3>
+		<div id="change-icon">
+		</div>
+		
+		<form method="POST">
+			
+			<? validErrors !== undefined >
+				<ul class="error">
+					<~ validErrors -> name : validError >
+						<? name === 'nickname' >
+							<? validError.type === 'existed' >
+								<li>이미 존재하는 닉네임입니다.</li>
+							</?>
+						</?>
+					</~>
+				</ul>
+			</?>
+			
 			<label>이메일</label>
-			<p class="email">{{self.signedUserData.email}}</p>
-			
-			<a class="pure-button">이메일 변경</a>
+			<p class="email">{{self.signedUserData.email}}<br><a href="/account/update-email.nsp">이메일 변경</a></p>
 			
 			<label for="username">로그인 아이디</label>
 			<input name="username" value="{{self.signedUserData.username}}" placeholder="로그인 아이디">
@@ -36,9 +63,12 @@
 			<label>비밀번호</label>
 			<input type="password" name="password" placeholder="비밀번호">
 			
-			<input class="pure-button pure-button-primary" type="submit" value="내 정보 수정">
-		</fieldset>
-	</form>-->
+			<label>내 소개</label>
+			<textarea name="intoduce" placeholder="나는 이런 사람이다!">{{self.signedUserData.intoduce}}</textarea>
+			
+			<input type="submit" value="내 정보 수정">
+		</form>
+	</div>
 </?>
 <? else >
 	<%
@@ -52,6 +82,10 @@
 			
 			var changeIcon = DOM({
 				el : document.getElementById('change-icon')
+			});
+			
+			changeIcon.addStyle({
+				marginTop : 10
 			});
 			
 			var iconPreviewStyle = {
@@ -75,9 +109,16 @@
 			
 			changeIcon.append(UUI.FULL_UPLOAD_FORM({
 				style : {
-					border : '1px solid #999',
+					border : '1px solid #ccc',
 					marginTop : 10,
 					marginBottom : 20
+				},
+				formStyle : {
+					margin : 0,
+					padding : 0
+				},
+				inputStyle : {
+					margin : 0
 				},
 				box : Life
 			}, {

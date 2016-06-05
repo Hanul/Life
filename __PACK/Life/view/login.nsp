@@ -26,7 +26,15 @@
 %>
 <% include('layout/top.nsp'); %>
 
-<h1 id="form-title">로그인</h1>
+<div id="form-title">
+	
+	<h1>로그인</h1>
+	
+	<ul class="menu">
+		<li><a href="/join">회원 가입</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
 
 <form id="form" method="POST">
 
@@ -54,7 +62,7 @@
 	
 	<input type="submit" value="로그인">
 	
-	<a href="/join">아직 아이디가 없으세요?</a>
+	<a href="/account/find-password">비밀번호를 까묵으셨어요?</a>
 	
 </form>
 

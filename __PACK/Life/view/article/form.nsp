@@ -13,7 +13,8 @@
 					<? validError.type === 'notEmpty' >
 						<li>게시판을 선택해주세요.</li>
 					</?>
-				</?><? name === 'title' >
+				</?>
+				<? name === 'title' >
 					<? validError.type === 'notEmpty' >
 						<li>제목을 입력해주세요.</li>
 					</?>

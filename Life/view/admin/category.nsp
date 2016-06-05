@@ -1,6 +1,6 @@
 <% include('../layout/top.nsp'); %>
 
-<div id="admin">
+<div id="simple">
 	<h1>카테고리 관리</h1>
 	<? self.checkIsAdmin() === true >
 	

@@ -22,29 +22,42 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 					// cookies
 					cookies;
 					
-					if (data.content === undefined) {
-						data.html = undefined;
-					} else {
-						data.html = Markdown.MarkUp(data.content);
-					}
-					
-					if (clientInfo === undefined) {
-						next();
-					}
-					
-					else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
-						cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
+					NEXT([
+					function(next) {
 						
-						if (cookies['session-key'] !== undefined) {
-							
-							Life.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
-								
-								data.writerId = sessionKeyData.userId;
-								
+						if (data.content === undefined) {
+							data.html = undefined;
+							next();
+						} else {
+							Life.ReplaceUserTagToLink(Markdown.MarkUp(data.content), function(html) {
+								data.html = html;
 								next();
 							});
 						}
-					}
+					},
+					
+					function() {
+						return function() {
+							
+							if (clientInfo === undefined) {
+								next();
+							}
+							
+							else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
+								cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
+								
+								if (cookies['session-key'] !== undefined) {
+									
+									Life.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
+										
+										data.writerId = sessionKeyData.userId;
+										
+										next();
+									});
+								}
+							}
+						};
+					}]);
 					
 					return false;
 				},
@@ -87,42 +100,57 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 					// cookies
 					cookies;
 					
-					if (data.content === TO_DELETE) {
-						data.html = TO_DELETE;
-					} else if (data.content !== undefined) {
-						data.html = Markdown.MarkUp(data.content);
-					}
-					
-					if (clientInfo === undefined) {
-						next();
-					}
-					
-					else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
-						cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
+					NEXT([
+					function(next) {
 						
-						if (cookies['session-key'] !== undefined) {
+						if (data.content === TO_DELETE) {
+							data.html = TO_DELETE;
+							next();
+						} else if (data.content !== undefined) {
+							Life.ReplaceUserTagToLink(Markdown.MarkUp(data.content), function(html) {
+								data.html = html;
+								next();
+							});
+						} else {
+							next();
+						}
+					},
+					
+					function() {
+						return function() {
 							
-							Life.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
+							if (clientInfo === undefined) {
+								next();
+							}
+							
+							else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
+								cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
 								
-								self.get(data.id, function(savedData) {
+								if (cookies['session-key'] !== undefined) {
 									
-									if (data.writerId === sessionKeyData.userId) {
-										next();
-									} else {
-										Life.UserModel.get(sessionKeyData.userId, function(userData) {
-											if (CHECK_IS_IN({
-												array : userData.roles,
-												value : Life.ROLE.MANAGER
-											}) === true) {
+									Life.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
+										
+										self.get(data.id, function(savedData) {
+											
+											if (data.writerId === sessionKeyData.userId) {
 												next();
+											} else {
+												Life.UserModel.get(sessionKeyData.userId, function(userData) {
+													if (CHECK_IS_IN({
+														array : userData.roles,
+														value : Life.ROLE.MANAGER
+													}) === true) {
+														next();
+													}
+												});
 											}
 										});
-									}
-								});
-							});
-						}
-					}
-					
+									});
+								}
+							}
+						};
+					}]);
+						
 					return false;
 				},
 				

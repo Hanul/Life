@@ -6,6 +6,17 @@
 				el : document.getElementById('toolbar')
 			}).prepend(A({
 				style : {
+					flt : 'right',
+					padding : '9px 12px'
+				},
+				c : '전체글보기',
+				href : '/board/all'
+			}));
+			
+			DOM({
+				el : document.getElementById('toolbar')
+			}).prepend(A({
+				style : {
 					flt : 'left',
 					padding : 10,
 					lineHeight : 0,
@@ -53,7 +64,7 @@
 			<div class="inner">
 				<div class="logo"><a href="/"><img src="/R/logo.png"></a></div>
 				<p class="version">v0.9</p>
-				<a id="write-button" href="/article/write?boardId={{self.boardId}}">글 작성</a>
+				<a id="write-button" href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">글 작성</a>
 				<ul>
 					<li><a href="/board/all">전체글보기 <span class="count">({{self.totalArticleCount}})</span></a></li>
 			        <~ self.boardDataSet -> boardData >

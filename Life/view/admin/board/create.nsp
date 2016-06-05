@@ -1,6 +1,6 @@
 <% include('../../layout/top.nsp'); %>
 
-<div id="admin">
+<div id="simple">
 	<h1>게시판 생성</h1>
 	<? self.checkIsAdmin() === true >
 	

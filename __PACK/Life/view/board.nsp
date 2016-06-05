@@ -210,7 +210,14 @@
 			</?>
 			<? else >
 				<header>
-					<h1>{{boardData.name}} <span class="count">({{totalArticleCount}})</span></h1>
+					<h1 class="left">{{boardData.name}} <span class="count">({{totalArticleCount}})</span></h1>
+					
+					<? self.signedUserData !== undefined >
+						<ul class="menu">
+							<li><a href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">글 작성</a></li>
+						</ul>
+						<div class="clear"></div>
+					</?>
 				</header>
 				<? self.categoryDataSet !== undefined >
 					<div class="category">

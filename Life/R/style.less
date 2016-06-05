@@ -279,6 +279,14 @@ body {
 	}
 }
 
+#x-button {
+	position: fixed;
+	right: 0;
+	top: 0;
+	padding: 10px;
+	color: #999 !important;
+}
+
 #article {
 	@media screen {
 		@media (min-width: 980px) {
@@ -469,10 +477,32 @@ body {
 		}
 	}
 	border-bottom: 1px solid #ccc;
-	font-size: 24px;
-	font-weight: bold;
-	color: #333;
 	margin-bottom: 10px;
+	
+	h1 {
+		float: left;
+		font-size: 24px;
+		font-weight: bold;
+	}
+	.menu {
+		float: right;
+		li {
+			margin-left: 8px;
+			float: left;
+			a {
+				display: block;
+				border: 1px solid #ddd;
+				padding: 10px 20px;
+				border-radius: 20px;
+				color: #666;
+				&.already {
+					border: 1px solid #1b98f8;
+					background-color: #1b98f8;
+					color: #fff;
+				}
+			}
+		}
+	}
 }
 
 #form {
@@ -541,20 +571,44 @@ body {
 #user-info {
 	padding-bottom: 100px;
 	color: #333;
-	h1 {
-		padding: 15px;
-		font-size: 24px;
-		font-weight: bold;
+	.top {
 		border-bottom: 1px solid #ccc;
-		.icon {
-			width: 40px;
-			vertical-align: middle;
-			border-radius: 3px;
-			margin-right: 5px;
+		h1 {
+			float: left;
+			padding: 15px;
+			font-size: 24px;
+			font-weight: bold;
+			.icon {
+				width: 40px;
+				vertical-align: middle;
+				border-radius: 3px;
+				margin-right: 5px;
+			}
+		}
+		.menu {
+			padding: 15px;
+			float: right;
+			li {
+				margin-left: 8px;
+				float: left;
+				a {
+					display: block;
+					border: 1px solid #ddd;
+					padding: 10px 20px;
+					border-radius: 20px;
+					color: #666;
+					&.already {
+						border: 1px solid #1b98f8;
+						background-color: #1b98f8;
+						color: #fff;
+					}
+				}
+			}
 		}
 	}
-	p {
+	.date {
 		padding: 15px;
+		color: #999;
 	}
 	.panel {
 		padding: 15px;
@@ -661,10 +715,6 @@ body {
 	a {
 		color: rgb(65, 131, 196);
 	}
-}
-
-#admin {
-	&:extend(#simple all);
 	ul {
 		margin-left: 20px;
 		margin-top: 10px;
@@ -685,6 +735,10 @@ body {
 			text-align: center;
 		}
 	}
+	.success {
+		margin-bottom: 15px;
+		color: green;
+	}
 	form {
 		margin-top: 15px;
 		.error {
@@ -696,6 +750,9 @@ body {
 			display: block;
 			font-size: 16px;
 			color: #999;
+		}
+		.email {
+			margin-bottom: 15px;
 		}
 		select, input, textarea {
 			margin-bottom: 15px;

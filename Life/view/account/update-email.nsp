@@ -1,0 +1,15 @@
+<% include('../layout/top.nsp'); %>
+
+<? self.checkIsSigned() === true >
+	<div id="simple">
+		<h1>이메일 변경</h1>
+		<p>이메일을 변경합니다. 이메일을 변경할 시에는 이메일 인증을 받아야 변경이 완료됩니다.</p>
+	</div>
+</?>
+<? else >
+	<%
+		redirect('/login');
+	%>
+</?>
+
+<% include('../layout/bottom.nsp'); %>

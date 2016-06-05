@@ -5,15 +5,12 @@ Life.MAIN = METHOD({
 		
 		var
 		//IMPORT: Less
-		Less = require('less'),
+		Less = require('less');
 		
-		// nsp core
-		nspCore = NSP_BRIDGE({
+		addRequestListener(NSP_BRIDGE({
 			rootPath : './Life/view',
 			restURI : ['account/create', 'board', 'article', 'user']
-		});
-		
-		addRequestListener(nspCore.requestListener);
+		}).requestListener);
 		
 		RESOURCE_SERVER.addPreprocessor({
 			extension : 'less',

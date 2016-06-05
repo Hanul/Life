@@ -13,6 +13,11 @@ OVERRIDE(Life.UserModel, function(origin) {
 			// login.
 			login;
 			
+			// 인덱싱
+			self.getDB().createIndex({
+				nickname : 1
+			});
+			
 			inner.on('create', {
 
 				before : function(data, next, ret) {

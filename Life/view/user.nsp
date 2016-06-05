@@ -10,21 +10,34 @@
 
 <div id="user-info">
 	
-	<h1>
-		<? data.iconFileId === undefined >
-		<img class="icon" src="/R/icon-default.png">
+	<div class="top">
+		<h1>
+			<? data.iconFileId === undefined >
+			<img class="icon" src="/R/icon-default.png">
+			</?>
+			<? else >
+			<img class="icon" src="/__RF/Life/ICON/{{data.iconFileId}}">
+			</?> <span class="nickname">{{data.nickname}}</span>
+		</h1>
+		
+		<? self.signedUserData !== undefined && data.id === self.signedUserData.id >
+			<ul class="menu">
+				<li><a href="/account/update">정보 수정</a></li>
+			</ul>
+			<div class="clear"></div>
 		</?>
-		<? else >
-		<img class="icon" src="/__RF/Life/ICON/{{data.iconFileId}}">
-		</?> <span class="nickname">{{data.nickname}}</span>
-	</h1>
+	</div>
 	
-	<p>
+	<p class="date">
 		<%
 			var cal = CALENDAR(data.createTime);
 			print(cal.getYear() + '년 ' + cal.getMonth(true) + '월 ' + cal.getDate(true) + '일');
 		%>부터 {{CONFIG.title}} 회원입니다.
 	</p>
+	
+	<article class="panel markdown-body">
+		{{data.html}}
+	</article>
 	
 	<div class="panel">
 		<header>
@@ -197,10 +210,6 @@
 			</~>
 		</ul>
 	</div>
-	
-	<? self.signedUserData !== undefined && data.id === self.signedUserData.id >
-		<a class="pure-button pure-button-primary" href="/account/update">정보 수정</a>
-	</?>
 </div>
 
 <% include('layout/bottom.nsp'); %>

@@ -64,6 +64,8 @@
 	pause();
 %>
 
+<a id="x-button" href="/board/{{articleData.boardId}}?list=true"><i class="axi axi-close"></i></a>
+
 <header>
 	<div class="left">
 		<h1>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}}</h1>
@@ -153,33 +155,54 @@
 			// found url
 			foundURL;
 			
-			while (true) {
+			Life.ReplaceUserTagToLink(content, function(content) {
 				
-				regexResult = content.match(/(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/);
-				
-				if (regexResult === TO_DELETE) {
-					dom.append(content);
-					break;
+				while (true) {
+					
+					regexResult = content.match(/(https?:\/\/[^\s<]+[^<.,:;"')\]\s])|(<a href="(.*)">(.*?)<\/a>)/);
+					
+					if (regexResult === TO_DELETE) {
+						dom.append(content);
+						break;
+					}
+					
+					else {
+						
+						foundURL = regexResult[0];
+						
+						if (foundURL[0] === '<') {
+							
+							dom.append(content.substring(0, content.indexOf(foundURL)));
+							
+							dom.append(A({
+								style : {
+									color : '#4183c4'
+								},
+								href : regexResult[3],
+								c : regexResult[4]
+							}));
+							
+							content = content.substring(content.indexOf(foundURL) + foundURL.length);
+						}
+						
+						else {
+													
+							dom.append(content.substring(0, content.indexOf(foundURL)));
+							
+							dom.append(A({
+								style : {
+									color : '#4183c4'
+								},
+								href : foundURL,
+								target : '_blank',
+								c : foundURL
+							}));
+							
+							content = content.substring(content.indexOf(foundURL) + foundURL.length);
+						}
+					}
 				}
-				
-				else {
-					
-					foundURL = regexResult[0];
-					
-					dom.append(content.substring(0, content.indexOf(foundURL)));
-					
-					dom.append(A({
-						style : {
-							color : '#4183c4'
-						},
-						href : foundURL,
-						target : '_blank',
-						c : foundURL
-					}));
-					
-					content = content.substring(content.indexOf(foundURL) + foundURL.length);
-				}
-			}
+			});
 		};
 		
 		<~ commentDataSet -> commentData >
@@ -193,6 +216,10 @@
 			});
 		</~>
 				
+		var commentList = DOM({
+			el : document.getElementById('comment-list')
+		});
+		
 		<? self.signedUserData !== undefined >
 
 		global.removeComment = function(commentId) {
@@ -339,10 +366,6 @@
 				}), '{{commentData.id}}', {{commentData.likeCount}});
 			});
 		</~>
-		
-		var commentList = DOM({
-			el : document.getElementById('comment-list')
-		});
 		
 		commentList.after(UUI.VALID_FORM({
 			errorMsgs : {
@@ -544,6 +567,18 @@
 			generateLikeButton();
 		});
 		
+		</?>
+		
+		// 로그인 안 한 유저일 경우
+		<? else >
+		commentList.after(A({
+			style : {
+				display : 'block',
+				padding : '10px 15px'
+			},
+			href : '/login',
+			c : '댓글을 달거나 따봉을 하려면 로그인을 하셔야 합니다.'
+		}));
 		</?>
 	});
 </script>

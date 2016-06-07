@@ -216,8 +216,8 @@
 						<ul class="menu">
 							<li><a href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">글 작성</a></li>
 						</ul>
-						<div class="clear"></div>
 					</?>
+					<div class="clear"></div>
 				</header>
 				<? self.categoryDataSet !== undefined >
 					<div class="category">

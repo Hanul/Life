@@ -1,9 +1,47 @@
 <% include('../layout/top.nsp'); %>
 
 <? self.checkIsSigned() === true >
+
+	<%
+		if (self.method === 'POST') {
+			
+			Life.ResetEmailKeyModel.create({
+				userId : self.signedUserData.id,
+				email : self.params.email
+			}, function(resetEmailKeyData) {
+				
+				// 메일을 보냅니다.
+				Life.sendMail({
+					senderName : '{{CONFIG.title}}',
+					senderAddress : NODE_CONFIG.Life.email,
+					receiverAddress : resetEmailKeyData.email,
+					title : '{{CONFIG.title}} 이메일 변경 인증 경로입니다.',
+					content : '아래 링크를 통해 이메일 변경 사항을 인증해 주시기 바랍니다.\n\nhttps://gclife.net/account/verify-email/' + resetEmailKeyData.id
+				});
+				
+				resume();
+			});
+			
+			pause();
+		}
+	%>
+
 	<div id="simple">
 		<h1>이메일 변경</h1>
-		<p>이메일을 변경합니다. 이메일을 변경할 시에는 이메일 인증을 받아야 변경이 완료됩니다.</p>
+		<? self.method === 'POST' >
+			<div class="success">
+				인증 메일을 전송하였습니다! 이메일을 확인해보시기 바랍니다!
+				<a href="http://{{self.params.email.substring(self.params.email.indexOf('@') + 1)}}">http://{{self.params.email.substring(self.params.email.indexOf('@') + 1)}}</a>
+			</div>
+		</?>
+		<? else >
+			<p>이메일을 변경합니다. 이메일을 변경할 시에는 이메일 인증을 받아야 변경이 완료됩니다.</p>
+			<form method="POST">
+				<label>변경할 이메일</label>
+				<input name="email" value="{{self.params.email}}" placeholder="이메일">
+				<input type="submit" value="이메일 변경">
+			</form>
+		</?>
 	</div>
 </?>
 <? else >

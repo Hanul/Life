@@ -64,7 +64,16 @@
 			<div class="inner">
 				<div class="logo"><a href="/"><img src="/R/logo.png"></a></div>
 				<p class="version">v0.9</p>
-				<a id="write-button" href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">글 작성</a>
+				<a id="write-button" href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">{{self.signedUserData === undefined ? '로그인' : '글 작성'}}</a>
+				<? self.categoryDataSet !== undefined >
+					<h5>카테고리</h5>
+					<ul class="category">
+						<~ self.categoryDataSet -> categoryData >
+							<li><a href="/board/{{categoryData.boardId}}?categoryId={{categoryData.id}}">{{categoryData.category}} <span class="count">({{categoryData.articleCount}})</span></a></li>
+						</~>
+					</ul>
+				</?>
+				<h5>게시판</h5>
 				<ul>
 					<li><a href="/board/all">전체글보기 <span class="count">({{self.totalArticleCount}})</span></a></li>
 			        <~ self.boardDataSet -> boardData >
@@ -85,14 +94,6 @@
 						<li><a href="/logout">로그아웃</a></li>
 					</?>
 				</ul>
-				<? self.categoryDataSet !== undefined >
-					<h5>카테고리</h5>
-					<ul>
-						<~ self.categoryDataSet -> categoryData >
-							<li><a href="/board/{{categoryData.boardId}}?categoryId={{categoryData.id}}">{{categoryData.category}} <span class="count">({{categoryData.articleCount}})</span></a></li>
-						</~>
-					</ul>
-				</?>
 				<a id="else-button" href="/else">기타...</a>
 			</div>
 		</div>

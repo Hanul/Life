@@ -115,7 +115,9 @@ OVERRIDE(Life.UserModel, function(origin) {
 					}
 					
 					// 보안상 삭제
-					delete data.email;
+					if (clientInfo !== undefined) {
+						delete data.email;
+					}
 					delete data.isBanned;
 					delete data.isLeft;
 					

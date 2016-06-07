@@ -9,7 +9,7 @@ Life.MAIN = METHOD({
 		
 		addRequestListener(NSP_BRIDGE({
 			rootPath : './Life/view',
-			restURI : ['account/create', 'board', 'article', 'user']
+			restURI : ['account/create', 'board', 'article', 'user', 'account/reset-password', 'account/verify-email']
 		}).requestListener);
 		
 		RESOURCE_SERVER.addPreprocessor({

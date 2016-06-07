@@ -1,5 +1,5 @@
 <%
-	var joinKeyId = self.subURI.substring(self.subURI.lastIndexOf('/'));	
+	var joinKeyId = self.subURI.substring(self.subURI.lastIndexOf('/'));
 	
 	var data = self.params;
 	var validErrors;

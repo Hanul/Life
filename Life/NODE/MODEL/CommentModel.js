@@ -45,6 +45,13 @@ OVERRIDE(Life.CommentModel, function(origin) {
 				
 				after : function(savedData) {
 					
+					var
+					// start index
+					startIndex,
+					
+					// content
+					content = savedData.content;
+					
 					Life.UserModel.updateNoHistory({
 						id : savedData.writerId,
 						lastCommentTime : new Date(),
@@ -58,6 +65,49 @@ OVERRIDE(Life.CommentModel, function(origin) {
 						lastCommentTime : new Date(),
 						$inc : {
 							commentCount : 1
+						}
+					}, function(articleData) {
+						
+						if (articleData.writerId !== savedData.writerId) {
+							
+							Life.NotiModel.create({
+								userId : articleData.writerId,
+								targetUserId : savedData.writerId,
+								type : 'comment',
+								targetId : savedData.articleId
+							});
+						}
+					});
+					
+					REPEAT(content.length + 1, function(i) {
+						
+						if (startIndex !== undefined && (i === content.length || content[i] === '@' || content[i] === ' ' || content[i] === '\t' || content[i] === '\n' || content[i] === '\r' || content[i] === '<')) {
+							
+							Life.UserModel.get({
+								filter : {
+									nickname : content.substring(startIndex, i)
+								}
+							}, {
+								notExists : function() {
+									// ignore.
+								},
+								success : function(userData) {
+									
+									if (userData.id !== savedData.writerId) {
+										
+										Life.NotiModel.create({
+											userId : userData.id,
+											targetUserId : savedData.writerId,
+											type : 'tag-comment',
+											targetId : savedData.id
+										});
+									}
+								}
+							});
+						}
+						
+						if (content[i] === '@') {
+							startIndex = i + 1;
 						}
 					});
 				}

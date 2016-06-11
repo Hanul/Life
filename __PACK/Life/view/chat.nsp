@@ -1,0 +1,184 @@
+<? self.signedUserData !== undefined >
+	<article id="chat">
+	</article>
+	<script>
+		READY(function() {
+			
+			var
+			// title
+			title = TITLE(),
+			
+			// first message create time
+			firstMessageCreateTime,
+			
+			// is loading more
+			isLoadingMore,
+			
+			// unread count
+			unreadCount = 0,
+			
+			// list
+			list,
+			
+			// form
+			form;
+			
+			wrapper = DIV({
+				style : {
+					border : '1px solid #ccc',
+					borderRadius : 5
+				},
+				c : [
+				
+				// list
+				list = UL({
+					style : {
+						padding : 10,
+						overflowY : 'scroll',
+						height : 200
+					},
+					on : {
+						scroll : function() {
+							
+							var
+							// saved scroll height
+							savedScrollHeight;
+							
+							// load more.
+							if (isLoadingMore !== true && list.getScrollTop() === 0) {
+								isLoadingMore = true;
+								
+								savedScrollHeight = list.getScrollHeight();
+								
+								Life.ChatModel.find({
+									filter : {
+										createTime : {
+											$lt : firstMessageCreateTime
+										}
+									},
+									count : 100
+								}, function(messageDataSet) {
+									
+									REVERSE_EACH(messageDataSet, function(messageData) {
+									
+										list.prepend(LI({
+											style : {
+												marginTop : 5,
+												color : '#666'
+											},
+											c : messageData.writer + ': ' + messageData.content
+										}));
+										
+										firstMessageCreateTime = messageData.createTime;
+									});
+									
+									isLoadingMore = false;
+									
+									list.scrollTo({
+										top : list.getScrollHeight() - savedScrollHeight
+									});
+								});
+							}
+						}
+					}
+				}),
+				
+				// form
+				form = FORM({
+					style : {
+						borderTop : '1px solid #ccc'
+					},
+					c : TABLE({
+						c : TR({
+							c : [
+							// content
+							TD({
+								c : UUI.FULL_INPUT({
+									name : 'content'
+								})
+							}),
+							// submit
+							TD({
+								style : {
+									width : 70
+								},
+								c : UUI.FULL_SUBMIT({
+									style : {
+										width : 70,
+										backgroundColor : '#eee'
+									},
+									value : '보내기'
+								})
+							})]
+						})
+					}),
+					on : {
+						submit : function(e, form) {
+							
+							var
+							// data
+							data = form.getData();
+							
+							data.writerId = '{{self.signedUserData.id}}';
+							
+							Life.ChatModel.create(data);
+							
+							delete data.content;
+							
+							form.setData(data);
+						}
+					}
+				})]
+			}).appendTo(DOM({
+				el : document.getElementById('chat')
+			}));
+			
+			Life.ChatModel.onNewAndFind({
+				count : 100
+			}, function(messageData) {
+				
+				Life.UserModel.get(messageData.writerId, function(writerData) {
+				
+					var
+					// is scroll to bottom
+					isScrollToBottom = list.getScrollHeight() === list.getHeight() + list.getScrollTop();
+					
+					list.append(LI({
+						style : {
+							marginTop : 5,
+							color : '#666'
+						},
+						c : [IMG({
+							style : {
+								height : 15,
+								verticalAlign : 'middle',
+								borderRadius: 2
+							},
+							src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
+						}), ' ' + writerData.nickname + ': ' + messageData.content]
+					}));
+					
+					if (isScrollToBottom === true) {
+						list.scrollTo({
+							top : list.getScrollHeight()
+						});
+					}
+					
+					if (document.hasFocus() !== true) {
+						unreadCount += 1;
+						TITLE('(' + unreadCount + ') ' + title);
+					}
+					
+					if (firstMessageCreateTime === undefined) {
+						firstMessageCreateTime = messageData.createTime;
+					}
+				});
+			});
+			
+			EVENT('focus', function() {
+				unreadCount = 0;
+				TITLE(title);
+			});
+		});
+	</script>
+</?>

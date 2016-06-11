@@ -79,6 +79,17 @@ OVERRIDE(Life.ArticleLikeModel, function(origin) {
 						$inc : {
 							likeCount : 1
 						}
+					}, function(articleData) {
+						
+						if (articleData.writerId !== savedData.userId) {
+							
+							Life.NotiModel.create({
+								userId : articleData.writerId,
+								targetUserId : savedData.userId,
+								type : 'like-article',
+								targetId : articleData.id
+							});
+						}
 					});
 				}
 			});

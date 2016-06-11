@@ -64,6 +64,13 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 				
 				after : function(savedData) {
 					
+					var
+					// start index
+					startIndex,
+					
+					// content
+					content = savedData.content;
+					
 					Life.UserModel.updateNoHistory({
 						id : savedData.writerId,
 						lastArticleTime : new Date(),
@@ -89,6 +96,38 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 							}
 						});
 					}
+					
+					REPEAT(content.length + 1, function(i) {
+						
+						if (startIndex !== undefined && (i === content.length || content[i] === '@' || content[i] === ' ' || content[i] === '\t' || content[i] === '\n' || content[i] === '\r' || content[i] === '<')) {
+							
+							Life.UserModel.get({
+								filter : {
+									nickname : content.substring(startIndex, i)
+								}
+							}, {
+								notExists : function() {
+									// ignore.
+								},
+								success : function(userData) {
+									
+									if (userData.id !== savedData.writerId) {
+										
+										Life.NotiModel.create({
+											userId : userData.id,
+											targetUserId : savedData.writerId,
+											type : 'tag-article',
+											targetId : savedData.id
+										});
+									}
+								}
+							});
+						}
+						
+						if (content[i] === '@') {
+							startIndex = i + 1;
+						}
+					});
 				}
 			});
 			

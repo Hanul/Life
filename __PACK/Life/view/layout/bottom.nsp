@@ -62,9 +62,8 @@
 		</script>
 		<div id="menu" class="tablet">
 			<div class="inner">
-				<div class="logo"><a href="/"><img src="/R/logo.png"></a></div>
-				<p class="version">v0.9</p>
-				<a id="write-button" href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">글 작성</a>
+				<div class="logo"><a href="/"><img src="/R/menu-logo.png"></a></div>
+				<a id="write-button" href="/article/write?boardId={{self.boardId}}&categoryId={{self.params.categoryId}}">{{self.signedUserData === undefined ? '로그인' : '글 작성'}}</a>
 				<? self.categoryDataSet !== undefined >
 					<h5>카테고리</h5>
 					<ul class="category">
@@ -120,11 +119,11 @@
 			});
 		</script>
 		
-		<!-- 새 글 알림 -->
+		<!-- 알림 -->
 		<script>
 		READY(function() {
 			
-			Life.ArticleModel.onNew(function(articleData) {
+			var notice = function(href, message) {
 				
 				var article = UUI.PANEL({
 					style : {
@@ -140,8 +139,8 @@
 						fontSize : 12
 					},
 					c : A({
-						href : '/board/all/' + articleData.id,
-						c : '새 글! ' + articleData.title
+						href : href,
+						c : message
 					})
 				}).appendTo(BODY);
 				
@@ -157,7 +156,21 @@
 						article.remove();
 					});
 				});
+			};
+			
+			Life.ArticleModel.onNew(function(articleData) {
+				notice('/board/all/' + articleData.id, '새 글! ' + articleData.title);
 			});
+			
+			<? self.signedUserData !== undefined >
+			
+			Life.NotiModel.onNew({
+				userId : '{{self.signedUserData.id}}'
+			}, function(notiData) {
+				Life.GenerateNotiMessage(notiData, notice);
+			});
+			
+			</?>
 		});
 	</script>
 		

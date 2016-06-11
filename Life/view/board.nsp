@@ -68,9 +68,12 @@
 			if (articleId === undefined) {
 				next();
 			} else {
-				Life.ArticleModel.get(articleId, function(savedData) {
-					self.title = savedData.title;
-					next();
+				Life.ArticleModel.get(articleId, {
+					notExists : next,
+					success : function(savedData) {
+						self.title = savedData.title;
+						next();
+					}
 				});
 			}
 		};
@@ -204,6 +207,41 @@
 						</p>
 					</?>
 				</article>
+				<? self.signedUserData !== undefined >
+					<article class="timeline">
+						<h3>타임라인</h3>
+						<ul>
+							<%
+								var notiDataSet;
+								
+								Life.NotiModel.find({
+									filter : {
+										userId : self.signedUserData.id
+									},
+									count : 10
+								}, function(_notiDataSet) {
+									notiDataSet = _notiDataSet;
+									resume();
+								});
+								
+								pause();
+							%>
+							<~ notiDataSet -> notiData >
+								<%
+									var href, message;
+									Life.GenerateNotiMessage(notiData, function(_href, _message) {
+										href = _href;
+										message = _message;
+										resume();
+									});
+									
+									pause();
+								%>
+								<li><a href="{{href}}">{{message}}</a></li>
+							</~>
+						</ul>
+					</article>
+				</?>
 				<script>
 					Life.STORE('menuScrollStore').remove('scrollTop');
 				</script>
@@ -231,12 +269,14 @@
 					{{boardData.html}}
 				</article>
 			</?>
+			<% include('chat.nsp'); %>
 		</div>
 	</?>
 	<? else >
 		<div id="article">
 			<% self.articleId = articleId; %>
 			<% include('article.nsp'); %>
+			<% include('chat.nsp'); %>
 		</div>
 	</?>
 </?>

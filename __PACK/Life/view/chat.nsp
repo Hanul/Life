@@ -8,6 +8,9 @@
 			// title
 			title = TITLE(),
 			
+			// chat room
+			chatRoom = Life.ChatModel.getRoom(),
+			
 			// first message create time
 			firstMessageCreateTime,
 			
@@ -17,18 +20,42 @@
 			// unread count
 			unreadCount = 0,
 			
+			// wrapper
+			wrapper,
+			
+			// user count
+			userCount,
+			
 			// list
 			list,
 			
 			// form
-			form;
+			form,
+			
+			// show user count.
+			showUserCount;
 			
 			wrapper = DIV({
 				style : {
+					position : 'relative',
 					border : '1px solid #ccc',
 					borderRadius : 5
 				},
 				c : [
+				
+				userCount = DIV({
+					style : {
+						position : 'absolute',
+						top : 5,
+						fontSize : 12,
+						color : 'green',
+						onDisplayResize : function(width) {
+							return {
+								right : width >= 980 ? 27 : 7
+							}
+						}
+					}
+				}),
 				
 				// list
 				list = UL({
@@ -94,7 +121,8 @@
 							// content
 							TD({
 								c : UUI.FULL_INPUT({
-									name : 'content'
+									name : 'content',
+									isOffAutocomplete : true
 								})
 							}),
 							// submit
@@ -132,6 +160,15 @@
 			}).appendTo(DOM({
 				el : document.getElementById('chat')
 			}));
+			
+			showUserCount = function(connectionCount) {
+				userCount.empty();
+				userCount.append(connectionCount + '명 접속중');
+			};
+			
+			chatRoom.send('getConnectionCount', showUserCount);
+			chatRoom.on('clientConnected', showUserCount);
+			chatRoom.on('clientDisconnected', showUserCount);
 			
 			Life.ChatModel.onNewAndFind({
 				count : 100

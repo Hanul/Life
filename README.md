@@ -7,8 +7,19 @@ Life는 쉽게 게시판 형 사이트를 구축할 수 있는 [UPPERCASE](http:
 * `favicon.ico`
 * `apple-touch-icon.png` (크기를 180x180으로 만듭니다.)
 
+## 이용약관 및 개인정보 수집 및 이용에 대한 안내
+`Life/R`폴더의 이하 파일들에 내용을 추가합니다.
+* `terms.txt` 이용약관
+* `privacy.txt` 개인정보 수집 및 이용에 대한 안내
+
+## 관리자의 DB 수정
+관리자의 DB 내용 중 `roles`에 다음 두 문자열을 추가합니다.
+* "Admin"
+* "Manager"
+
 ## 이것으로 만들어진 사이트
 * [겜창인생](https://gclife.net)
+* [겐트위한](http://gentwihan.com)
 
 ## 라이센스
 [MIT](LICENSE)

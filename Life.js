@@ -15,7 +15,11 @@ BOOT({
 		description : 'Life는 쉽게 게시판 형 사이트를 구축할 수 있는 <a href="https://github.com/Hanul/UPPERCASE">UPPERCASE</a>와 <a href="https://github.com/Hanul/NSP">NSP</a> 기반의 CMS(Content Management System)입니다.',
 		webServerPort : 8410,
 		
-		googleAnalyticsId : 'UA-76643463-1'
+		googleAnalyticsId : 'UA-76643463-1',
+		
+		Life : {
+			domain : 'http://gclife.net'
+		}
 	},
 	
 	NODE_CONFIG : {

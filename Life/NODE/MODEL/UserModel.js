@@ -108,7 +108,7 @@ OVERRIDE(Life.UserModel, function(origin) {
 					// cookies
 					cookies;
 					
-					if (data.intoduce === undefined) {
+					if (data.intoduce === undefined || data.intoduce === TO_DELETE) {
 						data.html = undefined;
 					} else {
 						data.html = Markdown.MarkUp(data.intoduce);

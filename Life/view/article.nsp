@@ -347,7 +347,10 @@
 					
 					likeDom.append(likeButton = A({
 						cls : 'left-button' + (isExists === true ? ' already' : ''),
-						c : likeCount + ' 따봉',
+						c : [DOM({
+							tag : 'i',
+							cls : 'axi axi-thumb-up'
+						}), ' ' + likeCount + ' 따봉'],
 						on : {
 							tap : function() {
 								Life.CommentLikeModel.create({
@@ -552,7 +555,10 @@
 						likeMenu.empty();
 						likeMenu.append(A({
 							cls : isExists === true ? ' already' : '',
-							c : likeCount + ' 따봉',
+							c : [DOM({
+								tag : 'i',
+								cls : 'axi axi-thumb-up'
+							}), ' ' + likeCount + ' 따봉'],
 							on : {
 								tap : function() {
 									Life.ArticleLikeModel.create({

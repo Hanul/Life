@@ -154,6 +154,10 @@
 							delete data.content;
 							
 							form.setData(data);
+							
+							list.scrollTo({
+								top : list.getScrollHeight()
+							});
 						}
 					}
 				})]

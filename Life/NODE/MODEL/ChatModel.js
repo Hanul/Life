@@ -21,6 +21,25 @@ OVERRIDE(Life.ChatModel, function(origin) {
 				}
 			});
 			
+			inner.on('create', {
+			
+				before : function(data, next, ret, clientInfo) {
+					
+					if (data.writerId !== undefined) {
+						
+						Life.UserModel.get(data.writerId, function(userData) {
+							
+							data.writerNickname = userData.nickname;
+							data.writerIconFileId = userData.iconFileId;
+							
+							next();
+						});
+					}
+					
+					return false;
+				}
+			});
+			
 			Life.ROOM(self.getName(), function(clientInfo, on) {
 				
 				// 새로운 클라이언트 접속 시 count를 1 올림

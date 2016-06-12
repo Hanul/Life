@@ -174,42 +174,39 @@
 				count : 100
 			}, function(messageData) {
 				
-				Life.UserModel.get(messageData.writerId, function(writerData) {
+				var
+				// is scroll to bottom
+				isScrollToBottom = list.getScrollHeight() === list.getHeight() + list.getScrollTop();
 				
-					var
-					// is scroll to bottom
-					isScrollToBottom = list.getScrollHeight() === list.getHeight() + list.getScrollTop();
-					
-					list.append(LI({
+				list.append(LI({
+					style : {
+						marginTop : 5,
+						color : '#666'
+					},
+					c : [IMG({
 						style : {
-							marginTop : 5,
-							color : '#666'
+							height : 15,
+							verticalAlign : 'middle',
+							borderRadius: 2
 						},
-						c : [IMG({
-							style : {
-								height : 15,
-								verticalAlign : 'middle',
-								borderRadius: 2
-							},
-							src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
-						}), ' ' + writerData.nickname + ': ' + messageData.content]
-					}));
-					
-					if (isScrollToBottom === true) {
-						list.scrollTo({
-							top : list.getScrollHeight()
-						});
-					}
-					
-					if (document.hasFocus() !== true) {
-						unreadCount += 1;
-						TITLE('(' + unreadCount + ') ' + title);
-					}
-					
-					if (firstMessageCreateTime === undefined) {
-						firstMessageCreateTime = messageData.createTime;
-					}
-				});
+						src : messageData.writerIconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + messageData.writerIconFileId
+					}), ' ' + messageData.writerNickname + ': ' + messageData.content]
+				}));
+				
+				if (isScrollToBottom === true) {
+					list.scrollTo({
+						top : list.getScrollHeight()
+					});
+				}
+				
+				if (document.hasFocus() !== true) {
+					unreadCount += 1;
+					TITLE('(' + unreadCount + ') ' + title);
+				}
+				
+				if (firstMessageCreateTime === undefined) {
+					firstMessageCreateTime = messageData.createTime;
+				}
 			});
 			
 			EVENT('focus', function() {

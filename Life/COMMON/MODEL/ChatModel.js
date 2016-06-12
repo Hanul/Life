@@ -18,6 +18,17 @@ Life.ChatModel = OBJECT({
 				id : true
 			},
 			
+			writerNickname : {
+				size : {
+					min : 2,
+					max : 20
+				}
+			},
+			
+			writerIconFileId : {
+				id : true
+			},
+			
 			content : {
 				notEmpty : true,
 				size : {

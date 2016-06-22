@@ -7,6 +7,13 @@ Life는 쉽게 게시판 형 사이트를 구축할 수 있는 [UPPERCASE](http:
 * `favicon.ico`
 * `apple-touch-icon.png` (크기를 180x180으로 만듭니다.)
 
+## 설정
+`Life.js` 파일을 수정합니다.
+* `CONFIG.Life.domain` 사이트의 도메인 주소입니다.
+* `CONFIG.Life.contact` 관리자 이메일 주소입니다.
+* `NODE_CONFIG.Life.email` 회원 가입 인증 메일을 보낼때 사용하는 메일 계정의 주소입니다. (현재 Gmail만 작동합니다.)
+* `NODE_CONFIG.Life.emailPassword` 회원 가입 인증 메일을 보낼때 사용하는 메일 계정의 비밀번호 입니다. (현재 Gmail만 작동합니다.)
+
 ## 이용약관 및 개인정보 수집 및 이용에 대한 안내
 `Life/R`폴더의 이하 파일들에 내용을 추가합니다.
 * `terms.txt` 이용약관

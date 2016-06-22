@@ -18,7 +18,8 @@ BOOT({
 		googleAnalyticsId : 'UA-76643463-1',
 		
 		Life : {
-			domain : 'http://gclife.net'
+			domain : 'http://gclife.net',
+			contact : 'hanul@hanul.me'
 		}
 	},
 	

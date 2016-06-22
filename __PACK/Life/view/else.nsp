@@ -1,6 +1,11 @@
 <% include('layout/top.nsp'); %>
 
-버그나 건의사항은 자유게시판에 써 주시거나 <a href="mailto:hanul@hanul.me">hanul@hanul.me</a>로 메일을 보내주시기 바랍니다.<br>
-이 사이트는 <a href="https://github.com/Hanul/Life">Life</a>를 기반으로 제작되었습니다.
+<div id="simple">
+	<h1>기타</h1>
+	<p>
+		버그나 건의사항은 자유게시판에 써 주시거나 <a href="mailto:{{CONFIG.Life.contact}}">{{CONFIG.Life.contact}}</a>로 메일을 보내주시기 바랍니다.<br>
+		이 사이트는 <a href="https://github.com/Hanul/Life">Life</a>를 기반으로 제작되었습니다.
+	</p>
+</div>
 
 <% include('layout/bottom.nsp'); %>

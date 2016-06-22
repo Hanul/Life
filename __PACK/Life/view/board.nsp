@@ -269,14 +269,14 @@
 					{{boardData.html}}
 				</article>
 			</?>
-			<% include('chat.nsp'); %>
+			<% include('chat-embed.nsp'); %>
 		</div>
 	</?>
 	<? else >
 		<div id="article">
 			<% self.articleId = articleId; %>
 			<% include('article.nsp'); %>
-			<% include('chat.nsp'); %>
+			<% include('chat-embed.nsp'); %>
 		</div>
 	</?>
 </?>

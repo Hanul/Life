@@ -14,6 +14,14 @@ Life는 쉽게 게시판 형 사이트를 구축할 수 있는 [UPPERCASE](http:
 * `NODE_CONFIG.Life.email` 회원 가입 인증 메일을 보낼때 사용하는 메일 계정의 주소입니다. (현재 Gmail만 작동합니다.)
 * `NODE_CONFIG.Life.emailPassword` 회원 가입 인증 메일을 보낼때 사용하는 메일 계정의 비밀번호 입니다. (현재 Gmail만 작동합니다.)
 
+## Gmail 설정
+Gmail을 외부 애플리케이션에서 사용할 수 있도록 이하 경로에서 `보안 수준이 낮은 앱의 액세스`를 `사용`으로 변경해야 합니다.
+
+https://www.google.com/settings/security/lesssecureapps
+
+### 윈도우에서 테스트 시 Avast 안티바이러스 프로그램이 켜져있으면 종료합니다.
+Avast 안티바이러스 프로그램이 임의 메일 전송을 차단하기 때문에, 프로그램을 종료하시거나 감시 제어를 사용하지 않음으로 설정하여야 합니다.
+
 ## 이용약관 및 개인정보 수집 및 이용에 대한 안내
 `Life/R`폴더의 이하 파일들에 내용을 추가합니다.
 * `terms.txt` 이용약관
@@ -26,7 +34,7 @@ Life는 쉽게 게시판 형 사이트를 구축할 수 있는 [UPPERCASE](http:
 
 ## 이것으로 만들어진 사이트
 * [겜창인생](https://gclife.net)
-* [겐트위한](http://gentwihan.com)
+* [죠죠랜드](http://jojo.land)
 
 ## 라이센스
 [MIT](LICENSE)

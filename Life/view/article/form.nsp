@@ -1,5 +1,3 @@
-<h1 id="form-title">글 작성</h1>
-
 <%
 	var data = self.data;
 %>

@@ -80,7 +80,7 @@
 	
 	<header>
 		<div class="left">
-			<h1>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}}</h1>
+			<h1>{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title.replace(/<(?:.|\n)*?>/gm, '')}}</h1>
 			<p>
 				<a href="/user/{{articleData.writerData.id}}">
 					<? articleData.writerData.iconFileId === undefined >
@@ -98,7 +98,7 @@
 		<? self.signedUserData !== undefined >
 			<ul class="menu">
 				<li id="like-menu"></li>
-				<? articleData.writerId === self.signedUserData.id >
+				<? articleData.writerId === self.signedUserData.id || self.checkIsAdmin() === true >
 				    <li><a href="/article/update?id={{articleData.id}}">수정</a></li>
 				    <li><a href="/article/remove?id={{articleData.id}}">삭제</a></li>
 				</?>

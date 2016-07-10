@@ -10,7 +10,10 @@
 			
 			Life.ArticleModel.get(data.id, function(savedData) {
 				
-				if (savedData.writerId === self.signedUserData.id) {
+				if (savedData.writerId === self.signedUserData.id || CHECK_IS_IN({
+					array : self.signedUserData.roles,
+					value : Life.ROLE.MANAGER
+				}) === true) {
 					
 					if (self.method === 'GET') {
 						data = savedData;
@@ -21,7 +24,6 @@
 						
 						Life.ArticleModel.remove(data.id, function(originData) {
 							redirect('/board/' + originData.boardId);
-							resume();
 						});
 					}
 				}
@@ -43,11 +45,11 @@
 			<h1>게시글 삭제</h1>
 			
 			<p>
-				정말 [{{data.title}}]을 삭제하시겠습니까?
+				정말 [{{data.title.replace(/<(?:.|\n)*?>/gm, '')}}]을 삭제하시겠습니까?
 			</p>
 			
-			<form class="pure-form pure-form-aligned" method="POST">
-			    <button type="submit" class="pure-button">게시글 삭제</button>
+			<form method="POST">
+			    <button type="submit">게시글 삭제</button>
 			</form>
 		</?>
 	</?>

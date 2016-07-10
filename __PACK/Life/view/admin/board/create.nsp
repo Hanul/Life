@@ -16,7 +16,6 @@
 					},
 					success : function() {
 						redirect('/admin/board');
-						resume();
 					}
 				});
 				

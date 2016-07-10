@@ -16,13 +16,18 @@
 				},
 				success : function(savedData) {
 					redirect('/board/' + savedData.boardId + '/' + savedData.id);
-					resume();
 				}
 			});
 			
 			pause();
 		}
 	%>
+	
+	<div id="form-title">
+		<h1>글 작성</h1>
+		<div class="clear"></div>
+	</div>
+	
 	<%
 		self.data = data;
 		include('form.nsp');

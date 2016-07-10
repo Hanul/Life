@@ -32,6 +32,9 @@
 			// form
 			form,
 			
+			// input
+			input,
+			
 			// show user count.
 			showUserCount;
 			
@@ -64,7 +67,7 @@
 						overflowY : 'scroll',
 						onDisplayResize : function(width, height) {
 							return global.isChatPage === true ? {
-								height : height - 84
+								height : height - (width < 600 ? 124 : 84)
 							} : {
 								height : 200
 							}
@@ -97,10 +100,18 @@
 										list.prepend(LI({
 											style : {
 												marginBottom : 5,
-												height : 20,
+												minHeight : 20,
 												color : '#666'
 											},
-											c : messageData.writer + ': ' + messageData.content
+											c : [IMG({
+												style : {
+													height : 15,
+													width : 15,
+													verticalAlign : 'middle',
+													borderRadius: 2
+												},
+												src : messageData.writerIconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + messageData.writerIconFileId
+											}), ' ' + messageData.writerNickname + ': ' + messageData.content]
 										}));
 										
 										firstMessageCreateTime = messageData.createTime;
@@ -127,7 +138,7 @@
 							c : [
 							// content
 							TD({
-								c : UUI.FULL_INPUT({
+								c : input = UUI.FULL_INPUT({
 									name : 'content',
 									isOffAutocomplete : true
 								})
@@ -165,6 +176,8 @@
 							list.scrollTo({
 								top : list.getScrollHeight()
 							});
+							
+							input.focus();
 						}
 					}
 				})]
@@ -201,17 +214,18 @@
 				
 				var
 				// is scroll to bottom
-				isScrollToBottom = list.getScrollHeight() === list.getHeight() + list.getScrollTop();
+				isScrollToBottom = list.getScrollHeight() === (list.getHeight() + list.getScrollTop());
 				
 				list.append(LI({
 					style : {
 						marginBottom : 5,
-						height : 20,
+						minHeight : 20,
 						color : '#666'
 					},
 					c : [IMG({
 						style : {
 							height : 15,
+							width : 15,
 							verticalAlign : 'middle',
 							borderRadius: 2
 						},

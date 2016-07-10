@@ -20,8 +20,6 @@
 				
 				else if (self.method === 'POST') {
 					
-					data.writerId = self.signedUserData.id;
-					
 					Life.ArticleModel.update(data, {
 						notValid : function(validErrors) {
 							self.validErrors = validErrors;
@@ -29,7 +27,6 @@
 						},
 						success : function(savedData) {
 							redirect('/board/' + savedData.boardId + '/' + savedData.id);
-							resume();
 						}
 					});
 				}
@@ -47,6 +44,12 @@
 		당신이 작성한 글이 아닙니다.
 	</?>
 	<? else >
+	
+		<div id="form-title">
+			<h1>글 수정</h1>
+			<div class="clear"></div>
+		</div>
+
 		<%
 			self.data = data;
 			include('form.nsp');

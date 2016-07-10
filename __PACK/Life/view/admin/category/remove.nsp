@@ -21,7 +21,6 @@
 				
 				Life.CategoryModel.remove(data.id, function(originData) {
 					redirect('/admin/category?boardId=' + originData.boardId);
-					resume();
 				});
 				
 				pause();

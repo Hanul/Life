@@ -24,8 +24,9 @@
 			<ul class="menu">
 				<li><a href="/account/update">정보 수정</a></li>
 			</ul>
-			<div class="clear"></div>
 		</?>
+		
+		<div class="clear"></div>
 	</div>
 	
 	<p class="date">

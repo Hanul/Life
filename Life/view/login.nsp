@@ -17,7 +17,6 @@
 					cookie('session-key', sessionKey);
 				}
 				redirect('/');
-				resume();
 			}
 		});
 		

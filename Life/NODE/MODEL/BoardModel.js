@@ -49,7 +49,7 @@ OVERRIDE(Life.BoardModel, function(origin) {
 			
 				before : function(data, next, ret, clientInfo) {
 					
-					if (data.description === undefined) {
+					if (data.description === undefined || data.description === TO_DELETE) {
 						data.html = undefined;
 					} else {
 						data.html = Markdown.MarkUp(data.description);

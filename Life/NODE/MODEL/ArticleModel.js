@@ -46,15 +46,7 @@ OVERRIDE(Life.ArticleModel, function(origin) {
 							else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
 								cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
 								
-								if (cookies['session-key'] !== undefined) {
-									
-									Life.SessionKeyModel.get(cookies['session-key'], function(sessionKeyData) {
-										
-										data.writerId = sessionKeyData.userId;
-										
-										next();
-									});
-								}
+								next();
 							}
 						};
 					}]);

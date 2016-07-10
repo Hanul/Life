@@ -237,7 +237,7 @@
 									
 									pause();
 								%>
-								<li><a href="{{href}}">{{message}}</a></li>
+								<li><a href="{{href}}">{{message.replace(/<(?:.|\n)*?>/gm, '')}}</a></li>
 							</~>
 						</ul>
 					</article>
@@ -335,7 +335,7 @@
 						<tr>
 							<td class="title">
 								<a href="/board/{{boardData === undefined ? 'all' : boardData.id}}/{{articleData.id}}?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}">
-									{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title}} <span id="article-{{articleData.id}}-comment-count" class="count">({{articleData.commentCount}})</span>
+									{{articleData.categoryData === undefined ? '' : '[' + articleData.categoryData.category + '] '}}{{articleData.title.replace(/<(?:.|\n)*?>/gm, '')}} <span id="article-{{articleData.id}}-comment-count" class="count">({{articleData.commentCount}})</span>
 								</a>
 							</td>
 						</tr>
@@ -467,7 +467,7 @@
 									cls : 'title',
 									c : A({
 										href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}',
-										c : [articleData.title, ' ', SPAN({
+										c : [articleData.title.replace(/<(?:.|\n)*?>/gm, ''), ' ', SPAN({
 											id : 'article-' + articleData.id + '-comment-count',
 											cls : 'count',
 											c : '(' + articleData.commentCount + ')'

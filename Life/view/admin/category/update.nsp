@@ -26,7 +26,6 @@
 					},
 					success : function(savedData) {
 						redirect('/admin/category?boardId=' + savedData.boardId);
-						resume();
 					}
 				});
 				

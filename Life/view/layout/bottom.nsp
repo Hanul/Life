@@ -159,7 +159,7 @@
 			};
 			
 			Life.ArticleModel.onNew(function(articleData) {
-				notice('/board/all/' + articleData.id, '새 글! ' + articleData.title);
+				notice('/board/all/' + articleData.id, '새 글! ' + articleData.title.replace(/<(?:.|\n)*?>/gm, ''));
 			});
 			
 			<? self.signedUserData !== undefined >

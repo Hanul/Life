@@ -2,257 +2,254 @@
 	<article id="chat-embed">
 	</article>
 	<script>
-		READY(function() {
+		var
+		// title
+		title = TITLE(),
+		
+		// chat room
+		chatRoom = Life.ChatModel.getRoom(),
+		
+		// first message create time
+		firstMessageCreateTime,
+		
+		// is loading more
+		isLoadingMore,
+		
+		// unread count
+		unreadCount = 0,
+		
+		// wrapper
+		wrapper,
+		
+		// user count
+		userCount,
+		
+		// list
+		list,
+		
+		// form
+		form,
+		
+		// input
+		input,
+		
+		// show user count.
+		showUserCount;
+		
+		wrapper = DIV({
+			style : {
+				position : 'relative',
+				border : '1px solid #ccc',
+				borderRadius : 5
+			},
+			c : [
 			
-			var
-			// title
-			title = TITLE(),
-			
-			// chat room
-			chatRoom = Life.ChatModel.getRoom(),
-			
-			// first message create time
-			firstMessageCreateTime,
-			
-			// is loading more
-			isLoadingMore,
-			
-			// unread count
-			unreadCount = 0,
-			
-			// wrapper
-			wrapper,
-			
-			// user count
-			userCount,
+			userCount = DIV({
+				style : {
+					position : 'absolute',
+					top : 5,
+					fontSize : 12,
+					color : 'green',
+					onDisplayResize : function(width) {
+						return {
+							right : width >= 980 ? 27 : 7
+						}
+					}
+				}
+			}),
 			
 			// list
-			list,
+			list = UL({
+				style : {
+					padding : 10,
+					overflowY : 'scroll',
+					onDisplayResize : function(width, height) {
+						return global.isChatPage === true ? {
+							height : height - (width < 600 ? 124 : 84)
+						} : {
+							height : 200
+						}
+					}
+				},
+				on : {
+					scroll : function() {
+						
+						var
+						// saved scroll height
+						savedScrollHeight;
+						
+						// load more.
+						if (isLoadingMore !== true && list.getScrollTop() === 0) {
+							isLoadingMore = true;
+							
+							savedScrollHeight = list.getScrollHeight();
+							
+							Life.ChatModel.find({
+								filter : {
+									createTime : {
+										$lt : firstMessageCreateTime
+									}
+								},
+								count : 100
+							}, function(messageDataSet) {
+								
+								REVERSE_EACH(messageDataSet, function(messageData) {
+								
+									list.prepend(LI({
+										style : {
+											marginBottom : 5,
+											minHeight : 20,
+											color : '#666'
+										},
+										c : [IMG({
+											style : {
+												height : 15,
+												width : 15,
+												verticalAlign : 'middle',
+												borderRadius: 2
+											},
+											src : messageData.writerIconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + messageData.writerIconFileId
+										}), ' ' + messageData.writerNickname + ': ' + messageData.content]
+									}));
+									
+									firstMessageCreateTime = messageData.createTime;
+								});
+								
+								isLoadingMore = false;
+								
+								list.scrollTo({
+									top : list.getScrollHeight() - savedScrollHeight
+								});
+							});
+						}
+					}
+				}
+			}),
 			
 			// form
-			form,
-			
-			// input
-			input,
-			
-			// show user count.
-			showUserCount;
-			
-			wrapper = DIV({
+			form = FORM({
 				style : {
-					position : 'relative',
-					border : '1px solid #ccc',
-					borderRadius : 5
+					borderTop : '1px solid #ccc'
 				},
-				c : [
-				
-				userCount = DIV({
-					style : {
-						position : 'absolute',
-						top : 5,
-						fontSize : 12,
-						color : 'green',
-						onDisplayResize : function(width) {
-							return {
-								right : width >= 980 ? 27 : 7
-							}
-						}
-					}
-				}),
-				
-				// list
-				list = UL({
-					style : {
-						padding : 10,
-						overflowY : 'scroll',
-						onDisplayResize : function(width, height) {
-							return global.isChatPage === true ? {
-								height : height - (width < 600 ? 124 : 84)
-							} : {
-								height : 200
-							}
-						}
-					},
-					on : {
-						scroll : function() {
-							
-							var
-							// saved scroll height
-							savedScrollHeight;
-							
-							// load more.
-							if (isLoadingMore !== true && list.getScrollTop() === 0) {
-								isLoadingMore = true;
-								
-								savedScrollHeight = list.getScrollHeight();
-								
-								Life.ChatModel.find({
-									filter : {
-										createTime : {
-											$lt : firstMessageCreateTime
-										}
-									},
-									count : 100
-								}, function(messageDataSet) {
-									
-									REVERSE_EACH(messageDataSet, function(messageData) {
-									
-										list.prepend(LI({
-											style : {
-												marginBottom : 5,
-												minHeight : 20,
-												color : '#666'
-											},
-											c : [IMG({
-												style : {
-													height : 15,
-													width : 15,
-													verticalAlign : 'middle',
-													borderRadius: 2
-												},
-												src : messageData.writerIconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + messageData.writerIconFileId
-											}), ' ' + messageData.writerNickname + ': ' + messageData.content]
-										}));
-										
-										firstMessageCreateTime = messageData.createTime;
-									});
-									
-									isLoadingMore = false;
-									
-									list.scrollTo({
-										top : list.getScrollHeight() - savedScrollHeight
-									});
-								});
-							}
-						}
-					}
-				}),
-				
-				// form
-				form = FORM({
-					style : {
-						borderTop : '1px solid #ccc'
-					},
-					c : TABLE({
-						c : TR({
-							c : [
-							// content
-							TD({
-								c : input = UUI.FULL_INPUT({
-									name : 'content',
-									isOffAutocomplete : true
-								})
-							}),
-							// submit
-							TD({
+				c : TABLE({
+					c : TR({
+						c : [
+						// content
+						TD({
+							c : input = UUI.FULL_INPUT({
+								name : 'content',
+								isOffAutocomplete : true
+							})
+						}),
+						// submit
+						TD({
+							style : {
+								width : 70
+							},
+							c : UUI.FULL_SUBMIT({
 								style : {
-									width : 70
+									width : 70,
+									backgroundColor : '#eee'
 								},
-								c : UUI.FULL_SUBMIT({
-									style : {
-										width : 70,
-										backgroundColor : '#eee'
-									},
-									value : '보내기'
-								})
-							})]
-						})
-					}),
-					on : {
-						submit : function(e, form) {
-							
-							var
-							// data
-							data = form.getData();
-							
-							data.writerId = '{{self.signedUserData.id}}';
-							
-							Life.ChatModel.create(data);
-							
-							delete data.content;
-							
-							form.setData(data);
-							
-							list.scrollTo({
-								top : list.getScrollHeight()
-							});
-							
-							input.focus();
-						}
+								value : '보내기'
+							})
+						})]
+					})
+				}),
+				on : {
+					submit : function(e, form) {
+						
+						var
+						// data
+						data = form.getData();
+						
+						data.writerId = '{{self.signedUserData.id}}';
+						
+						Life.ChatModel.create(data);
+						
+						delete data.content;
+						
+						form.setData(data);
+						
+						list.scrollTo({
+							top : list.getScrollHeight()
+						});
+						
+						input.focus();
 					}
-				})]
-			}).appendTo(DOM({
-				el : document.getElementById('chat-embed')
+				}
+			})]
+		}).appendTo(DOM({
+			el : document.getElementById('chat-embed')
+		}));
+		
+		if (global.isChatPage !== true) {
+			
+			wrapper.after(DIV({
+				style : {
+					marginTop : 10,
+					textAlign : 'right'
+				},
+				c : A({
+					href : '/chat',
+					c : '채팅 전체 화면 열기'
+				})
+			}));
+		}
+		
+		showUserCount = function(connectionCount) {
+			userCount.empty();
+			userCount.append(connectionCount + '명 접속중');
+		};
+		
+		chatRoom.send('getConnectionCount', showUserCount);
+		chatRoom.on('clientConnected', showUserCount);
+		chatRoom.on('clientDisconnected', showUserCount);
+		
+		Life.ChatModel.onNewAndFind({
+			count : 100
+		}, function(messageData) {
+			
+			var
+			// is scroll to bottom
+			isScrollToBottom = list.getScrollHeight() === (list.getHeight() + list.getScrollTop());
+			
+			list.append(LI({
+				style : {
+					marginBottom : 5,
+					minHeight : 20,
+					color : '#666'
+				},
+				c : [IMG({
+					style : {
+						height : 15,
+						width : 15,
+						verticalAlign : 'middle',
+						borderRadius: 2
+					},
+					src : messageData.writerIconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + messageData.writerIconFileId
+				}), ' ' + messageData.writerNickname + ': ' + messageData.content]
 			}));
 			
-			if (global.isChatPage !== true) {
-				
-				wrapper.after(DIV({
-					style : {
-						marginTop : 10,
-						textAlign : 'right'
-					},
-					c : A({
-						href : '/chat',
-						c : '채팅 전체 화면 열기'
-					})
-				}));
+			if (isScrollToBottom === true) {
+				list.scrollTo({
+					top : list.getScrollHeight()
+				});
 			}
 			
-			showUserCount = function(connectionCount) {
-				userCount.empty();
-				userCount.append(connectionCount + '명 접속중');
-			};
+			if (document.hasFocus() !== true) {
+				unreadCount += 1;
+				TITLE('(' + unreadCount + ') ' + title);
+			}
 			
-			chatRoom.send('getConnectionCount', showUserCount);
-			chatRoom.on('clientConnected', showUserCount);
-			chatRoom.on('clientDisconnected', showUserCount);
-			
-			Life.ChatModel.onNewAndFind({
-				count : 100
-			}, function(messageData) {
-				
-				var
-				// is scroll to bottom
-				isScrollToBottom = list.getScrollHeight() === (list.getHeight() + list.getScrollTop());
-				
-				list.append(LI({
-					style : {
-						marginBottom : 5,
-						minHeight : 20,
-						color : '#666'
-					},
-					c : [IMG({
-						style : {
-							height : 15,
-							width : 15,
-							verticalAlign : 'middle',
-							borderRadius: 2
-						},
-						src : messageData.writerIconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + messageData.writerIconFileId
-					}), ' ' + messageData.writerNickname + ': ' + messageData.content]
-				}));
-				
-				if (isScrollToBottom === true) {
-					list.scrollTo({
-						top : list.getScrollHeight()
-					});
-				}
-				
-				if (document.hasFocus() !== true) {
-					unreadCount += 1;
-					TITLE('(' + unreadCount + ') ' + title);
-				}
-				
-				if (firstMessageCreateTime === undefined) {
-					firstMessageCreateTime = messageData.createTime;
-				}
-			});
-			
-			EVENT('focus', function() {
-				unreadCount = 0;
-				TITLE(title);
-			});
+			if (firstMessageCreateTime === undefined) {
+				firstMessageCreateTime = messageData.createTime;
+			}
+		});
+		
+		EVENT('focus', function() {
+			unreadCount = 0;
+			TITLE(title);
 		});
 	</script>
 </?>

@@ -213,6 +213,7 @@
 						<ul>
 							<%
 								var notiDataSet;
+								var messages = [];
 								
 								Life.NotiModel.find({
 									filter : {
@@ -221,23 +222,30 @@
 									count : 10
 								}, function(_notiDataSet) {
 									notiDataSet = _notiDataSet;
-									resume();
+									
+									NEXT(notiDataSet, [
+									function(notiData, next) {
+										
+										Life.GenerateNotiMessage(notiData, function(href, message) {
+											
+											messages.push({
+												href : href,
+												message : message
+											});
+											
+											next();
+										});
+									},
+									
+									function() {
+										return resume;
+									}]);
 								});
 								
 								pause();
 							%>
-							<~ notiDataSet -> notiData >
-								<%
-									var href, message;
-									Life.GenerateNotiMessage(notiData, function(_href, _message) {
-										href = _href;
-										message = _message;
-										resume();
-									});
-									
-									pause();
-								%>
-								<li><a href="{{href}}">{{message.replace(/<(?:.|\n)*?>/gm, '')}}</a></li>
+							<~ messages -> messageInfo >
+								<li><a href="{{messageInfo.href}}">{{messageInfo.message.replace(/<(?:.|\n)*?>/gm, '')}}</a></li>
 							</~>
 						</ul>
 					</article>

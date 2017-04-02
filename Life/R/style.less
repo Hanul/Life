@@ -1,3 +1,4 @@
+// 새 글 등이 작성될 때 밝게 빛나는 처리
 @keyframes highlight {
 	0% {
 		background-color: #fff2a8;
@@ -7,28 +8,19 @@
 	}
 }
 
+// 기본 색상 및 폰트
 html, body, .markdown-body {
 	background-color: #fff;
 	color: #000;
 	font-family: 'Noto Sans KR';
 }
 
-.left {
-	float: left;
-}
+.left		{ float: left; }
+.right	{ float: right; }
+.center	{ text-align: center; }
+.clear	{ clear: both; }
 
-.right {
-	float: right;
-}
-
-.center {
-	text-align: center;
-}
-
-.clear {
-	clear: both;
-}
-
+// pc 화면에서만 보이는 처리
 .pc {
 	@media screen {
 		@media (min-width: 980px) {
@@ -40,6 +32,7 @@ html, body, .markdown-body {
 	}
 }
 
+// 태블릿 화면에서만 보이는 처리
 .tablet {
 	@media screen {
 		@media (min-width: 600px) {
@@ -51,6 +44,7 @@ html, body, .markdown-body {
 	}
 }
 
+// 모바일 화면에서만 보이는 처리
 .mobile {
 	@media screen {
 		@media (min-width: 600px) {
@@ -62,6 +56,7 @@ html, body, .markdown-body {
 	}
 }
 
+// 모바일 에서 최상단 툴바
 #toolbar {
 	position: fixed;
 	left: 0;
@@ -72,6 +67,7 @@ html, body, .markdown-body {
 	color: #fff;
 }
 
+// 좌측 메뉴
 #menu {
 	position: fixed;
 	left: 0;
@@ -143,6 +139,7 @@ body {
 	}
 }
 
+// 글 목록
 #list {
 	@media screen {
 		@media (min-width: 980px) {
@@ -274,6 +271,7 @@ body {
 	}
 }
 
+// 글 오른쪽 위의 x 버튼
 #x-button {
 	position: fixed;
 	right: 0;
@@ -282,6 +280,7 @@ body {
 	color: #999 !important;
 }
 
+// 게시글
 #article {
 	@media screen {
 		@media (min-width: 980px) {
@@ -480,10 +479,12 @@ body {
 	}
 }
 
+// 채팅 페이지
 #chat {
 	padding: 10px;
 }
 
+// 글 작성 폼 제목
 #form-title {
 	@media screen {
 		@media (min-width: 600px) {
@@ -522,6 +523,7 @@ body {
 	}
 }
 
+// 글 작성 폼
 #form {
 	@media screen {
 		@media (min-width: 600px) {
@@ -585,6 +587,7 @@ body {
 	}
 }
 
+// 유저 정보
 #user-info {
 	padding-bottom: 100px;
 	color: #333;
@@ -722,6 +725,7 @@ body {
 	}
 }
 
+// 간단한 페이지 디자인
 #simple {
 	padding: 20px;
 	h1 {
@@ -804,5 +808,3 @@ body {
 		}
 	}
 }
-
-

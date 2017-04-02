@@ -10,11 +10,11 @@ OVERRIDE(Life.ChatModel, function(origin) {
 		init : function(inner, self, params) {
 			
 			var
-			// connection db
-			connectionDB = Life.SHARED_DB('connectionDB');
+			// connection store
+			connectionStore = Life.SHARED_STORE('connectionStore');
 			
 			// 초기화
-			connectionDB.save({
+			connectionStore.save({
 				id : 'connectionCount',
 				data : {
 					count : 0
@@ -43,7 +43,7 @@ OVERRIDE(Life.ChatModel, function(origin) {
 			Life.ROOM(self.getName(), function(clientInfo, on) {
 				
 				// 새로운 클라이언트 접속 시 count를 1 올림
-				connectionDB.update({
+				connectionStore.update({
 					id : 'connectionCount',
 					data : {
 						$inc : {
@@ -52,18 +52,21 @@ OVERRIDE(Life.ChatModel, function(origin) {
 					}
 				});
 				
-				// 새 클라이언트가 접속했음을 모든 클라이언트에 알림
-				Life.BROADCAST({
-					roomName : self.getName(),
-					methodName : 'clientConnected',
-					data : connectionDB.get('connectionCount').count
+				connectionStore.get('connectionCount', (connectionCountInfo) => {
+					
+					// 새 클라이언트가 접속했음을 모든 클라이언트에 알림
+					Life.BROADCAST({
+						roomName : self.getName(),
+						methodName : 'clientConnected',
+						data : connectionCountInfo.count
+					});
 				});
 
 				// 클라이언트와의 접속이 끊어질 경우
 				on('__DISCONNECTED', function() {
 					
 					// count를 1 내림
-					connectionDB.update({
+					connectionStore.update({
 						id : 'connectionCount',
 						data : {
 							$inc : {
@@ -72,17 +75,22 @@ OVERRIDE(Life.ChatModel, function(origin) {
 						}
 					});
 					
-					// 클라이언트가 접속을 끊었음을 모든 클라이언트에 알림
-					Life.BROADCAST({
-						roomName : self.getName(),
-						methodName : 'clientDisconnected',
-						data : connectionDB.get('connectionCount').count
+					connectionStore.get('connectionCount', (connectionCountInfo) => {
+						
+						// 클라이언트가 접속을 끊었음을 모든 클라이언트에 알림
+						Life.BROADCAST({
+							roomName : self.getName(),
+							methodName : 'clientDisconnected',
+							data : connectionCountInfo.count
+						});
 					});
 				});
 				
 				// 접속중인 클라이언트 수 전송
 				on('getConnectionCount', function(notUsing, ret) {
-					ret(connectionDB.get('connectionCount').count);
+					connectionStore.get('connectionCount', (connectionCountInfo) => {
+						ret(connectionCountInfo.count);
+					});
 				});
 			});
 		}

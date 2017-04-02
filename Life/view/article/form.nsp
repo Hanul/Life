@@ -47,40 +47,38 @@
 	</div>
 	
 	<script>
-		READY(function() {
-			var boardSelect = DOM({
-				el : document.getElementById('boardSelect')
-			});
-			var categorySelect = DOM({
-				el : document.getElementById('categorySelect')
-			});
-			
-			boardSelect.on('change', RAR(function() {
-				
-				Life.CategoryModel.find({
-					filter : {
-						boardId : boardSelect.getEl().value
-					},
-					sort : {
-						category : 1
-					}
-				}, function(categoryDataSet) {
-					
-					categorySelect.empty();
-					
-					EACH(categoryDataSet, function(categoryData) {
-						categorySelect.append(OPTION({
-							c : categoryData.category,
-							value : categoryData.id
-						}));
-						
-						if (categoryData.id === '{{data.categoryId}}') {
-							categorySelect.getEl().value = '{{data.categoryId}}';
-						}
-					});
-				});
-			}));
+		var boardSelect = DOM({
+			el : document.getElementById('boardSelect')
 		});
+		var categorySelect = DOM({
+			el : document.getElementById('categorySelect')
+		});
+		
+		boardSelect.on('change', RAR(function() {
+			
+			Life.CategoryModel.find({
+				filter : {
+					boardId : boardSelect.getEl().value
+				},
+				sort : {
+					category : 1
+				}
+			}, function(categoryDataSet) {
+				
+				categorySelect.empty();
+				
+				EACH(categoryDataSet, function(categoryData) {
+					categorySelect.append(OPTION({
+						c : categoryData.category,
+						value : categoryData.id
+					}));
+					
+					if (categoryData.id === '{{data.categoryId}}') {
+						categorySelect.getEl().value = '{{data.categoryId}}';
+					}
+				});
+			});
+		}));
 	</script>
 	
 	<label>제목</label>
@@ -103,181 +101,178 @@
 </form>
 
 <script>
-	READY(function() {
-		
-		var uploadForm;
-		var input;
-		
-		DOM({
-			el : document.getElementById('article-form-submit')
-		}).after(DIV({
+	var uploadForm;
+	var input;
+	
+	DOM({
+		el : document.getElementById('article-form-submit')
+	}).after(DIV({
+		style : {
+			marginTop : 20
+		},
+		c : [H5({
 			style : {
-				marginTop : 20
+				fontSize : 16,
+				color : '#999'
 			},
-			c : [H5({
-				style : {
-					fontSize : 16,
-					color : '#999'
-				},
-				c : '파일 추가'
-			}), uploadForm = UUI.FULL_UPLOAD_FORM({
-				style : {
-					border : '1px solid #ccc',
-					marginTop : 10,
-					marginBottom : 20
-				},
-				formStyle : {
-					padding : 5
-				},
-				box : Life,
-				isMultiple : true
-			}, {
-				overSizeFile : function(maxUploadFileMB) {
-					Yogurt.Alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
-				},
-				success : function(fileDataSet, form) {
-					
-					EACH(fileDataSet, function(fileData) {
-						
-						var
-						// input
-						input;
-						
-						if (
-						fileData.type === 'image/png' ||
-						fileData.type === 'image/jpeg' ||
-						fileData.type === 'image/gif') {
-						
-							uploadForm.after(DIV({
-								style : {
-									paddingBottom : 20
-								},
-								c : [P({
-									style : {
-										fontSize : 14
-									},
-									c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-								}), input = UUI.FULL_INPUT({
-									style : {
-										padding : 10,
-										border : '1px solid #ccc'
-									},
-									value : '[![ScreenShot](' + Life.RF(fileData.id) + ')](' + Life.RF(fileData.id) + ')'
-								})]
-							}));
-						}
-						
-						else if (
-						fileData.type === 'audio/aac' ||
-						fileData.type === 'audio/mp3' ||
-						fileData.type === 'audio/ogg' ||
-						fileData.type === 'audio/mpeg' ||
-						fileData.type === 'audio/oga' ||
-						fileData.type === 'audio/wav' ||
-						fileData.type === 'audio/webm') {
-						
-							uploadForm.after(DIV({
-								style : {
-									paddingBottom : 20
-								},
-								c : [P({
-									style : {
-										fontSize : 14
-									},
-									c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-								}), input = UUI.FULL_INPUT({
-									style : {
-										padding : 10,
-										border : '1px solid #ccc'
-									},
-									value : '<audio controls src="' + Life.RF(fileData.id) + '"></audio>'
-								})]
-							}));
-						}
-						
-						else if (
-						fileData.type === 'video/mp4' ||
-						fileData.type === 'video/ogg' ||
-						fileData.type === 'video/webm') {
-						
-							uploadForm.after(DIV({
-								style : {
-									paddingBottom : 20
-								},
-								c : [P({
-									style : {
-										fontSize : 14
-									},
-									c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-								}), input = UUI.FULL_INPUT({
-									style : {
-										padding : 10,
-										border : '1px solid #ccc'
-									},
-									value : '<video controls src="' + Life.RF(fileData.id) + '"></video>'
-								})]
-							}));
-						}
-						
-						else {
-							
-							uploadForm.after(DIV({
-								style : {
-									paddingBottom : 20
-								},
-								c : [P({
-									style : {
-										fontSize : 14
-									},
-									c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
-								}), input = UUI.FULL_INPUT({
-									style : {
-										padding : 10,
-										border : '1px solid #ccc'
-									},
-									value : '[파일 다운로드](' + Life.RF(fileData.id) + ')'
-								})]
-							}));
-						}
-						
-						input.select();
-					});
-				}
-			})]
-		}));
-		
-		var previewDom = DOM({
-			el : document.getElementById('preview')
-		});
-		
-		previewDom.before(A({
+			c : '파일 추가'
+		}), uploadForm = UUI.FULL_UPLOAD_FORM({
 			style : {
-				display : 'block',
-				border : '1px solid #ddd',
-				padding : '10px 0',
-				borderRadius: 20,
-				color: '#666',
-				textAlign : 'center'
+				border : '1px solid #ccc',
+				marginTop : 10,
+				marginBottom : 20
 			},
-			c : '미리보기',
-			on : {
-				tap : function() {
+			formStyle : {
+				padding : 5
+			},
+			box : Life,
+			isMultiple : true
+		}, {
+			overSizeFile : function(maxUploadFileMB) {
+				Yogurt.Alert('파일 용량은 ' + maxUploadFileMB + 'mb를 넘을 수 없습니다.');
+			},
+			success : function(fileDataSet, form) {
+				
+				EACH(fileDataSet, function(fileData) {
 					
-					var preview;
+					var
+					// input
+					input;
 					
-					previewDom.empty();
-					previewDom.append(preview = DIV({
-						style : {
-							padding : '30px 0',
-							color : '#333',
-							fontSize : 14
-						},
-						cls : 'markdown-body'
-					}));
+					if (
+					fileData.type === 'image/png' ||
+					fileData.type === 'image/jpeg' ||
+					fileData.type === 'image/gif') {
 					
-					preview.getEl().innerHTML = Markdown.MarkUp(document.getElementById('content').value);
-				}
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '이미지가 업로드 되었습니다. 이미지가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								style : {
+									padding : 10,
+									border : '1px solid #ccc'
+								},
+								value : '[![ScreenShot](' + Life.RF(fileData.id) + ')](' + Life.RF(fileData.id) + ')'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'audio/aac' ||
+					fileData.type === 'audio/mp3' ||
+					fileData.type === 'audio/ogg' ||
+					fileData.type === 'audio/mpeg' ||
+					fileData.type === 'audio/oga' ||
+					fileData.type === 'audio/wav' ||
+					fileData.type === 'audio/webm') {
+					
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '오디오가 업로드 되었습니다. 오디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								style : {
+									padding : 10,
+									border : '1px solid #ccc'
+								},
+								value : '<audio controls src="' + Life.RF(fileData.id) + '"></audio>'
+							})]
+						}));
+					}
+					
+					else if (
+					fileData.type === 'video/mp4' ||
+					fileData.type === 'video/ogg' ||
+					fileData.type === 'video/webm') {
+					
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '비디오가 업로드 되었습니다. 비디오가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								style : {
+									padding : 10,
+									border : '1px solid #ccc'
+								},
+								value : '<video controls src="' + Life.RF(fileData.id) + '"></video>'
+							})]
+						}));
+					}
+					
+					else {
+						
+						uploadForm.after(DIV({
+							style : {
+								paddingBottom : 20
+							},
+							c : [P({
+								style : {
+									fontSize : 14
+								},
+								c : '파일이 업로드 되었습니다. 파일 다운로드가 들어갈 위치에 아래 코드를 복사해 붙혀넣어 주시기 바랍니다.'
+							}), input = UUI.FULL_INPUT({
+								style : {
+									padding : 10,
+									border : '1px solid #ccc'
+								},
+								value : '[파일 다운로드](' + Life.RF(fileData.id) + ')'
+							})]
+						}));
+					}
+					
+					input.select();
+				});
 			}
-		}));
+		})]
+	}));
+	
+	var previewDom = DOM({
+		el : document.getElementById('preview')
 	});
+	
+	previewDom.before(A({
+		style : {
+			display : 'block',
+			border : '1px solid #ddd',
+			padding : '10px 0',
+			borderRadius: 20,
+			color: '#666',
+			textAlign : 'center'
+		},
+		c : '미리보기',
+		on : {
+			tap : function() {
+				
+				var preview;
+				
+				previewDom.empty();
+				previewDom.append(preview = DIV({
+					style : {
+						padding : '30px 0',
+						color : '#333',
+						fontSize : 14
+					},
+					cls : 'markdown-body'
+				}));
+				
+				preview.getEl().innerHTML = Markdown.MarkUp(document.getElementById('content').value);
+			}
+		}
+	}));
 </script>

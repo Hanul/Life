@@ -1,18 +1,18 @@
 Life.MAIN = METHOD({
 
-	run : function(addRequestListener) {
+	run : function(addRequestListener, addPreprocessor) {
 		'use strict';
 		
 		var
 		//IMPORT: Less
 		Less = require('less');
 		
-		addRequestListener(NSP_BRIDGE({
+		addRequestListener(NSP.Bridge({
 			rootPath : './Life/view',
 			restURI : ['account/create', 'board', 'article', 'user', 'account/reset-password', 'account/verify-email']
 		}).requestListener);
 		
-		RESOURCE_SERVER.addPreprocessor({
+		addPreprocessor({
 			extension : 'less',
 			preprocessor : function(content, response) {
 				

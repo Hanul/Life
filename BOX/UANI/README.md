@@ -1,0 +1,19 @@
+# UANI
+UJS Animation BOX
+
+## FADE_IN
+## FADE_OUT
+## SHOW_SLIDE_DOWN
+## SHOW_SLIDE_UP
+## SHOW_SLIDE_RIGHT
+## SHOW_SLIDE_LEFT
+## HIDE_SLIDE_DOWN
+## HIDE_SLIDE_UP
+## HIDE_SLIDE_RIGHT
+## HIDE_SLIDE_LEFT
+
+## 라이센스
+[MIT](LICENSE)
+
+## 작성자
+[Young Jae Sim](https://github.com/Hanul)

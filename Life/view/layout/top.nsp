@@ -70,7 +70,8 @@
 		<link rel="stylesheet" href="/Markdown/R/highlight.css">
 		<link rel="stylesheet" href="/R/style.less">
 		<link rel="stylesheet" href="/R/axicon/axicon.min.css">
-		
+	</head>
+	<body>
 		<script src="/__SCRIPT"></script>
 		<script>
 			OVERRIDE(DOM, function(origin) {
@@ -91,5 +92,3 @@
 				});
 			});
 		</script>
-	</head>
-	<body>

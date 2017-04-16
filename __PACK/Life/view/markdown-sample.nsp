@@ -17,9 +17,7 @@
 	<body>
 		<script type="text/javascript" src="/__SCRIPT"></script>
 		<script>
-			READY(function() {
-				Markdown.MarkdownSample().appendTo(BODY);
-			});
+			Markdown.MarkdownSample().appendTo(BODY);
 		</script>
 	</body>
 </html>

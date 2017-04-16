@@ -426,86 +426,83 @@
 
 <? page === 1 >
 <script>
-	READY(function() {
+	var articleListDom = DOM({
+		el : document.getElementById('article-list')
+	});
+	
+	Life.ArticleModel.onNew({
+		boardId : {{boardData === undefined ? 'undefined' : '\'' + boardData.id + '\''}},
+		categoryId : {{categoryId === undefined ? 'undefined' : '\'' + categoryId + '\''}}
+	}, function(articleData) {
 		
-		var articleListDom = DOM({
-			el : document.getElementById('article-list')
-		});
+		var content = articleData.content === undefined ? '글 내용이 없습니다.' : articleData
+			.content
+			.replace(/<.*>/g, '')
+			.replace(/\[.*\)/g, '')
+			.replace(/\n/g, '')
+			.replace(/#/g, '');
 		
-		Life.ArticleModel.onNew({
-			boardId : {{boardData === undefined ? 'undefined' : '\'' + boardData.id + '\''}},
-			categoryId : {{categoryId === undefined ? 'undefined' : '\'' + categoryId + '\''}}
-		}, function(articleData) {
+		Life.UserModel.get(articleData.writerId, function(writerData) {
 			
-			var content = articleData.content === undefined ? '글 내용이 없습니다.' : articleData
-				.content
-				.replace(/<.*>/g, '')
-				.replace(/\[.*\)/g, '')
-				.replace(/\n/g, '')
-				.replace(/#/g, '');
+			var article;
 			
-			Life.UserModel.get(articleData.writerId, function(writerData) {
-				
-				var article;
-				
-				articleListDom.prepend(article = LI({
-					c : A({
-						cls : 'new item',
-						href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}{{self.params.list === 'true' ? '&list=true' : ''}}',
-						c : TABLE({
-							c : [TR({
-								c : [TD({
-									rowspan : 4,
-									cls : 'icon',
-									c : A({
-										href : '/user/' + writerData.id,
-										c : IMG({
-											src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
-										})
-									})
-								}), TD({
-									cls : 'nickname',
-									c : A({
-										href : '/user/' + writerData.id,
-										c : writerData.nickname
-									})
-								})]
-							}), TR({
-								c : TD({
-									cls : 'title',
-									c : A({
-										href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}',
-										c : [articleData.title.replace(/<(?:.|\n)*?>/gm, ''), ' ', SPAN({
-											id : 'article-' + articleData.id + '-comment-count',
-											cls : 'count',
-											c : '(' + articleData.commentCount + ')'
-										})]
+			articleListDom.prepend(article = LI({
+				c : A({
+					cls : 'new item',
+					href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}{{self.params.list === 'true' ? '&list=true' : ''}}',
+					c : TABLE({
+						c : [TR({
+							c : [TD({
+								rowspan : 4,
+								cls : 'icon',
+								c : A({
+									href : '/user/' + writerData.id,
+									c : IMG({
+										src : writerData.iconFileId === undefined ? '/R/icon-default.png' : '/__RF/Life/ICON/' + writerData.iconFileId
 									})
 								})
-							}), TR({
-								c : TD({
-									cls : 'content',
-									c : content.length > 75 ? content.substring(0, 75) + '...' : content
-								})
-							}), TR({
-								c : TD({
-									cls : 'more',
-									c : RUN(function() {
-										
-										var cal = CALENDAR(articleData.createTime);
-										
-										return cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true);
-										
-									}) + ' | 조회 ' + articleData.viewCount + ' | 따봉 ' + articleData.likeCount
+							}), TD({
+								cls : 'nickname',
+								c : A({
+									href : '/user/' + writerData.id,
+									c : writerData.nickname
 								})
 							})]
-						})
+						}), TR({
+							c : TD({
+								cls : 'title',
+								c : A({
+									href : '/board/{{boardData === undefined ? 'all' : boardData.id}}/' + articleData.id + '?{{categoryId === undefined ? '' : 'categoryId=' + categoryId + '&'}}{{query === undefined ? '' : 'query=' + query + '&'}}page={{page}}',
+									c : [articleData.title.replace(/<(?:.|\n)*?>/gm, ''), ' ', SPAN({
+										id : 'article-' + articleData.id + '-comment-count',
+										cls : 'count',
+										c : '(' + articleData.commentCount + ')'
+									})]
+								})
+							})
+						}), TR({
+							c : TD({
+								cls : 'content',
+								c : content.length > 75 ? content.substring(0, 75) + '...' : content
+							})
+						}), TR({
+							c : TD({
+								cls : 'more',
+								c : RUN(function() {
+									
+									var cal = CALENDAR(articleData.createTime);
+									
+									return cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true);
+									
+								}) + ' | 조회 ' + articleData.viewCount + ' | 따봉 ' + articleData.likeCount
+							})
+						})]
 					})
-				}));
-				
-				UANI.SHOW_SLIDE_DOWN({
-					node : article
-				});
+				})
+			}));
+			
+			UANI.SHOW_SLIDE_DOWN({
+				node : article
 			});
 		});
 	});
@@ -556,40 +553,37 @@
 		resize(resizeBarStore.get('left'));
 	}
 	
-	READY(function() {
-		
-		bar = DIV({
-			style : {
-				position : 'fixed',
-				left : listDom.getLeft() + listDom.getWidth() - 2,
-				top : 0,
-				width : 5,
-				height : '100%',
-				cursor : 'e-resize'
-			},
-			on : {
-				touchstart : function(e) {
-					isResizing = true;
-					e.stop();
-				}
+	bar = DIV({
+		style : {
+			position : 'fixed',
+			left : listDom.getLeft() + listDom.getWidth() - 2,
+			top : 0,
+			width : 5,
+			height : '100%',
+			cursor : 'e-resize'
+		},
+		on : {
+			touchstart : function(e) {
+				isResizing = true;
+				e.stop();
 			}
-		}).appendTo(BODY);
-		
-		if (resizeBarStore.get('left') !== undefined) {
-			bar.addStyle({
-				left : resizeBarStore.get('left')
-			});
 		}
-		
-		EVENT('touchmove', function(e) {
-			if (isResizing === true) {
-				resize(e.getLeft());
-			}
+	}).appendTo(BODY);
+	
+	if (resizeBarStore.get('left') !== undefined) {
+		bar.addStyle({
+			left : resizeBarStore.get('left')
 		});
-		
-		EVENT('touchend', function() {
-			isResizing = false;
-		});
+	}
+	
+	EVENT('touchmove', function(e) {
+		if (isResizing === true) {
+			resize(e.getLeft());
+		}
+	});
+	
+	EVENT('touchend', function() {
+		isResizing = false;
 	});
 </script>
 </?>

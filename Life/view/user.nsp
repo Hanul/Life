@@ -179,7 +179,13 @@
 				PARALLEL(commentDataSet, [
 			    function(commentData, done) {
 			        Life.ArticleModel.get(commentData.articleId, {
-			        	notExists : done,
+			        	notExists : function() {
+			        		REMOVE({
+			        			array : commentDataSet,
+			        			value : commentData
+			        		});
+			        		done();
+			        	},
 			        	success : function(articleData) {
 				        	commentData.articleData = articleData;
 				        	done();

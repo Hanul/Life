@@ -128,8 +128,8 @@ OVERRIDE(Life.UserModel, function(origin) {
 							next();
 						}
 						
-						else if (clientInfo.headers !== undefined && clientInfo.headers.cookie !== undefined) {
-							cookies = PARSE_COOKIE_STR(clientInfo.headers.cookie);
+						else if (clientInfo.cookies !== undefined) {
+							cookies = clientInfo.cookies;
 							
 							if (cookies['session-key'] !== undefined) {
 								

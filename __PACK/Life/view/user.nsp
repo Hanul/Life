@@ -178,9 +178,12 @@
 				
 				PARALLEL(commentDataSet, [
 			    function(commentData, done) {
-			        Life.ArticleModel.get(commentData.articleId, function(articleData) {
-			        	commentData.articleData = articleData;
-			        	done();
+			        Life.ArticleModel.get(commentData.articleId, {
+			        	notExists : done,
+			        	success : function(articleData) {
+				        	commentData.articleData = articleData;
+				        	done();
+				        }
 			        });
 			    },
 			    resume]);

@@ -179,13 +179,7 @@
 				PARALLEL(commentDataSet, [
 			    function(commentData, done) {
 			        Life.ArticleModel.get(commentData.articleId, {
-			        	notExists : function() {
-			        		REMOVE({
-			        			array : commentDataSet,
-			        			value : commentData
-			        		});
-			        		done();
-			        	},
+			        	notExists : done,
 			        	success : function(articleData) {
 				        	commentData.articleData = articleData;
 				        	done();
@@ -199,24 +193,26 @@
 		%>
 		<ul id="comment-list">
 			<~ commentDataSet -> commentData >
-				<li id="comment-{{commentData.id}}" class="comment" onclick="location.href='/board/{{commentData.articleData.boardId}}/{{commentData.articleData.id}}';">
-					<div class="header">
-						<a href="/user/{{data.id}}">
-							<? data.iconFileId === undefined >
-								<img class="icon" src="/R/icon-default.png">
-							</?>
-							<? else >
-								<img class="icon" src="/__RF/Life/ICON/{{data.iconFileId}}">
-							</?> <span class="nickname">{{data.nickname}}</span>
-						</a> | <%
-							var cal = CALENDAR(commentData.createTime);
-							print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
-						%>
-					</div>
-					<p id="comment-{{commentData.id}}-content">
-						{{commentData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}}
-					</p>
-				</li>
+				<? commentData.articleData !== undefined>
+					<li id="comment-{{commentData.id}}" class="comment" onclick="location.href='/board/{{commentData.articleData.boardId}}/{{commentData.articleData.id}}';">
+						<div class="header">
+							<a href="/user/{{data.id}}">
+								<? data.iconFileId === undefined >
+									<img class="icon" src="/R/icon-default.png">
+								</?>
+								<? else >
+									<img class="icon" src="/__RF/Life/ICON/{{data.iconFileId}}">
+								</?> <span class="nickname">{{data.nickname}}</span>
+							</a> | <%
+								var cal = CALENDAR(commentData.createTime);
+								print(cal.getYear() + '.' + cal.getMonth(true) + '.' + cal.getDate(true) + '. ' + cal.getHour(true) + ':' + cal.getMinute(true));
+							%>
+						</div>
+						<p id="comment-{{commentData.id}}-content">
+							{{commentData.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}}
+						</p>
+					</li>
+				</?>
 			</~>
 		</ul>
 	</div>
